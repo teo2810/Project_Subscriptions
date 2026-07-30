@@ -467,36 +467,43 @@ tr:hover td{background:var(--bg-sunken);}
 [data-theme="dark"] .toast-msg{background:var(--bg-elev);color:var(--ink);border:1px solid var(--line);}
 @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-.chart-toggle{display:flex;gap:4px;background:var(--bg-sunken);border-radius:8px;padding:3px;}
-.chart-toggle-btn{
-  border:none;background:transparent;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600;
-  color:var(--ink-soft);cursor:pointer;font-family:inherit;
-}
-.chart-toggle-btn.active{background:var(--bg-elev);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.summary-card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);}
+.summary-toggle{display:flex;gap:4px;background:var(--bg-sunken);border-radius:8px;padding:3px;width:fit-content;margin-bottom:12px;}
+.summary-toggle-btn{border:none;background:transparent;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
+.summary-toggle-btn.active{background:var(--bg-elev);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+.segbar-wrap{width:100%;}
+.segbar{display:flex;width:100%;height:14px;border-radius:8px;overflow:hidden;background:var(--bg-sunken);}
+.segbar-seg{height:100%;cursor:default;}
+.segbar-seg:first-child{border-radius:8px 0 0 8px;}
+.segbar-seg:last-child{border-radius:0 8px 8px 0;}
 
 .wallcal-wrap{
   background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
   box-shadow:var(--shadow);overflow-x:auto;padding:14px;
 }
-.wallcal{border-collapse:separate;border-spacing:2px;font-size:10.5px;width:100%;min-width:900px;}
+.wallcal{border-collapse:separate;border-spacing:2px;font-size:10.5px;width:100%;min-width:900px;table-layout:fixed;}
 .wallcal thead th{
   color:#fff;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;
   padding:6px 2px;border-radius:5px;text-align:center;white-space:nowrap;
 }
 .wallcal td{
-  text-align:center;padding:2px 1px;border-radius:4px;min-width:34px;
-  cursor:default;
+  text-align:center;padding:2px 1px;border-radius:4px;min-width:36px;
+  cursor:default;position:relative;
 }
 .wallcal-daynum{font-weight:600;color:var(--ink);line-height:1.2;}
 .wallcal-weekday{font-size:8.5px;color:var(--ink-soft);line-height:1.2;}
 .wallcal td.weekend .wallcal-daynum, .wallcal td.weekend .wallcal-weekday{color:var(--danger);}
 .wallcal td.wallcal-empty{visibility:hidden;}
-.wallcal td.has-renewal{cursor:pointer;}
-.wallcal td.has-renewal .wallcal-daynum{color:#fff;font-weight:700;}
-.wallcal td.has-renewal .wallcal-weekday{color:#fff;opacity:.85;}
+.wallcal td.has-renewal{background:var(--bg-sunken);}
 .wallcal td.is-today{outline:2px solid var(--ink);outline-offset:-1px;}
-.wallcal-notemark{position:absolute;top:1px;right:2px;font-size:11px;color:#fff;font-weight:900;line-height:1;}
-.wallcal td{position:relative;}
+.wallcal-stickers{min-height:13px;display:flex;gap:1px;justify-content:center;align-items:center;overflow:hidden;margin-top:1px;}
+.wallcal-sticker{cursor:pointer;display:inline-flex;}
+.wallcal-sticker .svc-icon-xs{width:11px;height:11px;border-radius:3px;}
+.wallcal-more{font-size:7.5px;color:var(--ink-soft);font-weight:700;margin-left:1px;}
+.wallcal td.has-note::after{
+  content:'';position:absolute;top:2px;right:2px;width:5px;height:5px;
+  border-radius:50%;background:var(--warn);
+}
 
 /* ---------- Calendar (usata dal mini-widget in dashboard) ---------- */
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -654,16 +661,16 @@ tr:hover td{background:var(--bg-sunken);}
         </div>
       </div>
 
-      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
-        <span>📊 Spesa per abbonamento</span>
-        <div class="chart-toggle" id="chartToggle">
-          <button type="button" class="chart-toggle-btn active" data-chart="bar" title="Barre per abbonamento">▤ Barre</button>
-          <button type="button" class="chart-toggle-btn" data-chart="pie" title="Torta per categoria">◔ Torta</button>
+      <div class="section-title">📊 Costi per area</div>
+      <div class="summary-card">
+        <div class="summary-toggle" id="summaryToggle">
+          <button type="button" class="summary-toggle-btn active" data-mode="mensile">Mese</button>
+          <button type="button" class="summary-toggle-btn" data-mode="annuale">Anno</button>
         </div>
-      </div>
-      <div class="chart-card" id="mainChartCard">
-        <canvas id="chartMain" width="800" height="320"></canvas>
-        <div class="legend" id="mainChartLegend"></div>
+        <div class="segbar-wrap">
+          <div class="segbar" id="segBar"></div>
+        </div>
+        <div class="legend" id="segBarLegend"></div>
       </div>
     </section>
 
@@ -1006,7 +1013,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-28.9';
+const APP_VERSION = '2026-07-29.2';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -1527,147 +1534,53 @@ function getCssColor(varName){
 
 let mainChartType = safeGet('subManager_chartType_v1') || 'bar';
 
+let summaryMode = 'mensile';
+
 function renderCharts(t){
-  if(mainChartType === 'pie') renderMainChartPie(t);
-  else renderMainChartBar(t);
+  renderSummaryBar();
 }
 
-document.getElementById('chartToggle').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.chart-toggle-btn');
+document.getElementById('summaryToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.summary-toggle-btn');
   if(!btn) return;
-  mainChartType = btn.dataset.chart;
-  safeSet('subManager_chartType_v1', mainChartType);
-  document.querySelectorAll('.chart-toggle-btn').forEach(b=>b.classList.toggle('active', b===btn));
-  renderCharts(computeTotals());
+  summaryMode = btn.dataset.mode;
+  document.querySelectorAll('.summary-toggle-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  renderSummaryBar();
 });
 
-/* Vista a barre: un abbonamento per riga, ordinate per costo mensile decrescente. */
-function renderMainChartBar(t){
-  const canvas = document.getElementById('chartMain');
-  const ctx = canvas.getContext('2d');
-  const legend = document.getElementById('mainChartLegend');
-  legend.innerHTML = '';
-
-  const active = subscriptions.filter(s=>s.status==='Attivo')
-    .map(s=>({ name:s.name, category:s.category, value: monthlyEquivalent(s), color: CATEGORY_COLORS[s.category] || '#8a8f9c' }))
-    .sort((a,b)=> b.value - a.value);
-
-  const total = active.reduce((s,a)=> s + a.value, 0);
-
-  // Altezza dinamica in base al numero di abbonamenti, per non schiacciare le barre
-  const rowH = 30;
-  const topPad = 10;
-  canvas.height = Math.max(120, active.length * rowH + topPad*2);
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  if(!active.length){
-    ctx.fillStyle = getCssColor('--ink-soft');
-    ctx.font = '13px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nessun abbonamento attivo da mostrare', canvas.width/2, canvas.height/2);
-    return;
-  }
-
-  const maxVal = Math.max(...active.map(a=>a.value)) || 1;
-  const labelW = 140;          // spazio riservato al nome a sinistra
-  const rightPad = 16;
-  const barMaxW = canvas.width - labelW - rightPad;
-
-  active.forEach((a,i)=>{
-    const y = topPad + i*rowH;
-    const barW = maxVal ? (a.value/maxVal) * barMaxW : 0;
-
-    ctx.fillStyle = getCssColor('--ink');
-    ctx.font = '12px sans-serif';
-    ctx.textAlign = 'right';
-    const label = a.name.length > 20 ? a.name.slice(0,19)+'…' : a.name;
-    ctx.fillText(label, labelW - 10, y + rowH*0.62);
-
-    ctx.fillStyle = getCssColor('--bg-sunken');
-    ctx.fillRect(labelW, y + 4, barMaxW, rowH - 12);
-
-    ctx.fillStyle = a.color;
-    ctx.fillRect(labelW, y + 4, Math.max(barW, 3), rowH - 12);
-
-    const pct = total ? (a.value/total*100) : 0;
-    ctx.fillStyle = getCssColor('--ink-soft');
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText(`${fmtMoney(a.value)}/mese · ${pct.toFixed(0)}%`, labelW + Math.max(barW,3) + 8, y + rowH*0.62);
-  });
-
-  // Legenda categorie effettivamente presenti
-  const catsPresent = [...new Set(active.map(a=>a.category))];
-  legend.innerHTML = catsPresent.map(c=>`<span class="legend-item"><span class="legend-dot" style="background:${CATEGORY_COLORS[c]||'#8a8f9c'}"></span>${c}</span>`).join('');
-}
-
-/* Vista a torta: distribuzione della spesa mensile per CATEGORIA (non per singolo
-   abbonamento, altrimenti con tante voci diventa illeggibile). Complementare alla
-   vista a barre: la torta risponde a "in cosa spendo", la barra a "quale abbonamento costa quanto". */
-function renderMainChartPie(t){
-  const canvas = document.getElementById('chartMain');
-  canvas.height = 320;
-  const ctx = canvas.getContext('2d');
-  const legend = document.getElementById('mainChartLegend');
-  legend.innerHTML = '';
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
+/* Barra unica segmentata per categoria (mensile o annuale a scelta).
+   Sostituisce i grafici precedenti: piu leggibile, nessun testo tagliato. */
+function renderSummaryBar(){
+  const bar = document.getElementById('segBar');
+  const legend = document.getElementById('segBarLegend');
   const active = subscriptions.filter(s=>s.status==='Attivo');
+
   if(!active.length){
-    ctx.fillStyle = getCssColor('--ink-soft');
-    ctx.font = '13px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nessun abbonamento attivo da mostrare', canvas.width/2, canvas.height/2);
+    bar.innerHTML = '';
+    legend.innerHTML = '<div class="empty-note">Nessun abbonamento attivo.</div>';
     return;
   }
 
   const catTotals = {};
-  active.forEach(s=>{ catTotals[s.category] = (catTotals[s.category]||0) + monthlyEquivalent(s); });
+  active.forEach(s=>{
+    const v = summaryMode === 'annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s);
+    catTotals[s.category] = (catTotals[s.category]||0) + v;
+  });
   const cats = Object.keys(catTotals).sort((a,b)=> catTotals[b]-catTotals[a]);
   const total = cats.reduce((s,c)=> s+catTotals[c], 0);
 
-  const cx = canvas.width/2, cy = canvas.height/2, r = Math.min(cx,cy) - 20;
-  let angleStart = -Math.PI/2;
-  cats.forEach(c=>{
-    const slice = (catTotals[c]/total) * Math.PI*2;
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,angleStart,angleStart+slice);
-    ctx.closePath();
-    ctx.fillStyle = CATEGORY_COLORS[c] || '#8a8f9c';
-    ctx.fill();
-
-    // etichetta % dentro la fetta se abbastanza grande da leggersi
-    const pct = catTotals[c]/total*100;
-    if(pct >= 6){
-      const midAngle = angleStart + slice/2;
-      const labelR = r*0.62;
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(pct.toFixed(0)+'%', cx + Math.cos(midAngle)*labelR, cy + Math.sin(midAngle)*labelR);
-    }
-    angleStart += slice;
-  });
-
-  // buco centrale (stile donut) con il totale mensile
-  ctx.beginPath();
-  ctx.arc(cx,cy,r*0.45,0,Math.PI*2);
-  ctx.fillStyle = getCssColor('--bg-elev');
-  ctx.fill();
-  ctx.fillStyle = getCssColor('--ink');
-  ctx.font = 'bold 15px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(fmtMoney(total), cx, cy - 2);
-  ctx.fillStyle = getCssColor('--ink-soft');
-  ctx.font = '10.5px sans-serif';
-  ctx.fillText('al mese', cx, cy + 14);
-
-  legend.innerHTML = cats.map(c=>{
-    const pct = (catTotals[c]/total*100).toFixed(0);
-    return `<span class="legend-item"><span class="legend-dot" style="background:${CATEGORY_COLORS[c]||'#8a8f9c'}"></span>${c} · ${fmtMoney(catTotals[c])} (${pct}%)</span>`;
+  bar.innerHTML = cats.map(c=>{
+    const pct = total ? (catTotals[c]/total*100) : 0;
+    const color = CATEGORY_COLORS[c] || '#8a8f9c';
+    return `<div class="segbar-seg" style="width:${pct}%;background:${color}" title="${escapeHtml(c)}: ${fmtMoney(catTotals[c])}"></div>`;
   }).join('');
+
+  const MAX_LEGEND = 4;
+  const shown = cats.slice(0, MAX_LEGEND);
+  const rest = cats.length - shown.length;
+  legend.innerHTML = shown.map(c=>{
+    return `<span class="legend-item"><span class="legend-dot" style="background:${CATEGORY_COLORS[c]||'#8a8f9c'}"></span>${escapeHtml(c)}</span>`;
+  }).join('') + (rest > 0 ? `<span class="legend-item">+ ${rest}</span>` : '');
 }
 
 /* ================================================================
@@ -2297,27 +2210,28 @@ function renderYearView(){
       const classes = ['wallcal-cell'];
       if(isWeekend) classes.push('weekend');
       if(isToday) classes.push('is-today');
-      let style = '';
       let titleAttr = '';
-      let dataAttr = '';
-      let noteMark = '';
+      let stickersHtml = '<div class="wallcal-stickers"></div>';
       if(evs.length){
         classes.push('has-renewal');
         const hasNote = evs.some(s=> s.notes && s.notes.trim());
         if(hasNote) classes.push('has-note');
-        const color = evs[0].color || CATEGORY_COLORS[evs[0].category] || '#8a8f9c';
-        style = `style="background:${color}"`;
-        // Il tooltip nativo mostra anche la nota, se presente, per ogni abbonamento del giorno
         const tooltipText = evs.map(s=> s.notes && s.notes.trim() ? `${s.name} — ${s.notes.trim()}` : s.name).join(' | ');
         titleAttr = ` title="${escapeHtml(tooltipText)}"`;
-        dataAttr = ` data-id="${evs[0].id}"`;
-        if(hasNote) noteMark = '<div class="wallcal-notemark" title="Ha una nota">•</div>';
+
+        const MAX_STICKERS = 3;
+        const shown = evs.slice(0, MAX_STICKERS);
+        const restCount = evs.length - shown.length;
+        const stickersInner = shown.map(s=>
+          `<span class="wallcal-sticker" data-id="${s.id}">${serviceIconHtml(s,'svc-icon-xs')}</span>`
+        ).join('') + (restCount > 0 ? `<span class="wallcal-more">+${restCount}</span>` : '');
+        stickersHtml = `<div class="wallcal-stickers">${stickersInner}</div>`;
       }
 
-      html += `<td class="${classes.join(' ')}" ${style}${titleAttr}${dataAttr}>` +
+      html += `<td class="${classes.join(' ')}"${titleAttr}>` +
         `<div class="wallcal-daynum">${day}</div>` +
         `<div class="wallcal-weekday">${WEEKDAY_ABBR[weekday]}</div>` +
-        noteMark +
+        stickersHtml +
         `</td>`;
     }
     html += '</tr>';
@@ -2327,8 +2241,8 @@ function renderYearView(){
 }
 
 document.getElementById('wallcalTable').addEventListener('click', (e)=>{
-  const cell = e.target.closest('td[data-id]');
-  if(cell) openForm(cell.dataset.id);
+  const sticker = e.target.closest('[data-id]');
+  if(sticker) openForm(sticker.dataset.id);
 });
 document.getElementById('yearPrev').addEventListener('click', ()=>{ calYear--; renderYearView(); });
 document.getElementById('yearNext').addEventListener('click', ()=>{ calYear++; renderYearView(); });
