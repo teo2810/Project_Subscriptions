@@ -208,13 +208,6 @@ a{color:inherit;}
 .view{display:none;}
 .view.active{display:block;}
 
-/* ---------- Cards ---------- */
-.grid-cards{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:20px;
-}
 .card{
   background:var(--bg-elev);
   border:1px solid var(--line);
@@ -230,22 +223,6 @@ a{color:inherit;}
   font-size:14px;font-weight:700;margin:26px 0 10px 0;
   display:flex;align-items:center;gap:8px;
 }
-
-/* ---------- Alert boxes ---------- */
-.alerts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:10px;}
-.alert-box{
-  border-radius:var(--radius);padding:14px 16px;border:1px solid var(--line);
-  background:var(--bg-elev);
-}
-.alert-box h4{margin:0 0 8px 0;font-size:12.5px;display:flex;align-items:center;gap:6px;}
-.alert-box .count{font-size:20px;font-weight:700;}
-.alert-box.warn{border-color:var(--warn);background:var(--warn-soft);}
-.alert-box.danger{border-color:var(--danger);background:var(--danger-soft);}
-.alert-item{
-  display:flex;justify-content:space-between;font-size:12.5px;
-  padding:4px 0;border-top:1px dashed var(--line);
-}
-.alert-item:first-of-type{border-top:none;}
 .empty-note{color:var(--ink-soft);font-size:12.5px;font-style:italic;}
 
 /* ---------- Hero dashboard (stile mockup a due colonne) ---------- */
@@ -295,52 +272,30 @@ a{color:inherit;}
 .hero-stat-box .lbl{font-size:11px;color:var(--ink-soft);}
 .hero-stat-box .val{font-size:19px;font-weight:700;}
 
-/* ---------- Featured subscriptions (stile mockup) ---------- */
-.featured-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:20px;
-}
-.featured-item{
-  display:flex;align-items:center;gap:12px;
-  background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
-  padding:12px 14px;box-shadow:var(--shadow);
-}
-.featured-item.highlight{border-color:var(--accent);background:var(--accent-soft);}
 .svc-icon{
   width:38px;height:38px;border-radius:10px;flex:none;
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-weight:700;font-size:15px;overflow:hidden;
 }
 .svc-icon svg{width:22px;height:22px;}
-.featured-info{display:flex;flex-direction:column;gap:1px;min-width:0;}
-.featured-info .fname{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.featured-info .fprice{font-size:12.5px;color:var(--ink-soft);}
-.featured-info .frenew{font-size:11.5px;color:var(--ink-soft);}
 
-/* icone piccole riusate in tabella / alert / calendario */
+/* icone piccole riusate in tabella / calendario */
 .svc-icon-sm{
   width:24px;height:24px;border-radius:7px;flex:none;
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-weight:700;font-size:11px;overflow:hidden;
 }
 .svc-icon-sm svg{width:14px;height:14px;}
-.charts-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:14px;
-  margin-bottom:10px;
+.svc-icon-xs{
+  width:11px;height:11px;border-radius:3px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:6px;overflow:hidden;
 }
-.chart-card{
-  background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
-  padding:14px 16px;box-shadow:var(--shadow);
-}
-.chart-card h4{margin:0 0 10px 0;font-size:12.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.3px;}
-canvas{max-width:100%;}
+.svc-icon-xs svg{width:8px;height:8px;}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11.5px;}
 .legend-item{display:flex;align-items:center;gap:5px;color:var(--ink-soft);}
 .legend-dot{width:9px;height:9px;border-radius:2px;flex:none;}
+canvas{max-width:100%;}
 
 /* ---------- Table ---------- */
 .toolbar{
@@ -468,14 +423,13 @@ tr:hover td{background:var(--bg-sunken);}
 @keyframes toastIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 .summary-card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);}
-.summary-toggle{display:flex;gap:4px;background:var(--bg-sunken);border-radius:8px;padding:3px;width:fit-content;margin-bottom:12px;}
-.summary-toggle-btn{border:none;background:transparent;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
-.summary-toggle-btn.active{background:var(--bg-elev);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08);}
-.segbar-wrap{width:100%;}
+.segbar-wrap{width:100%;margin-bottom:16px;}
 .segbar{display:flex;width:100%;height:14px;border-radius:8px;overflow:hidden;background:var(--bg-sunken);}
 .segbar-seg{height:100%;cursor:default;}
 .segbar-seg:first-child{border-radius:8px 0 0 8px;}
 .segbar-seg:last-child{border-radius:0 8px 8px 0;}
+.radar-wrap{width:100%;display:flex;justify-content:center;}
+.radar-wrap canvas{width:100%;max-width:440px;height:auto;}
 
 .wallcal-wrap{
   background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
@@ -535,9 +489,6 @@ tr:hover td{background:var(--bg-sunken);}
 
 /* ---------- Responsive ---------- */
 @media (max-width:1000px){
-  .grid-cards{grid-template-columns:1fr 1fr;}
-  .charts-row{grid-template-columns:1fr;}
-  .alerts{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
 }
 @media (max-width:760px){
@@ -547,8 +498,25 @@ tr:hover td{background:var(--bg-sunken);}
   }
   .sidebar-bottom{margin-top:0;margin-left:auto;}
   .main{padding:16px;}
-  .grid-cards{grid-template-columns:1fr 1fr;}
   .hero-row{grid-template-columns:1fr;}
+}
+@media (max-width:480px){
+  .app-header{padding:12px 14px;}
+  .app-header .brand{font-size:14px;gap:6px;}
+  .app-header .right{font-size:11.5px;gap:6px;}
+  .main{padding:12px;}
+  .topbar{flex-direction:column;align-items:stretch;padding:12px 14px;}
+  .topbar .btn{width:100%;justify-content:center;}
+  .sub-mini-grid{grid-template-columns:1fr;max-height:260px;}
+  .hero-stats-row{grid-template-columns:1fr;}
+  .hero-chart-card, .hero-list-card, .summary-card{padding:12px;}
+  .filter-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;}
+  .filter-tab{flex:none;}
+  .toolbar{flex-direction:column;align-items:stretch;}
+  .input-search{min-width:0;width:100%;}
+  .modal{padding:16px 14px 18px 14px;border-radius:12px;}
+  .modal-overlay{padding:12px 8px;}
+  .radar-wrap canvas{max-width:320px;}
 }
 
 /* print */
@@ -663,12 +631,11 @@ tr:hover td{background:var(--bg-sunken);}
 
       <div class="section-title">📊 Costi per area</div>
       <div class="summary-card">
-        <div class="summary-toggle" id="summaryToggle">
-          <button type="button" class="summary-toggle-btn active" data-mode="mensile">Mese</button>
-          <button type="button" class="summary-toggle-btn" data-mode="annuale">Anno</button>
-        </div>
         <div class="segbar-wrap">
           <div class="segbar" id="segBar"></div>
+        </div>
+        <div class="radar-wrap">
+          <canvas id="radarChart" width="440" height="360"></canvas>
         </div>
         <div class="legend" id="segBarLegend"></div>
       </div>
@@ -1013,7 +980,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-29.2';
+const APP_VERSION = '2026-07-29.3';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -1534,40 +1501,35 @@ function getCssColor(varName){
 
 let mainChartType = safeGet('subManager_chartType_v1') || 'bar';
 
-let summaryMode = 'mensile';
-
 function renderCharts(t){
   renderSummaryBar();
 }
 
-document.getElementById('summaryToggle').addEventListener('click', (e)=>{
-  const btn = e.target.closest('.summary-toggle-btn');
-  if(!btn) return;
-  summaryMode = btn.dataset.mode;
-  document.querySelectorAll('.summary-toggle-btn').forEach(b=>b.classList.toggle('active', b===btn));
-  renderSummaryBar();
-});
+/* Calcola i totali di spesa mensile per categoria (una volta, riusata da barra + radar) */
+function getCategoryMonthlyTotals(){
+  const active = subscriptions.filter(s=>s.status==='Attivo');
+  const catTotals = {};
+  active.forEach(s=>{
+    catTotals[s.category] = (catTotals[s.category]||0) + monthlyEquivalent(s);
+  });
+  const cats = Object.keys(catTotals).sort((a,b)=> catTotals[b]-catTotals[a]);
+  return { catTotals, cats, total: cats.reduce((s,c)=> s+catTotals[c], 0) };
+}
 
-/* Barra unica segmentata per categoria (mensile o annuale a scelta).
-   Sostituisce i grafici precedenti: piu leggibile, nessun testo tagliato. */
+/* Barra segmentata + radar: due viste della stessa spesa mensile per categoria.
+   La barra mostra le proporzioni, il radar mostra la "forma" della spesa
+   tra gli ambiti (utile per notare a colpo d'occhio dove si sbilancia). */
 function renderSummaryBar(){
   const bar = document.getElementById('segBar');
   const legend = document.getElementById('segBarLegend');
-  const active = subscriptions.filter(s=>s.status==='Attivo');
+  const { catTotals, cats, total } = getCategoryMonthlyTotals();
 
-  if(!active.length){
+  if(!cats.length){
     bar.innerHTML = '';
     legend.innerHTML = '<div class="empty-note">Nessun abbonamento attivo.</div>';
+    renderRadarChart(catTotals, cats, total);
     return;
   }
-
-  const catTotals = {};
-  active.forEach(s=>{
-    const v = summaryMode === 'annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s);
-    catTotals[s.category] = (catTotals[s.category]||0) + v;
-  });
-  const cats = Object.keys(catTotals).sort((a,b)=> catTotals[b]-catTotals[a]);
-  const total = cats.reduce((s,c)=> s+catTotals[c], 0);
 
   bar.innerHTML = cats.map(c=>{
     const pct = total ? (catTotals[c]/total*100) : 0;
@@ -1575,12 +1537,103 @@ function renderSummaryBar(){
     return `<div class="segbar-seg" style="width:${pct}%;background:${color}" title="${escapeHtml(c)}: ${fmtMoney(catTotals[c])}"></div>`;
   }).join('');
 
-  const MAX_LEGEND = 4;
-  const shown = cats.slice(0, MAX_LEGEND);
-  const rest = cats.length - shown.length;
-  legend.innerHTML = shown.map(c=>{
-    return `<span class="legend-item"><span class="legend-dot" style="background:${CATEGORY_COLORS[c]||'#8a8f9c'}"></span>${escapeHtml(c)}</span>`;
-  }).join('') + (rest > 0 ? `<span class="legend-item">+ ${rest}</span>` : '');
+  legend.innerHTML = cats.map(c=>{
+    const pct = total ? (catTotals[c]/total*100).toFixed(0) : 0;
+    return `<span class="legend-item"><span class="legend-dot" style="background:${CATEGORY_COLORS[c]||'#8a8f9c'}"></span>${escapeHtml(c)} · ${fmtMoney(catTotals[c])} (${pct}%)</span>`;
+  }).join('');
+
+  renderRadarChart(catTotals, cats, total);
+}
+
+/* Radar: un asse per categoria presente, raggio = spesa mensile in quella categoria.
+   Area colorata semi-trasparente + etichetta importo su ogni punto. */
+function renderRadarChart(catTotals, cats, total){
+  const canvas = document.getElementById('radarChart');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(cats.length < 3){
+    // Con meno di 3 categorie un radar non ha senso geometrico: messaggio chiaro invece di un grafico illeggibile
+    ctx.fillStyle = getCssColor('--ink-soft');
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Servono almeno 3 categorie diverse per il radar.', canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  const cx = canvas.width/2, cy = canvas.height/2 - 10;
+  const r = Math.min(cx,cy) - 50;
+  const n = cats.length;
+  const maxVal = Math.max(...cats.map(c=>catTotals[c])) * 1.15 || 1; // margine 15% cosi il punto piu alto non tocca il bordo
+
+  // Griglia: 4 anelli concentrici
+  ctx.strokeStyle = getCssColor('--line');
+  ctx.lineWidth = 1;
+  for(let ring=1; ring<=4; ring++){
+    ctx.beginPath();
+    for(let i=0; i<=n; i++){
+      const angle = (Math.PI*2 * i/n) - Math.PI/2;
+      const rr = r * ring/4;
+      const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  // Assi
+  cats.forEach((c,i)=>{
+    const angle = (Math.PI*2 * i/n) - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+    ctx.stroke();
+  });
+
+  // Area dati
+  ctx.beginPath();
+  cats.forEach((c,i)=>{
+    const angle = (Math.PI*2 * i/n) - Math.PI/2;
+    const rr = r * (catTotals[c]/maxVal);
+    const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = hexToRgba(getCssColor('--accent'), 0.22);
+  ctx.fill();
+  ctx.strokeStyle = getCssColor('--accent');
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Punti + etichette categoria/importo
+  cats.forEach((c,i)=>{
+    const angle = (Math.PI*2 * i/n) - Math.PI/2;
+    const rr = r * (catTotals[c]/maxVal);
+    const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+
+    ctx.beginPath();
+    ctx.arc(x,y,3.5,0,Math.PI*2);
+    ctx.fillStyle = CATEGORY_COLORS[c] || getCssColor('--accent');
+    ctx.fill();
+
+    const labelX = cx + Math.cos(angle)*(r+34);
+    const labelY = cy + Math.sin(angle)*(r+34);
+    ctx.fillStyle = getCssColor('--ink');
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = Math.cos(angle) > 0.3 ? 'left' : (Math.cos(angle) < -0.3 ? 'right' : 'center');
+    ctx.fillText(c, labelX, labelY - 5);
+    ctx.fillStyle = getCssColor('--ink-soft');
+    ctx.font = '10px sans-serif';
+    ctx.fillText(fmtMoney(catTotals[c]), labelX, labelY + 8);
+  });
+}
+
+/* Converte un colore CSS (hex o rgb) in rgba con alpha, per il riempimento semi-trasparente del radar */
+function hexToRgba(color, alpha){
+  const tmp = document.createElement('div');
+  tmp.style.color = color;
+  document.body.appendChild(tmp);
+  const rgb = getComputedStyle(tmp).color.match(/\d+/g);
+  document.body.removeChild(tmp);
+  return rgb ? `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})` : color;
 }
 
 /* ================================================================
