@@ -431,6 +431,16 @@ tr:hover td{background:var(--bg-sunken);}
 .radar-wrap{width:100%;display:flex;justify-content:center;}
 .radar-wrap canvas{width:100%;max-width:440px;height:auto;}
 
+.year-mobile-list{display:none;}
+.year-month-block{
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px 14px;box-shadow:var(--shadow);margin-bottom:12px;
+}
+.year-month-block-title{font-size:13px;font-weight:700;margin-bottom:8px;}
+@media (max-width:760px){
+  .wallcal-wrap{display:none;}
+  .year-mobile-list{display:block;}
+}
 .wallcal-wrap{
   background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--radius);
   box-shadow:var(--shadow);overflow-x:auto;padding:14px;
@@ -469,6 +479,7 @@ tr:hover td{background:var(--bg-sunken);}
 }
 .cal-cell.empty{background:transparent;border-color:transparent;}
 .cal-cell .daynum{font-weight:700;color:var(--ink-soft);font-size:11px;}
+.mini-stickers{display:flex;gap:2px;align-items:center;margin-top:2px;height:12px;overflow:hidden;white-space:nowrap;}
 .cal-event{
   margin-top:3px;padding:2px 5px;border-radius:5px;font-size:10.5px;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;color:#fff;
@@ -707,6 +718,7 @@ tr:hover td{background:var(--bg-sunken);}
       <div class="wallcal-wrap">
         <table class="wallcal" id="wallcalTable"></table>
       </div>
+      <div class="year-mobile-list" id="yearMobileList"></div>
     </section>
 
     <!-- ---------- SAVINGS ---------- -->
@@ -980,7 +992,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-29.3';
+const APP_VERSION = '2026-07-29.4';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -2200,12 +2212,17 @@ function buildCalendarGrid(year, month, labelsElId, gridElId, compact){
     const evs = eventsByDay[day] || [];
     const isToday = isCurrentMonth && today.getDate()===day;
     if(compact){
-      // versione compatta: solo icona + puntino, per il mini-widget in dashboard
+      // versione compatta: max 2 adesivi in fila + "+N", mai a capo, altezza sempre fissa
+      const MAX = 2;
+      const shown = evs.slice(0, MAX);
+      const restCount = evs.length - shown.length;
+      const stickersHtml = shown.map(s=>
+        `<span class="wallcal-sticker" data-id="${s.id}">${serviceIconHtml(s,'svc-icon-xs')}</span>`
+      ).join('') + (restCount > 0 ? `<span class="wallcal-more">+${restCount}</span>` : '');
       html += `<div class="cal-cell" style="min-height:34px;padding:3px;${isToday?'border-color:var(--accent);':''}">` +
         `<div class="daynum">${day}</div>` +
-        `<div style="display:flex;gap:2px;flex-wrap:wrap;margin-top:2px;">` +
-        evs.slice(0,3).map(s=> serviceIconHtml(s,'svc-icon-sm').replace('svc-icon-sm','svc-icon-sm').replace('width:24px;height:24px','width:14px;height:14px')).join('') +
-        `</div></div>`;
+        `<div class="mini-stickers">${stickersHtml}</div>` +
+        `</div>`;
     }else{
       html += `<div class="cal-cell" style="${isToday?'border-color:var(--accent);':''}"><div class="daynum">${day}</div>` +
         evs.map(s=>`<div class="cal-event" style="background:${s.color||CATEGORY_COLORS[s.category]||'#8a8f9c'}" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</div>`).join('') +
@@ -2224,10 +2241,29 @@ function monthHeaderColor(monthIndex){
   return `hsl(${monthIndex*30}, 62%, 46%)`;
 }
 
+/* Vista mobile del calendario annuale: 12 mini-calendari impilati verticalmente,
+   stesso componente compatto già usato nella dashboard, così è leggibile anche
+   su schermi stretti invece della tabella a 12 colonne (illeggibile sotto i 760px). */
+function renderYearMobileList(){
+  const container = document.getElementById('yearMobileList');
+  container.innerHTML = MONTH_NAMES.map((name,m)=>`
+    <div class="year-month-block">
+      <div class="year-month-block-title">${name} ${calYear}</div>
+      <div class="cal-grid" id="yearMobLabels${m}" style="margin-bottom:4px;"></div>
+      <div class="cal-grid" id="yearMobGrid${m}"></div>
+    </div>`).join('');
+
+  for(let m=0; m<12; m++){
+    buildCalendarGrid(calYear, m, 'yearMobLabels'+m, 'yearMobGrid'+m, true);
+  }
+}
+
 function renderYearView(){
   document.getElementById('yearLabel').textContent = calYear;
   const today = new Date();
   const table = document.getElementById('wallcalTable');
+
+  renderYearMobileList();
 
   // Raggruppo i rinnovi per (mese, giorno) su tutto l'anno selezionato,
   // considerando TUTTE le occorrenze ricorrenti (non solo l'ancora salvata)
@@ -2294,6 +2330,14 @@ function renderYearView(){
 }
 
 document.getElementById('wallcalTable').addEventListener('click', (e)=>{
+  const sticker = e.target.closest('[data-id]');
+  if(sticker) openForm(sticker.dataset.id);
+});
+document.getElementById('heroCalGrid').addEventListener('click', (e)=>{
+  const sticker = e.target.closest('[data-id]');
+  if(sticker) openForm(sticker.dataset.id);
+});
+document.getElementById('yearMobileList').addEventListener('click', (e)=>{
   const sticker = e.target.closest('[data-id]');
   if(sticker) openForm(sticker.dataset.id);
 });
