@@ -555,14 +555,14 @@ tr:hover td{background:var(--bg-sunken);}
   .main{padding:12px;}
   .topbar{flex-direction:column;align-items:stretch;padding:12px 14px;}
   .topbar .btn{width:100%;justify-content:center;}
-  .sub-mini-grid{grid-template-columns:1fr;max-height:260px;}
-  .hero-stats-row{grid-template-columns:1fr;}
-  .hero-chart-card, .hero-list-card, .summary-card{padding:12px;}
-  .filter-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;}
-  .filter-tab{flex:none;}
+  .hero-chart-card, .summary-card{padding:12px;}
   .toolbar{flex-direction:column;align-items:stretch;}
   .input-search{min-width:0;width:100%;}
   .radar-wrap canvas{max-width:320px;}
+  .hero-kpi-card{flex-direction:row;gap:6px;}
+  .hero-kpi-box{padding:8px 6px;flex:1;min-width:0;}
+  .hero-kpi-box .lbl{font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hero-kpi-box .val{font-size:15px;}
 }
 
 /* print */
@@ -1043,7 +1043,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-29.8';
+const APP_VERSION = '2026-07-29.9';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -2343,6 +2343,10 @@ function renderCalendarPage(){
     buildCalendarGrid(calMonthDate.getFullYear(), calMonthDate.getMonth(), 'calGridLabels', 'calGrid', false);
   }else{
     document.getElementById('singleMonthWrap').style.display = 'none';
+    // Ripristino wallcalWrap/yearMobileList al comportamento normale (CSS in base alla larghezza schermo),
+    // altrimenti restano "incollati" a display:none se prima si era passati dalla vista Mese.
+    document.getElementById('wallcalWrap').style.display = '';
+    document.getElementById('yearMobileList').style.display = '';
     document.getElementById('yearNavControls').style.display = 'flex';
     document.getElementById('monthNavControls').style.display = 'none';
     document.getElementById('calSubLabel').textContent = "Colpo d'occhio su tutte le scadenze dell'anno.";
