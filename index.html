@@ -757,7 +757,7 @@ tr:hover td{background:var(--bg-sunken);}
         <table class="wallcal" id="wallcalTable"></table>
       </div>
       <div class="year-mobile-list" id="yearMobileList"></div>
-      <div class="wallcal-wrap" id="singleMonthWrap" style="display:none;">
+      <div class="wallcal-wrap single-month-wrap" id="singleMonthWrap" style="display:none;">
         <div class="cal-grid" id="calGridLabels"></div>
         <div class="cal-grid" id="calGrid" style="margin-top:6px;"></div>
       </div>
@@ -1043,7 +1043,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-29.9';
+const APP_VERSION = '2026-07-30.1';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -2335,7 +2335,7 @@ function renderCalendarPage(){
   if(calView === 'month'){
     document.getElementById('wallcalWrap').style.display = 'none';
     document.getElementById('yearMobileList').style.display = 'none';
-    document.getElementById('singleMonthWrap').style.display = '';
+    document.getElementById('singleMonthWrap').style.display = 'block';
     document.getElementById('yearNavControls').style.display = 'none';
     document.getElementById('monthNavControls').style.display = 'flex';
     document.getElementById('calSubLabel').textContent = 'Vista di un singolo mese, con più spazio per ogni giorno.';
