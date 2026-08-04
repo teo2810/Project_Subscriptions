@@ -288,6 +288,15 @@ canvas{max-width:100%;}
 .toolbar{
   display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;
 }
+.toolbar-row{display:flex;gap:10px;flex:1 1 auto;min-width:0;}
+.toolbar-row .select{flex:1;min-width:0;}
+.table-total-row{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:12px;
+  font-size:13px;
+}
+.table-total-row strong{font-size:15px;}
+.table-total-row #tableTotalUnit{color:var(--ink-soft);font-size:12px;}
 input[type="file"]{
   font-size:12.5px;color:var(--ink-soft);
 }
@@ -535,18 +544,19 @@ tr:hover td{background:var(--bg-sunken);}
   .modal-footer{padding:12px 18px;margin-top:0;border-top:1px solid var(--line);flex:none;}
 }
 .mobile-sub-card{
-  background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
-  display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;padding:8px 10px;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
 }
-.mobile-sub-card .info{flex:1;min-width:0;}
-.mobile-sub-card .row1{display:flex;justify-content:space-between;align-items:center;gap:8px;}
-.mobile-sub-card .name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mobile-sub-card .row2{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
-.mobile-sub-card .row3{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
-.mobile-sub-card .actions{display:flex;gap:2px;flex:none;}
+.mobile-sub-card .name{
+  font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;min-width:0;
+}
+.mobile-sub-card .price{font-size:12px;color:var(--ink-soft);white-space:nowrap;flex:none;}
+.mobile-sub-card .status-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.mobile-sub-card .actions{display:flex;gap:0;flex:none;}
 .mobile-sub-card .actions button{
-  border:none;background:transparent;cursor:pointer;padding:8px;border-radius:8px;color:var(--ink-soft);
-  min-width:36px;min-height:36px;font-size:15px;
+  border:none;background:transparent;cursor:pointer;padding:4px;border-radius:6px;color:var(--ink-soft);
+  min-width:26px;min-height:26px;font-size:12px;line-height:1;
 }
 .mobile-sub-card .actions button:active{background:var(--bg-sunken);}
 @media (max-width:480px){
@@ -689,25 +699,41 @@ tr:hover td{background:var(--bg-sunken);}
         <button class="btn btn-primary" id="btnNewFromTable">+ Nuovo abbonamento</button>
       </div>
 
+      <div class="table-total-row" id="tableTotalRow">
+        <div>
+          <span id="tableTotalCount">0 abbonamenti</span> ·
+          <strong id="tableTotalAmount">€0,00</strong>
+          <span id="tableTotalUnit">/mese</span>
+        </div>
+        <div class="summary-toggle" id="tableAmountToggle">
+          <button type="button" class="summary-toggle-btn active" data-amountview="mensile">Mensile</button>
+          <button type="button" class="summary-toggle-btn" data-amountview="annuale">Annuale</button>
+        </div>
+      </div>
+
       <div class="toolbar">
         <input type="text" class="input input-search" id="searchInput" placeholder="Cerca per nome...">
-        <select class="select" id="filterCategory">
-          <option value="">Tutte le categorie</option>
-        </select>
-        <select class="select" id="filterStatus">
-          <option value="">Tutti gli stati</option>
-          <option value="Attivo">Attivo</option>
-          <option value="Disattivato">Disattivato</option>
-        </select>
-        <select class="select" id="sortSelect">
-          <option value="nextRenewal-asc">Scadenza: più vicina</option>
-          <option value="nextRenewal-desc">Scadenza: più lontana</option>
-          <option value="monthly-desc">Prezzo: più caro</option>
-          <option value="monthly-asc">Prezzo: più economico</option>
-          <option value="name-asc">Nome: A-Z</option>
-          <option value="name-desc">Nome: Z-A</option>
-        </select>
-        <button class="btn btn-sm" id="btnPrint">🖨️ Report stampabile</button>
+        <div class="toolbar-row">
+          <select class="select" id="filterCategory">
+            <option value="">Tutte le categorie</option>
+          </select>
+          <select class="select" id="filterStatus">
+            <option value="">Tutti gli stati</option>
+            <option value="Attivo">Attivo</option>
+            <option value="Disattivato">Disattivato</option>
+          </select>
+        </div>
+        <div class="toolbar-row">
+          <select class="select" id="sortSelect">
+            <option value="nextRenewal-asc">Scadenza: più vicina</option>
+            <option value="nextRenewal-desc">Scadenza: più lontana</option>
+            <option value="monthly-desc">Prezzo: più caro</option>
+            <option value="monthly-asc">Prezzo: più economico</option>
+            <option value="name-asc">Nome: A-Z</option>
+            <option value="name-desc">Nome: Z-A</option>
+          </select>
+          <button class="btn btn-sm" id="btnPrint">🖨️ Stampa</button>
+        </div>
       </div>
 
       <div class="table-wrap">
@@ -1044,7 +1070,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-30.3';
+const APP_VERSION = '2026-07-30.4';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -1216,6 +1242,7 @@ function serviceIconHtml(sub, sizeClass){
 let subscriptions = [];
 let history = [];
 let sortState = { col:'nextRenewal', dir:'asc' };
+let tableAmountView = 'mensile'; // 'mensile' | 'annuale' - influenza il totale e il prezzo mostrato nelle card mobile
 let editingId = null;
 let confirmCallback = null;
 
@@ -1729,10 +1756,25 @@ function statusBadge(sub){
   return `<span class="badge badge-active"><span class="badge-dot" style="background:var(--accent)"></span>Attivo</span>`;
 }
 
+function statusDotColor(sub){
+  if(sub.status !== 'Attivo') return 'var(--ink-soft)';
+  const d = sub.nextRenewal ? daysUntil(sub.nextRenewal) : null;
+  if(d !== null && d < 0) return 'var(--danger)';
+  if(d !== null && d <= 7) return 'var(--warn)';
+  return 'var(--accent)';
+}
+
 function renderTable(){
   populateCategoryFilter();
   const list = getFilteredSorted();
   const tbody = document.getElementById('tableBody');
+
+  // Totale della vista filtrata corrente, rispetta il toggle Mensile/Annuale
+  const activeInList = list.filter(s=>s.status==='Attivo');
+  const total = activeInList.reduce((sum,s)=> sum + (tableAmountView==='annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s)), 0);
+  document.getElementById('tableTotalCount').textContent = `${list.length} abbonament${list.length===1?'o':'i'}`;
+  document.getElementById('tableTotalAmount').textContent = fmtMoney(total);
+  document.getElementById('tableTotalUnit').textContent = tableAmountView==='annuale' ? '/anno' : '/mese';
 
   if(!list.length){
     tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--ink-soft);padding:24px;">Nessun abbonamento trovato.</td></tr>`;
@@ -1780,25 +1822,21 @@ function renderTableMobileList(list){
     container.innerHTML = `<div class="empty-note" style="padding:16px 4px;">Nessun abbonamento trovato.</div>`;
     return;
   }
-  container.innerHTML = list.map(s=>`
+  container.innerHTML = list.map(s=>{
+    const amount = tableAmountView === 'annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s);
+    const unit = tableAmountView === 'annuale' ? '/anno' : '/mese';
+    return `
     <div class="mobile-sub-card" data-id="${s.id}">
       ${serviceIconHtml(s,'svc-icon-sm')}
-      <div class="info">
-        <div class="row1">
-          <span class="name">${escapeHtml(s.name)}</span>
-          <div class="actions">
-            <button title="Modifica" data-action="edit" data-id="${s.id}">✏️</button>
-            <button title="Duplica" data-action="dup" data-id="${s.id}">⧉</button>
-            <button title="Elimina" data-action="del" data-id="${s.id}">🗑</button>
-          </div>
-        </div>
-        <div class="row2">${escapeHtml(s.category)} · ${fmtMoney(monthlyEquivalent(s), s.currency)}/mese</div>
-        <div class="row3">
-          <span class="row2">Rinnovo: ${fmtDate(s.nextRenewal)}</span>
-          ${statusBadge(s)}
-        </div>
+      <span class="name">${escapeHtml(s.name)}</span>
+      <span class="price">${fmtMoney(amount, s.currency)}${unit}</span>
+      <span class="status-dot" style="background:${statusDotColor(s)}"></span>
+      <div class="actions">
+        <button title="Duplica" data-action="dup" data-id="${s.id}">⧉</button>
+        <button title="Elimina" data-action="del" data-id="${s.id}">🗑</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 document.getElementById('tableMobileList').addEventListener('click', (e)=>{
@@ -1834,6 +1872,13 @@ document.querySelectorAll('th[data-sort]').forEach(th=>{
 });
 
 document.getElementById('searchInput').addEventListener('input', renderTable);
+document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.summary-toggle-btn');
+  if(!btn) return;
+  tableAmountView = btn.dataset.amountview;
+  document.querySelectorAll('#tableAmountToggle .summary-toggle-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  renderTable();
+});
 document.getElementById('filterCategory').addEventListener('change', renderTable);
 document.getElementById('filterStatus').addEventListener('change', renderTable);
 
