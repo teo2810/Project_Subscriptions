@@ -52,6 +52,30 @@ if('serviceWorker' in navigator && window.isSecureContext){
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   --sidebar-w:220px;
   --header-grad:linear-gradient(100deg, #eaf6f4 0%, #eef4fb 60%, #f4f7f8 100%);
+
+  /* ---- Material Design 3: superfici, container, elevazione ---- */
+  --m3-primary:#0f9b8e;
+  --m3-on-primary:#ffffff;
+  --m3-primary-container:#a2f2e4;
+  --m3-on-primary-container:#00201c;
+  --m3-surface:#f4f7f8;
+  --m3-surface-container-low:#eef2f2;
+  --m3-surface-container:#e8ecec;
+  --m3-surface-container-high:#e2e7e7;
+  --m3-surface-container-highest:#dce1e1;
+  --m3-on-surface:#16232b;
+  --m3-on-surface-variant:#5c7079;
+  --m3-outline:#c9d1d1;
+  --m3-outline-variant:#e2e9eb;
+  --m3-state-hover:rgba(15,155,142,.08);
+  --m3-state-press:rgba(15,155,142,.12);
+  --m3-scrim:rgba(0,0,0,.32);
+  /* Elevazione M3 (dp0-dp5): ombre progressive */
+  --m3-el1:0 1px 2px rgba(0,0,0,.10), 0 1px 3px 1px rgba(0,0,0,.08);
+  --m3-el2:0 1px 2px rgba(0,0,0,.12), 0 2px 6px 2px rgba(0,0,0,.10);
+  --m3-el3:0 1px 3px rgba(0,0,0,.14), 0 4px 8px 3px rgba(0,0,0,.10);
+  --m3-el4:0 2px 3px rgba(0,0,0,.16), 0 6px 10px 4px rgba(0,0,0,.10);
+  --m3-el5:0 4px 4px rgba(0,0,0,.18), 0 8px 12px 6px rgba(0,0,0,.10);
 }
 [data-theme="dark"]{
   --bg:#12181b;
@@ -69,6 +93,29 @@ if('serviceWorker' in navigator && window.isSecureContext){
   --danger-soft:#332020;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
   --header-grad:linear-gradient(100deg, #16302c 0%, #142430 60%, #12181b 100%);
+
+  --m3-primary:#5fd9c8;
+  --m3-on-primary:#00382f;
+  --m3-primary-container:#00504431;
+  --m3-primary-container:#0a4c42;
+  --m3-on-primary-container:#a2f2e4;
+  --m3-surface:#0f1416;
+  --m3-surface-container-low:#171e21;
+  --m3-surface-container:#1b2226;
+  --m3-surface-container-high:#262e32;
+  --m3-surface-container-highest:#31393d;
+  --m3-on-surface:#e7f0ef;
+  --m3-on-surface-variant:#a3aeb0;
+  --m3-outline:#4a5457;
+  --m3-outline-variant:#28353a;
+  --m3-state-hover:rgba(95,217,200,.10);
+  --m3-state-press:rgba(95,217,200,.16);
+  --m3-scrim:rgba(0,0,0,.55);
+  --m3-el1:0 1px 2px rgba(0,0,0,.4), 0 1px 3px 1px rgba(0,0,0,.3);
+  --m3-el2:0 1px 2px rgba(0,0,0,.45), 0 2px 6px 2px rgba(0,0,0,.35);
+  --m3-el3:0 1px 3px rgba(0,0,0,.5), 0 4px 8px 3px rgba(0,0,0,.35);
+  --m3-el4:0 2px 3px rgba(0,0,0,.5), 0 6px 10px 4px rgba(0,0,0,.35);
+  --m3-el5:0 4px 4px rgba(0,0,0,.55), 0 8px 12px 6px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -192,15 +239,24 @@ a{color:inherit;}
   padding:8px 14px;border-radius:8px;border:1px solid var(--line);
   background:var(--bg-elev);color:var(--ink);cursor:pointer;
   font-size:13px;font-weight:600;
-  transition:transform .08s ease, border-color .15s ease;
+  transition:transform .08s ease, border-color .15s ease, box-shadow .15s ease;
+  position:relative;overflow:hidden;
 }
-.btn:hover{border-color:var(--accent);}
+.btn:hover{border-color:var(--accent);box-shadow:var(--m3-el1);}
 .btn:active{transform:scale(.97);}
-.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
-.btn-primary:hover{filter:brightness(1.07);border-color:var(--accent);}
+.btn-primary{background:var(--m3-primary);border-color:var(--m3-primary);color:var(--m3-on-primary);box-shadow:var(--m3-el1);}
+.btn-primary:hover{filter:brightness(1.05);border-color:var(--m3-primary);box-shadow:var(--m3-el2);}
 .btn-danger{color:var(--danger);}
 .btn-danger:hover{border-color:var(--danger);}
 .btn-ghost{border-color:transparent;background:transparent;}
+.m3-ripple{
+  position:absolute;border-radius:50%;background:currentColor;opacity:.25;
+  transform:scale(0);animation:m3RippleAnim .5s ease-out;pointer-events:none;
+}
+@keyframes m3RippleAnim{to{transform:scale(2.6);opacity:0;}}
+@media (prefers-reduced-motion:reduce){
+  .m3-ripple{animation:none;display:none;}
+}
 .btn-sm{padding:5px 9px;font-size:12px;}
 .btn-icon{padding:7px;}
 
@@ -219,11 +275,12 @@ a{color:inherit;}
 .view.active{display:block;}
 
 .card{
-  background:var(--bg-elev);
-  border:1px solid var(--line);
+  background:var(--m3-surface-container-low);
+  border:1px solid var(--m3-outline-variant);
   border-radius:var(--radius);
   padding:16px 18px;
-  box-shadow:var(--shadow);
+  box-shadow:var(--m3-el1);
+  transition:box-shadow .2s ease;
 }
 .card .label{color:var(--ink-soft);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:6px;}
 .card .value{font-size:24px;font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums;}
@@ -347,18 +404,22 @@ tr:hover td{background:var(--bg-sunken);}
 
 /* ---------- Modal ---------- */
 .modal-overlay{
-  position:fixed;inset:0;background:rgba(10,12,16,.45);
+  position:fixed;inset:0;background:var(--m3-scrim);
   display:none;align-items:flex-start;justify-content:center;
   padding:40px 16px;overflow-y:auto;z-index:100;
 }
 .modal-overlay.active{display:flex;}
 .modal{
-  background:var(--bg-elev);border-radius:14px;padding:22px 24px 24px 24px;
-  width:100%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.25);
-  border:1px solid var(--line);
+  background:var(--m3-surface-container-high);border-radius:24px;padding:22px 24px 24px 24px;
+  width:min(560px, calc(100vw - 32px));max-height:min(88vh, 800px);
+  box-shadow:var(--m3-el3);
+  border:1px solid var(--m3-outline-variant);
+  display:flex;flex-direction:column;overflow:hidden;
 }
-.modal h2{margin:0 0 4px 0;font-size:17px;}
-.modal .modal-sub{color:var(--ink-soft);font-size:12.5px;margin-bottom:16px;}
+.modal h2{margin:0 0 4px 0;font-size:17px;flex:none;}
+.modal .modal-sub{color:var(--ink-soft);font-size:12.5px;margin-bottom:16px;flex:none;}
+.modal form{display:flex;flex-direction:column;min-height:0;flex:1;}
+.modal .form-grid{overflow-y:auto;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-field{display:flex;flex-direction:column;gap:5px;}
 .form-field.full{grid-column:1 / -1;}
@@ -432,7 +493,8 @@ tr:hover td{background:var(--bg-sunken);}
 .summary-toggle-btn.active{background:var(--bg-elev);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08);}
 .segbar-wrap{width:100%;margin-bottom:16px;}
 .segbar{display:flex;width:100%;height:14px;border-radius:8px;overflow:hidden;background:var(--bg-sunken);}
-.segbar-seg{height:100%;cursor:default;animation:segGrow .5s ease backwards;transform-origin:left;}
+.segbar-seg{height:100%;cursor:default;animation:segGrow .5s ease backwards;transform-origin:left;transition:filter .15s ease;}
+.segbar-seg:hover{filter:brightness(1.12);}
 @keyframes segGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
 .segbar-seg:nth-child(1){animation-delay:.02s;}
 .segbar-seg:nth-child(2){animation-delay:.08s;}
@@ -1070,7 +1132,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2026-07-30.4';
+const APP_VERSION = '2026-07-30.5';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -2821,6 +2883,25 @@ function confirmDeleteProfile(id){
     showToast('Profilo eliminato.');
   });
 }
+
+/* Effetto ripple M3: un singolo listener delegato su tutto il documento,
+   applicato a bottoni/nav/card cliccabili senza dover toccare ogni elemento. */
+document.addEventListener('pointerdown', (e)=>{
+  const target = e.target.closest('.btn, .nav-item, .mobile-sub-card, .sub-mini-card, .filter-tab, .summary-toggle-btn, .chart-toggle-btn, .plan-chip');
+  if(!target) return;
+  const style = getComputedStyle(target);
+  if(style.position === 'static') target.style.position = 'relative';
+  if(style.overflow !== 'hidden') target.style.overflow = 'hidden';
+  const rect = target.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.4;
+  const ripple = document.createElement('span');
+  ripple.className = 'm3-ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  target.appendChild(ripple);
+  ripple.addEventListener('animationend', ()=> ripple.remove());
+});
 
 (function init(){
   loadProfiles();
