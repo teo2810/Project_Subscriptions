@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=overlays-content">
 <title>I Miei Abbonamenti</title>
 
 <!-- ============ PWA-LIKE: manifest inline + icone (funziona anche da file:// via doppio clic) ============ -->
@@ -1465,7 +1465,7 @@ input[type="date"].m3-date-native{
 .fab-new{
   position:fixed;
   right:max(16px, var(--sar));
-  bottom:calc(var(--bottom-nav-h, 64px) + var(--sab) + 16px);
+  bottom:var(--fab-bottom, calc(var(--bottom-nav-h, 64px) + var(--sab) + 16px));
   z-index:45;
   width:56px;height:56px;
   border-radius:16px;
@@ -1476,7 +1476,7 @@ input[type="date"].m3-date-native{
   cursor:pointer;
   display:none; /* solo mobile/tablet; desktop usa topbar */
   align-items:center;justify-content:center;
-  transition:transform .12s ease, box-shadow .15s ease, filter .15s ease;
+  transition:transform .12s ease, box-shadow .15s ease, filter .15s ease, bottom .32s cubic-bezier(.2,.85,.25,1);
 }
 .fab-new:hover{filter:brightness(1.06);box-shadow:0 6px 16px rgba(0,0,0,.2);}
 .fab-new:active{transform:scale(.96);}
@@ -1687,10 +1687,11 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   will-change:transform, opacity;
 }
 .qa-popover:not([hidden]){
-  animation:qaPopIn .26s cubic-bezier(.2,.85,.2,1.2) both;
+  animation:qaPopIn .42s cubic-bezier(.2,.85,.25,1.05) both;
 }
 @keyframes qaPopIn{
-  0%{opacity:0;transform:translate(6px, 10px) scale(.55);}
+  0%{opacity:0;transform:translate(8px, 14px) scale(.45);}
+  60%{opacity:1;}
   100%{opacity:1;transform:translate(0, 0) scale(1);}
 }
 .qa-popover.qa-closing{
@@ -4264,22 +4265,55 @@ const fabNew = document.getElementById('fabNew');
 /* ================================================================
    QUICK-ADD POPOVER (stile menu + chat: ancorato al FAB, sale su)
    ================================================================ */
+function keyboardInset(){
+  const vv = window.visualViewport;
+  if(!vv) return 0;
+  // altezza tastiera (o barra sistema) che copre il fondo
+  return Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+}
+
+function fabRestBottomPx(){
+  // stesso valore del CSS di riposo: bottom-nav + safe-area + 16
+  const nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-nav-h')) || 64;
+  const sab = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sab')) || 0;
+  return nav + sab + 16;
+}
+
+/** Solleva il FAB sopra la tastiera quando il quick-add è aperto. */
+function liftFabForKeyboard(){
+  const fab = document.getElementById('fabNew');
+  if(!fab) return;
+  const kb = keyboardInset();
+  if(kb > 80){
+    // 12px di aria sopra la tastiera
+    document.documentElement.style.setProperty('--fab-bottom', (kb + 12) + 'px');
+  }else{
+    document.documentElement.style.removeProperty('--fab-bottom');
+  }
+}
+
+function resetFabPosition(){
+  document.documentElement.style.removeProperty('--fab-bottom');
+}
+
 function placeQuickAddPopover(){
   const pop = document.getElementById('qaPopover');
   const fab = document.getElementById('fabNew');
-  if(!pop || !fab) return;
+  if(!pop || !fab || pop.hidden) return;
+  liftFabForKeyboard();
+  // dopo eventuale lift, misura il FAB
   const fr = fab.getBoundingClientRect();
   const gap = 10;
   const w = Math.min(280, window.innerWidth - 28);
-  // allinea il bordo destro del popover al bordo destro del FAB
   let left = fr.right - w;
   if(left < 14) left = 14;
   pop.style.width = w + 'px';
   pop.style.left = left + 'px';
-  // bottom = distanza dal fondo viewport al top del FAB + gap → menu sale dal +
   pop.style.bottom = (window.innerHeight - fr.top + gap) + 'px';
   pop.style.top = 'auto';
   pop.style.transformOrigin = 'bottom right';
+  // proposte: ricalcola se aperte
+  positionSuggestionsBox();
 }
 
 function openQuickAdd(){
@@ -4288,17 +4322,27 @@ function openQuickAdd(){
   const fab = document.getElementById('fabNew');
   if(!pop) return;
   hideSuggestions();
-  document.getElementById('qa_name').value = '';
+  const qaInput = document.getElementById('qa_name');
+  qaInput.value = '';
   document.getElementById('qaContinue').disabled = true;
+  qaInput.setAttribute('readonly', 'readonly');
+  // Animazione a riposo (senza tastiera)
+  resetFabPosition();
   pop.hidden = false;
   pop.classList.remove('qa-closing');
   if(scrim) scrim.hidden = false;
   if(fab){ fab.classList.add('is-open'); fab.setAttribute('aria-expanded','true'); }
   placeQuickAddPopover();
-  requestAnimationFrame(()=>{
-    placeQuickAddPopover();
-    try{ document.getElementById('qa_name').focus(); }catch(e){}
-  });
+  requestAnimationFrame(()=> placeQuickAddPopover());
+  // Focus dopo animazione → poi la tastiera alza FAB+popup insieme
+  setTimeout(()=>{
+    qaInput.removeAttribute('readonly');
+    try{ qaInput.focus({ preventScroll: true }); }
+    catch(e){ try{ qaInput.focus(); }catch(e2){} }
+    // micro-aggancio dopo apertura tastiera
+    setTimeout(placeQuickAddPopover, 120);
+    setTimeout(placeQuickAddPopover, 320);
+  }, 480);
 }
 
 function closeQuickAdd(immediate){
@@ -4307,19 +4351,16 @@ function closeQuickAdd(immediate){
   const fab = document.getElementById('fabNew');
   hideSuggestions();
   if(!pop || pop.hidden) return;
-  if(immediate){
-    pop.hidden = true;
-    if(scrim) scrim.hidden = true;
-    if(fab){ fab.classList.remove('is-open'); fab.setAttribute('aria-expanded','false'); }
-    return;
-  }
-  pop.classList.add('qa-closing');
-  setTimeout(()=>{
+  const finish = ()=>{
     pop.hidden = true;
     pop.classList.remove('qa-closing');
     if(scrim) scrim.hidden = true;
     if(fab){ fab.classList.remove('is-open'); fab.setAttribute('aria-expanded','false'); }
-  }, 170);
+    resetFabPosition();
+  };
+  if(immediate){ finish(); return; }
+  pop.classList.add('qa-closing');
+  setTimeout(finish, 200);
 }
 
 function expandQuickAddToForm(){
