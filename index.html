@@ -1649,7 +1649,7 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 
 /* FAB: + ruota in X quando aperto */
 .fab-new .fab-icon-plus{
-  transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+  transition:transform .48s cubic-bezier(.2,.85,.25,1);
   transform-origin:center center;
 }
 .fab-new.is-open .fab-icon-plus{
@@ -1659,7 +1659,10 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   background:var(--m3-surface-container-high, var(--m3-surface-container));
   color:var(--ink);
   box-shadow:0 2px 8px rgba(0,0,0,.14);
-  transform:scale(1.05);
+  transition:background .35s ease, color .35s ease, box-shadow .35s ease, transform .35s ease;
+}
+.fab-new{
+  transition:background .35s ease, color .35s ease, box-shadow .35s ease, transform .2s ease;
 }
 
 /* Scrim leggero dietro al quick-add */
@@ -1716,7 +1719,7 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 body:has(.qa-popover:not([hidden])) .fab-new{display:inline-flex !important;}
 body:has(.modal-overlay.active) .fab-new{display:none !important;}
 .fab-new .fab-icon-plus{
-  transition:transform .28s cubic-bezier(.2,.9,.3,1.2);
+  transition:transform .48s cubic-bezier(.2,.85,.25,1);
   transform-origin:center center;
 }
 .fab-new.is-open .fab-icon-plus{
@@ -1726,7 +1729,10 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   background:var(--m3-surface-container-high, var(--m3-surface-container));
   color:var(--ink);
   box-shadow:0 2px 8px rgba(0,0,0,.14);
-  transform:scale(1.05);
+  transition:background .35s ease, color .35s ease, box-shadow .35s ease, transform .35s ease;
+}
+.fab-new{
+  transition:background .35s ease, color .35s ease, box-shadow .35s ease, transform .2s ease;
 }
 
 </style>
@@ -3215,6 +3221,7 @@ document.getElementById('btnPrint').addEventListener('click', ()=> window.print(
    FORM MODAL
    ================================================================ */
 const formOverlay = document.getElementById('formOverlay');
+let suppressOverlayCloseUntil = 0;
 const subForm = document.getElementById('subForm');
 subForm.addEventListener('focusin', (e)=>{
   const el = e.target;
@@ -3329,12 +3336,19 @@ function openForm(id, presetName){
   updateIconPreview();
 
   formOverlay.classList.add('active');
+  // Evita che lo stesso tap che ha scelto il suggerimento chiuda subito l'overlay
+  suppressOverlayCloseUntil = Date.now() + 600;
+
   if(prefill){
-    // Arrivo dal quick-add: apri subito lo step 2 (prezzo, date, ecc.)
     document.getElementById('btnContinueForm').disabled = false;
-    setTimeout(()=>{
-      goToStep2();
-    }, 120);
+    // Assicura che il nome sia ancora lì (difesa)
+    document.getElementById('f_name').value = prefill;
+    // Step 2 dopo che il layout del modal è attivo
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        try{ goToStep2(); }catch(err){ console.warn('goToStep2', err); }
+      });
+    });
   }else{
     setTimeout(()=>{ try{ document.getElementById('f_name').focus(); }catch(e){} }, 280);
   }
@@ -3591,6 +3605,8 @@ document.getElementById('nameSuggestions').addEventListener('pointerdown', (e)=>
   e.stopPropagation();
   const name = (item.getAttribute('data-name') || item.dataset.name || '').trim();
   if(!name) return;
+  // blocca click fantasma su scrim/overlay
+  suppressOverlayCloseUntil = Date.now() + 800;
   hideSuggestions();
   const qa = document.getElementById('qaPopover');
   if(qa && !qa.hidden){
@@ -3601,10 +3617,9 @@ document.getElementById('nameSuggestions').addEventListener('pointerdown', (e)=>
     document.getElementById('f_name').value = name;
     goToStep2();
   }else{
-    // fallback: apri form completo con nome
     openForm(null, name);
   }
-});
+}, true);
 
 document.getElementById('f_name').addEventListener('keydown', (e)=>{
   const box = document.getElementById('nameSuggestions');
@@ -3720,7 +3735,10 @@ function clearFormErrors(){
 }
 
 document.getElementById('btnCancelForm').addEventListener('click', closeForm);
-formOverlay.addEventListener('click', (e)=>{ if(e.target === formOverlay) closeForm(); });
+formOverlay.addEventListener('click', (e)=>{
+  if(Date.now() < suppressOverlayCloseUntil) return;
+  if(e.target === formOverlay) closeForm();
+});
 
 subForm.addEventListener('submit', (e)=>{
   e.preventDefault();
@@ -4309,8 +4327,12 @@ function expandQuickAddToForm(){
   if(!name) return;
   hideSuggestions();
   closeQuickAdd(true);
-  // passa il nome a openForm così non viene azzerato e parte lo step 2
-  openForm(null, name);
+  // Ritardo breve: lascia finire il ciclo pointerup/click, altrimenti il tap
+  // "passa" sull'overlay del form e lo richiude subito.
+  suppressOverlayCloseUntil = Date.now() + 800;
+  setTimeout(()=>{
+    openForm(null, name);
+  }, 40);
 }
 
 document.getElementById('qa_name')?.addEventListener('input', ()=>{
@@ -4325,7 +4347,13 @@ document.getElementById('qa_name')?.addEventListener('keydown', (e)=>{
 });
 document.getElementById('qaContinue')?.addEventListener('click', expandQuickAddToForm);
 document.getElementById('qaCancel')?.addEventListener('click', ()=> closeQuickAdd());
-document.getElementById('qaScrim')?.addEventListener('click', ()=> closeQuickAdd());
+document.getElementById('qaScrim')?.addEventListener('click', (e)=>{
+  if(Date.now() < suppressOverlayCloseUntil) return;
+  closeQuickAdd();
+});
+document.getElementById('qaScrim')?.addEventListener('pointerup', (e)=>{
+  if(Date.now() < suppressOverlayCloseUntil){ e.preventDefault(); e.stopPropagation(); }
+});
 window.addEventListener('resize', ()=>{
   if(document.getElementById('qaPopover') && !document.getElementById('qaPopover').hidden)
     placeQuickAddPopover();
