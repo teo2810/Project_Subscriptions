@@ -373,14 +373,15 @@ img,svg{max-width:100%;height:auto;}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:var(--s-5);
-  gap:var(--s-3);
-  flex-wrap:wrap;
+  margin-bottom:12px;
+  gap:12px;
+  flex-wrap:nowrap;
   background:var(--surface-elev);
   border:none;
   border-radius:var(--radius-lg);
-  padding:var(--s-4) var(--s-5);
+  padding:12px 14px;
   box-shadow:var(--surface-shadow);
+  text-align:left;
 }
 .topbar h1{font-size:var(--fs-lg);margin:0;font-weight:700;letter-spacing:-.01em;}
 .topbar .sub{color:var(--ink-soft);font-size:var(--fs-sm);margin-top:2px;}
@@ -969,6 +970,7 @@ select.m3-native-hidden{
   appearance:none !important;
   -webkit-appearance:none !important;
 }
+.toolbar-filters .m3-select{display:block;width:100%;min-width:0;}
 .m3-select{
   position:relative;
   width:100%;
@@ -1269,26 +1271,30 @@ select.m3-native-hidden{
   }
   .toolbar-filters{
     display:grid !important;
-    grid-template-columns:1fr 1fr 1fr auto;
-    gap:6px;
-    flex-direction:unset !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px !important;
+    gap:6px !important;
+    align-items:center !important;
+    width:100% !important;
   }
   .toolbar-filters .m3-select,
   .toolbar-filters .select{
-    width:100%;
-    min-width:0;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
   }
   .toolbar .m3-select-trigger{
-    min-height:40px !important;
-    height:40px;
-    padding:6px 8px !important;
-    font-size:11px;
+    min-height:36px !important;
+    height:36px !important;
+    padding:4px 8px !important;
+    font-size:11px !important;
+    width:100% !important;
   }
   .toolbar .m3-select-value{
-    font-size:11px;
+    font-size:11px !important;
   }
   .toolbar #btnPrint{
-    width:40px;min-width:40px;height:40px;padding:0;
+    width:36px;min-width:36px;height:36px;padding:0;
+    justify-self:end;
   }
 
   .table-total-row{
@@ -1318,12 +1324,17 @@ select.m3-native-hidden{
   .main{padding:var(--s-3) var(--s-2) calc(var(--bottom-nav-h) + var(--sab) + 16px);}
 
   .topbar{
-    flex-direction:column;align-items:stretch;
-    padding:12px;gap:10px;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    padding:12px 14px !important;
+    gap:10px;
+    text-align:left !important;
   }
-  .topbar h1{font-size:18px;}
-  .topbar .sub{font-size:12px;}
-  .topbar .btn{width:100%;justify-content:center;min-height:44px;}
+  .topbar > div:first-child{text-align:left !important;flex:1;min-width:0;}
+  .topbar h1{font-size:18px;text-align:left !important;}
+  .topbar .sub{font-size:12px;text-align:left !important;}
+  .topbar .btn-new-compact{display:none !important;}
 
   .hero-chart-card, .summary-card{padding:12px;}
   /* KPI restano 3 in riga (regola 768px), solo più compatti */
@@ -1560,7 +1571,7 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 .dash-kpi .hero-kpi-box{min-height:0;padding:12px 10px;text-align:center;}
 .dash-upcoming{margin-bottom:14px;}
 .dash-upcoming .hero-chart-head{align-items:center;margin-bottom:8px;}
-.upcoming-list{display:flex;flex-direction:column;gap:6px;min-height:48px;}
+.upcoming-list{display:flex;flex-direction:column;gap:6px;min-height:0;max-height:none;overflow:visible;}
 .upcoming-item{
   display:flex;align-items:center;gap:10px;
   padding:8px 10px;border-radius:12px;
@@ -1803,6 +1814,641 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   100%{opacity:1;transform:translateY(0) scaleY(1);max-height:min(78dvh, 720px);}
 }
 
+
+/* ===== Dashboard tile system (via di mezzo: colore + densità) ===== */
+.spend-tiles{
+  display:grid;
+  grid-template-columns:1.45fr 1fr 0.85fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.spend-tile{
+  border-radius:16px;
+  padding:14px 16px;
+  box-shadow:0 1px 3px rgba(20,40,44,.06), 0 4px 12px rgba(20,40,44,.04);
+  display:flex;flex-direction:column;justify-content:center;
+  min-height:88px;
+  border:1px solid transparent;
+}
+.spend-tile .lbl{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:6px;opacity:.85;
+}
+.spend-tile .val{
+  font-weight:800;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;line-height:1.15;
+}
+.spend-tile .hint{font-size:11px;margin-top:6px;opacity:.7;}
+.spend-tile-main{
+  background:linear-gradient(145deg, #cfece6 0%, #e2f5f1 55%, #eef8f6 100%);
+  color:#0e3d37;
+}
+.spend-tile-main .val{font-size:clamp(26px, 4.5vw, 34px);}
+.spend-tile-year{
+  background:linear-gradient(145deg, #dde8f6 0%, #eef3fb 100%);
+  color:#1e3a5f;
+}
+.spend-tile-year .val{font-size:clamp(18px, 3.2vw, 22px);}
+.spend-tile-count{
+  background:linear-gradient(145deg, #e8e4f4 0%, #f3f0fa 100%);
+  color:#3b2d5c;
+}
+.spend-tile-count .val{font-size:clamp(22px, 3.6vw, 28px);}
+@media (max-width:520px){
+  .spend-tiles{grid-template-columns:1.3fr 1fr 0.8fr;gap:8px;}
+  .spend-tile{padding:12px 10px;min-height:76px;border-radius:14px;}
+  .spend-tile-main .val{font-size:22px;}
+  .spend-tile-year .val{font-size:15px;}
+  .spend-tile-count .val{font-size:20px;}
+  .spend-tile .hint{display:none;}
+}
+
+/* Card tile condivise: stesso raggio, gap, ombra */
+.summary-card,
+.hero-chart-card,
+.dash-upcoming,
+.table-wrap,
+.table-total-row,
+.saving-card,
+.card{
+  border-radius:16px !important;
+  box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
+}
+.summary-card,
+.hero-chart-card{
+  background:var(--surface-elev);
+  border:1px solid rgba(90,168,156,.10);
+  padding:14px 16px !important;
+  margin-bottom:14px;
+}
+.dash-charts{
+  background:
+    linear-gradient(180deg, rgba(232,244,241,.55) 0%, var(--surface-elev) 48px);
+  border:1px solid rgba(90,168,156,.14);
+}
+.dash-upcoming{
+  margin-top:0 !important;
+  margin-bottom:14px !important;
+  padding:12px 14px !important;
+  background:linear-gradient(180deg, rgba(238,243,251,.7) 0%, var(--surface-elev) 40px);
+  border:1px solid rgba(106,155,196,.12);
+  opacity:1 !important;
+}
+.dash-upcoming .hero-chart-head h3{
+  font-size:14px !important;font-weight:700;color:var(--ink);
+}
+.dash-upcoming .hero-chart-head .sub{font-size:11.5px;color:var(--ink-soft);}
+.upcoming-list{max-height:none;overflow:visible;gap:6px;}
+.upcoming-item{
+  padding:8px 10px !important;border-radius:12px !important;
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid rgba(0,0,0,.03);
+}
+.upcoming-item .up-name{font-size:13px !important;}
+.upcoming-item .up-date,.upcoming-item .up-amount{font-size:12px !important;}
+
+/* Continuità tipografia / spacing — allineamento sinistra, niente “centri” accidentali */
+.main{
+  max-width:var(--content-max);
+  margin:0 auto;
+  width:100%;
+  box-sizing:border-box;
+}
+.view.active{
+  display:block;
+  width:100%;
+  text-align:left;
+}
+.topbar{
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  padding:12px 14px !important;
+  margin:0 0 12px 0 !important;
+  width:100%;
+  box-sizing:border-box;
+  text-align:left !important;
+  background:var(--surface-elev);
+  border-radius:16px;
+  box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04);
+}
+.topbar > div:first-child{
+  flex:1 1 auto;
+  min-width:0;
+  text-align:left !important;
+}
+.topbar h1{
+  font-size:20px !important;
+  font-weight:700;
+  letter-spacing:-.015em;
+  color:var(--ink);
+  margin:0 !important;
+  text-align:left !important;
+  line-height:1.25;
+}
+.topbar .sub{
+  font-size:12.5px !important;
+  color:var(--ink-soft);
+  margin-top:2px !important;
+  text-align:left !important;
+  line-height:1.35;
+  /* evita taglio strano */
+  white-space:normal;
+  overflow:visible;
+}
+.topbar .btn-new-compact{
+  flex:0 0 auto;
+  width:auto !important;
+  min-width:auto !important;
+}
+@media (max-width:768px){
+  .topbar .btn-new-compact{display:none !important;}
+  .topbar{padding:12px 14px !important;}
+}
+@media (min-width:769px){
+  .topbar{padding:14px 18px !important;}
+  .topbar h1{font-size:22px !important;}
+}
+
+.table-total-row{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  flex-wrap:wrap;
+  padding:12px 14px !important;
+  margin:0 0 12px 0 !important;
+  width:100%;
+  box-sizing:border-box;
+  background:linear-gradient(145deg, #e8f4f1, #f3f8f6);
+  border:1px solid rgba(90,168,156,.16);
+  border-radius:16px !important;
+  font-size:13px;
+  text-align:left;
+}
+.table-total-row > div:first-child{
+  flex:1 1 auto;
+  min-width:0;
+  text-align:left;
+}
+.table-total-row strong{font-size:15px;color:#0e3d37;}
+.table-total-row .summary-toggle{flex:0 0 auto;margin-left:auto;}
+
+.toolbar{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:stretch !important;
+  gap:8px !important;
+  margin:0 0 12px 0 !important;
+  width:100%;
+}
+.toolbar .input-search,
+.toolbar > .input{
+  width:100% !important;
+  max-width:none !important;
+  min-height:42px !important;
+  font-size:14px;
+  border-radius:12px !important;
+  text-align:left;
+  box-sizing:border-box;
+}
+.toolbar-row,
+.toolbar-filters{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px !important;
+  gap:6px !important;
+  align-items:center !important;
+  width:100% !important;
+}
+.toolbar-filters .m3-select,
+.toolbar-filters select{
+  min-width:0 !important;
+  width:100% !important;
+}
+@media (min-width:769px){
+  .toolbar{
+    flex-direction:row !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+  }
+  .toolbar .input-search{flex:1 1 220px;width:auto !important;}
+  .toolbar-filters{flex:1 1 auto;width:auto;}
+}
+
+.mobile-sub-card{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:12px !important;
+  padding:12px 14px !important;
+  min-height:52px;
+  border-radius:14px !important;
+  border:1px solid rgba(0,0,0,.04);
+  text-align:left !important;
+  width:100%;
+  box-sizing:border-box;
+}
+.mobile-sub-card .name{
+  text-align:left !important;
+  flex:1 1 auto;
+  min-width:0;
+}
+.mobile-sub-card .price{flex:0 0 auto;text-align:right;}
+
+.saving-card{
+  padding:12px 14px;
+  background:var(--surface-elev);
+  border:1px solid rgba(90,168,156,.10);
+  text-align:left;
+}
+.section-title{margin:16px 0 10px !important;font-size:14px;text-align:left;}
+.chart-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;
+}
+.chart-toolbar-label{font-size:14px;font-weight:700;color:var(--ink);text-align:left;}
+.summary-toggle{
+  background:var(--m3-surface-container-low);
+  border-radius:999px;padding:3px;
+  flex:0 0 auto;
+}
+.summary-toggle-btn.active{
+  background:var(--m3-primary-container);
+  color:var(--m3-on-primary-container);
+  box-shadow:none;
+}
+
+#view-dashboard,
+#view-table,
+#view-calendar,
+#view-savings,
+#view-settings{
+  display:none;
+  width:100%;
+  text-align:left;
+}
+#view-dashboard.active,
+#view-table.active,
+#view-calendar.active,
+#view-savings.active,
+#view-settings.active{
+  display:block;
+}
+.cat-bar-row{border-radius:10px;}
+.cat-bar-track{background:rgba(0,0,0,.05);border-radius:999px;}
+
+/* spend tiles: allineamento interno a sinistra */
+.spend-tile{text-align:left !important;align-items:flex-start !important;}
+.spend-tile .val{text-align:left;}
+
+
+html[data-theme="dark"] .spend-tile-main{
+  background:linear-gradient(145deg, #1a3d38 0%, #152e2b 100%);
+  color:#b8ebe2;
+}
+html[data-theme="dark"] .spend-tile-year{
+  background:linear-gradient(145deg, #1a2c44 0%, #152234 100%);
+  color:#b8d0f0;
+}
+html[data-theme="dark"] .spend-tile-count{
+  background:linear-gradient(145deg, #2a2440 0%, #1e1a30 100%);
+  color:#d4c8f0;
+}
+html[data-theme="dark"] .dash-charts,
+html[data-theme="dark"] .dash-upcoming,
+html[data-theme="dark"] .table-total-row{
+  background:var(--surface-elev);
+  border-color:rgba(255,255,255,.06);
+}
+
+/* ===== Stampa A4 chiara (non screenshot) ===== */
+#printRoot{display:none;}
+@media print{
+  @page{size:A4 portrait;margin:12mm 12mm;}
+  html,body{
+    background:#fff !important;color:#000 !important;
+    width:100% !important;height:auto !important;
+    overflow:visible !important;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  body *{visibility:hidden !important;}
+  #printRoot, #printRoot *{visibility:visible !important;}
+  #printRoot{
+    display:block !important;
+    position:absolute !important;
+    left:0;top:0;width:100%;
+    padding:0;margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:#111;
+  }
+  .print-doc h1{
+    font-size:16pt;margin:0 0 4pt;font-weight:700;
+  }
+  .print-doc .meta{
+    font-size:9pt;color:#444;margin-bottom:10pt;
+  }
+  .print-doc .totals{
+    display:flex;gap:18pt;margin-bottom:12pt;font-size:10pt;
+  }
+  .print-doc .totals strong{font-size:12pt;}
+  .print-doc table{
+    width:100%;border-collapse:collapse;font-size:9pt;
+    table-layout:fixed;
+  }
+  .print-doc th,.print-doc td{
+    border-bottom:0.5pt solid #ccc;
+    padding:4pt 5pt;text-align:left;vertical-align:top;
+    word-wrap:break-word;
+  }
+  .print-doc th{
+    border-bottom:1.2pt solid #222;font-size:8pt;
+    text-transform:uppercase;letter-spacing:.03em;color:#333;
+  }
+  .print-doc td.num,.print-doc th.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .print-doc .foot{
+    margin-top:10pt;font-size:8pt;color:#666;
+  }
+  .sidebar,.app-header,.fab-new,.qa-popover,.qa-scrim,
+  .modal-overlay,.bottom-nav,.nav-rail,#toast{display:none !important;}
+}
+
+
+/* ============================================================
+   COERENZA TILE: filtri + pagine (mobile = desktop)
+   ============================================================ */
+:root{
+  --ctrl-h:40px;
+  --tile-radius:12px;
+  --card-pad:14px 16px;
+}
+
+/* --- Barra filtri: 4 tile uguali + stampa --- */
+#tableToolbar{
+  margin:0 0 12px !important;
+  padding:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border:none !important;
+}
+#filterBar{
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0, 1fr)) 40px !important;
+  gap:8px !important;
+  align-items:center !important;
+  width:100% !important;
+}
+#filterBar > .search-tile,
+#filterBar > .m3-select{
+  min-width:0 !important;
+  width:100% !important;
+  height:var(--ctrl-h) !important;
+}
+#filterBar .search-tile-btn,
+#filterBar .m3-select-trigger{
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:var(--ctrl-h) !important;
+  min-height:var(--ctrl-h) !important;
+  max-height:var(--ctrl-h) !important;
+  margin:0 !important;
+  padding:0 10px !important;
+  border-radius:var(--tile-radius) !important;
+  border:1.5px solid transparent !important;
+  background:var(--m3-surface-container-low) !important;
+  color:var(--ink) !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  font-family:inherit !important;
+  display:flex !important;
+  align-items:center !important;
+  line-height:1.2 !important;
+  box-shadow:none !important;
+}
+#filterBar .search-tile-btn{
+  justify-content:center !important;
+  color:var(--ink-soft) !important;
+  cursor:pointer;
+  border:none !important;
+}
+#filterBar .m3-select-trigger{
+  justify-content:space-between !important;
+  gap:4px !important;
+  cursor:pointer;
+  text-align:left !important;
+}
+/* annulla min-height 52px del trigger globale */
+#filterBar .m3-select .m3-select-trigger,
+#filterBar .m3-select-trigger{
+  min-height:var(--ctrl-h) !important;
+  height:var(--ctrl-h) !important;
+  padding:0 10px !important;
+  border-width:1.5px !important;
+}
+#filterBar .m3-select.open .m3-select-trigger,
+#filterBar .m3-select-trigger:focus{
+  padding:0 10px !important;
+  border-width:1.5px !important;
+  border-color:var(--m3-primary) !important;
+  background:var(--bg-elev) !important;
+}
+#filterBar .m3-select-value{
+  flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:12px !important;font-weight:600 !important;
+}
+#filterBar .m3-select-chevron{width:14px;height:14px;flex:none;opacity:.5;}
+#filterBar #btnPrint{
+  width:40px !important;height:var(--ctrl-h) !important;
+  min-width:40px !important;min-height:var(--ctrl-h) !important;
+  max-height:var(--ctrl-h) !important;
+  padding:0 !important;margin:0 !important;
+  border-radius:var(--tile-radius) !important;
+  background:var(--m3-surface-container-low) !important;
+  border:none !important;
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;
+}
+
+/* Search collassata / aperta */
+.search-tile{position:relative;display:flex;align-items:center;height:var(--ctrl-h);}
+.search-tile .input-search{
+  display:none !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:var(--ctrl-h) !important;
+  min-height:var(--ctrl-h) !important;
+  max-height:var(--ctrl-h) !important;
+  margin:0 !important;
+  padding:0 36px 0 12px !important;
+  border-radius:var(--tile-radius) !important;
+  border:1.5px solid var(--m3-primary) !important;
+  background:var(--bg-elev) !important;
+  font-size:13px !important;font-weight:500 !important;
+}
+.search-tile-close{
+  display:none;position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  width:28px;height:28px;border:none;border-radius:8px;
+  background:transparent;color:var(--ink-soft);font-size:18px;line-height:1;
+  cursor:pointer;z-index:2;
+}
+#tableToolbar.is-search-open #filterBar{
+  grid-template-columns:minmax(0,1fr) 40px !important;
+}
+#tableToolbar.is-search-open #filterBar > .m3-select{display:none !important;}
+#tableToolbar.is-search-open .search-tile-btn{display:none !important;}
+#tableToolbar.is-search-open .search-tile .input-search{display:block !important;}
+#tableToolbar.is-search-open .search-tile-close{display:block !important;}
+
+/* --- Card coerenti su tutte le viste --- */
+.topbar,
+.table-total-row,
+.summary-card,
+.hero-chart-card,
+.dash-upcoming,
+.table-wrap,
+.saving-card,
+.card,
+.mobile-sub-card{
+  border-radius:16px !important;
+  box-sizing:border-box !important;
+}
+.topbar{
+  padding:var(--card-pad) !important;
+  margin:0 0 12px 0 !important;
+  background:linear-gradient(145deg, #e8f4f1 0%, #f4f9f7 55%, #ffffff 100%) !important;
+  border:1px solid rgba(90,168,156,.14) !important;
+  box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
+  min-height:0 !important;
+}
+.table-total-row{
+  padding:12px 16px !important;
+  margin:0 0 12px 0 !important;
+  background:linear-gradient(145deg, #dcefeb 0%, #eef7f4 100%) !important;
+  border:1px solid rgba(90,168,156,.16) !important;
+  min-height:48px !important;
+}
+.summary-card,
+.hero-chart-card,
+.dash-upcoming,
+.saving-card,
+.card{
+  padding:var(--card-pad) !important;
+  margin-bottom:12px !important;
+  background:linear-gradient(180deg, rgba(232,244,241,.45) 0%, var(--surface-elev) 36px) !important;
+  border:1px solid rgba(90,168,156,.12) !important;
+  box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
+}
+.mobile-sub-card{
+  padding:12px 14px !important;
+  min-height:52px !important;
+  margin-bottom:8px !important;
+  background:linear-gradient(145deg, #f3f8f6 0%, #eef4f2 100%) !important;
+  border:1px solid rgba(90,168,156,.08) !important;
+}
+.table-wrap{
+  padding:8px !important;
+  background:linear-gradient(180deg, rgba(232,244,241,.3) 0%, var(--surface-elev) 28px) !important;
+  border:1px solid rgba(90,168,156,.10) !important;
+}
+
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .table-total-row,
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .hero-chart-card,
+html[data-theme="dark"] .saving-card,
+html[data-theme="dark"] .card{
+  background:var(--surface-elev) !important;
+  border-color:rgba(255,255,255,.06) !important;
+}
+html[data-theme="dark"] #filterBar .search-tile-btn,
+html[data-theme="dark"] #filterBar .m3-select-trigger,
+html[data-theme="dark"] #filterBar #btnPrint{
+  background:var(--m3-surface-container) !important;
+}
+
+@media (min-width:769px){
+  :root{ --ctrl-h:42px; --card-pad:16px 18px; }
+  #filterBar{ gap:10px !important; }
+}
+
+
+/* Topbar titolo ~ stessa “presenza” delle tile KPI dashboard */
+.topbar{
+  min-height:88px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+}
+.topbar-text{flex:1;min-width:0;}
+.topbar h1{font-size:20px !important;line-height:1.2;}
+.topbar .sub{font-size:12.5px !important;line-height:1.35;}
+
+/* Controlli calendario */
+.topbar-cal-controls{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+  flex:none;
+}
+.period-nav{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.period-label{
+  font-size:15px;
+  font-weight:700;
+  min-width:3.2em;
+  text-align:center;
+  font-variant-numeric:tabular-nums;
+  color:var(--ink);
+}
+.nav-circle{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+  padding:0;
+  border:none;
+  border-radius:50%;
+  background:var(--m3-primary-container);
+  color:var(--m3-on-primary-container);
+  font-size:18px;
+  font-weight:600;
+  line-height:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:none;
+  transition:background .15s ease, transform .1s ease;
+}
+.nav-circle:hover{filter:brightness(1.05);}
+.nav-circle:active{transform:scale(.94);}
+
+@media (max-width:480px){
+  .topbar{min-height:80px !important;padding:12px 14px !important;}
+  .topbar h1{font-size:18px !important;}
+  .nav-circle{width:34px;height:34px;min-width:34px;min-height:34px;font-size:16px;}
+  .period-label{font-size:14px;min-width:2.8em;}
+  .topbar-cal-controls{gap:6px;}
+}
+@media (min-width:769px){
+  .topbar{min-height:92px !important;}
+  .topbar-cal-controls{
+    flex-direction:row;
+    align-items:center;
+    gap:14px;
+  }
+  .nav-circle{width:40px;height:40px;min-width:40px;min-height:40px;}
+}
+
 </style>
 </head>
 <body>
@@ -1858,35 +2504,21 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 
     <!-- ---------- DASHBOARD ---------- -->
     <section class="view active" id="view-dashboard">
-      <!-- KPI subito in cima, senza titolo "Dashboard" -->
-      <div class="hero-kpi-card dash-kpi" id="dashKpi">
-        <div class="hero-kpi-box">
-          <div class="lbl">Mensile</div>
+      <!-- Resoconto: tile colorate, mensile in evidenza -->
+      <div class="spend-tiles" id="dashKpi">
+        <div class="spend-tile spend-tile-main">
+          <div class="lbl">Spesa mensile</div>
           <div class="val" id="statMonthly">€0,00</div>
+          <div class="hint">abbonamenti attivi</div>
         </div>
-        <div class="hero-kpi-box">
+        <div class="spend-tile spend-tile-year">
           <div class="lbl">Annuale</div>
           <div class="val" id="statYearly">€0,00</div>
         </div>
-        <div class="hero-kpi-box">
+        <div class="spend-tile spend-tile-count">
           <div class="lbl">Attivi</div>
           <div class="val" id="statActive">0</div>
         </div>
-      </div>
-
-      <!-- Tile rinnovi: lista prossimi, non mini-calendario ridondante -->
-      <div class="hero-chart-card dash-upcoming" id="dashUpcomingCard">
-        <div class="hero-chart-head">
-          <div>
-            <h3>Prossimi rinnovi</h3>
-            <div class="sub" id="heroCalMonthLabel">Questo mese</div>
-          </div>
-          <span class="nav-item-link" id="btnGoToCalendar" style="cursor:pointer;color:var(--accent);font-size:12.5px;font-weight:600;">Calendario →</span>
-        </div>
-        <div id="upcomingList" class="upcoming-list"></div>
-        <!-- griglie legacy nascoste ma presenti per non rompere JS vecchio se richiamato -->
-        <div class="cal-grid" id="heroCalLabels" style="display:none;"></div>
-        <div class="cal-grid" id="heroCalGrid" style="display:none;"></div>
       </div>
 
       <div class="summary-card dash-charts">
@@ -1906,6 +2538,20 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
         <div class="radar-wrap chart-panel" id="radarWrap" data-panel="radar" style="display:none;">
           <canvas id="radarChart" width="440" height="320"></canvas>
         </div>
+      </div>
+
+      <!-- Rinnovi: secondari, compatti -->
+      <div class="hero-chart-card dash-upcoming" id="dashUpcomingCard">
+        <div class="hero-chart-head">
+          <div>
+            <h3>Prossimi rinnovi</h3>
+            <div class="sub" id="heroCalMonthLabel">Prossimi 45 giorni</div>
+          </div>
+          <span class="nav-item-link" id="btnGoToCalendar" style="cursor:pointer;color:var(--accent);font-size:12px;font-weight:600;">Calendario →</span>
+        </div>
+        <div id="upcomingList" class="upcoming-list"></div>
+        <div class="cal-grid" id="heroCalLabels" style="display:none;"></div>
+        <div class="cal-grid" id="heroCalGrid" style="display:none;"></div>
       </div>
 
       <div class="dash-actions-desktop">
@@ -1935,9 +2581,18 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
         </div>
       </div>
 
-      <div class="toolbar">
-        <input type="text" class="input input-search" id="searchInput" placeholder="Cerca…">
-        <div class="toolbar-row toolbar-filters">
+      <div class="toolbar" id="tableToolbar">
+        <div class="toolbar-row toolbar-filters" id="filterBar">
+          <div class="search-tile" id="searchTile">
+            <button type="button" class="search-tile-btn" id="searchTileBtn" title="Cerca" aria-label="Apri ricerca">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/>
+                <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <input type="text" class="input input-search" id="searchInput" placeholder="Cerca abbonamento…" autocomplete="off" enterkeyhint="search">
+            <button type="button" class="search-tile-close" id="searchTileClose" title="Chiudi" aria-label="Chiudi ricerca">×</button>
+          </div>
           <select class="select" id="filterCategory" aria-label="Categoria">
             <option value="">Categoria</option>
           </select>
@@ -1980,25 +2635,25 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 
     <!-- ---------- CALENDAR ---------- -->
     <section class="view" id="view-calendar">
-      <div class="topbar">
-        <div>
+      <div class="topbar topbar-cal">
+        <div class="topbar-text">
           <h1>Rinnovi</h1>
           <div class="sub" id="calSubLabel">Colpo d'occhio su tutte le scadenze dell'anno.</div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="topbar-cal-controls">
           <div class="summary-toggle" id="calViewToggle">
             <button type="button" class="summary-toggle-btn active" data-calview="year">Anno</button>
             <button type="button" class="summary-toggle-btn" data-calview="month">Mese</button>
           </div>
-          <div id="yearNavControls" style="display:flex;align-items:center;gap:10px;">
-            <button class="btn btn-sm" id="yearPrev">‹</button>
-            <strong id="yearLabel">-</strong>
-            <button class="btn btn-sm" id="yearNext">›</button>
+          <div class="period-nav" id="yearNavControls">
+            <button type="button" class="nav-circle" id="yearPrev" aria-label="Anno precedente">‹</button>
+            <strong class="period-label" id="yearLabel">-</strong>
+            <button type="button" class="nav-circle" id="yearNext" aria-label="Anno successivo">›</button>
           </div>
-          <div id="monthNavControls" style="display:none;align-items:center;gap:10px;">
-            <button class="btn btn-sm" id="calMonthPrev">‹</button>
-            <strong id="calMonthLabel">-</strong>
-            <button class="btn btn-sm" id="calMonthNext">›</button>
+          <div class="period-nav" id="monthNavControls" style="display:none;">
+            <button type="button" class="nav-circle" id="calMonthPrev" aria-label="Mese precedente">‹</button>
+            <strong class="period-label" id="calMonthLabel">-</strong>
+            <button type="button" class="nav-circle" id="calMonthNext" aria-label="Mese successivo">›</button>
           </div>
         </div>
       </div>
@@ -3299,6 +3954,47 @@ document.querySelectorAll('th[data-sort]').forEach(th=>{
 });
 
 document.getElementById('searchInput').addEventListener('input', renderTable);
+
+/* Search tile expand/collapse */
+(function initSearchTile(){
+  const toolbar = document.getElementById('tableToolbar');
+  const btn = document.getElementById('searchTileBtn');
+  const closeBtn = document.getElementById('searchTileClose');
+  const input = document.getElementById('searchInput');
+  if(!toolbar || !btn || !input) return;
+
+  function openSearch(e){
+    if(e){ e.preventDefault(); e.stopPropagation(); }
+    toolbar.classList.add('is-search-open');
+    requestAnimationFrame(()=>{
+      try{ input.focus({preventScroll:true}); }catch(err){ try{ input.focus(); }catch(e2){} }
+    });
+  }
+  function closeSearch(clear){
+    if(clear){
+      input.value = '';
+      input.dispatchEvent(new Event('input', {bubbles:true}));
+    }
+    toolbar.classList.remove('is-search-open');
+  }
+  btn.addEventListener('pointerup', openSearch);
+  btn.addEventListener('click', openSearch);
+  closeBtn && closeBtn.addEventListener('click', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    closeSearch(true);
+  });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeSearch(!!input.value);
+  });
+  input.addEventListener('blur', ()=>{
+    setTimeout(()=>{
+      if(document.activeElement === input) return;
+      if(document.activeElement === closeBtn) return;
+      if(!input.value.trim()) toolbar.classList.remove('is-search-open');
+    }, 180);
+  });
+})();
+
 document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
   const btn = e.target.closest('.summary-toggle-btn');
   if(!btn) return;
@@ -3324,7 +4020,64 @@ document.getElementById('tableBody').addEventListener('click', (e)=>{
   if(row) openForm(row.dataset.id);
 });
 
-document.getElementById('btnPrint').addEventListener('click', ()=> window.print());
+document.getElementById('btnPrint').addEventListener('click', printSubscriptionsSheet);
+
+function printSubscriptionsSheet(){
+  const root = document.getElementById('printRoot');
+  if(!root){ window.print(); return; }
+  const list = subscriptions.slice().sort((a,b)=>{
+    const an = (a.name||'').toLowerCase(), bn = (b.name||'').toLowerCase();
+    return an < bn ? -1 : an > bn ? 1 : 0;
+  });
+  const totals = computeTotals();
+  const profile = (typeof profiles !== 'undefined' && profiles.find(p=>p.id===activeProfileId)) || {name:'Personale'};
+  const when = new Date().toLocaleString('it-IT', {dateStyle:'medium', timeStyle:'short'});
+  const rows = list.map(s=>{
+    const st = isActiveSub(s) ? 'Attivo' : (s.status||'—');
+    return `<tr>
+      <td>${escapeHtml(s.name||'')}</td>
+      <td>${escapeHtml(s.category||'')}</td>
+      <td class="num">${fmtMoney(monthlyEquivalent(s), s.currency)}</td>
+      <td class="num">${fmtMoney(yearlyEquivalent(s), s.currency)}</td>
+      <td>${escapeHtml(s.frequency||'')}</td>
+      <td>${s.nextRenewal ? escapeHtml(s.nextRenewal) : '—'}</td>
+      <td>${escapeHtml(st)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7">Nessun abbonamento</td></tr>';
+
+  root.innerHTML = `<div class="print-doc">
+    <h1>I Miei Abbonamenti</h1>
+    <div class="meta">Profilo: ${escapeHtml(profile.name)} · Stampato il ${escapeHtml(when)}</div>
+    <div class="totals">
+      <div>Mensile<br><strong>${fmtMoney(totals.monthly)}</strong></div>
+      <div>Annuale<br><strong>${fmtMoney(totals.yearly)}</strong></div>
+      <div>Attivi<br><strong>${totals.activeCount}</strong> / ${list.length}</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:22%">Nome</th>
+          <th style="width:14%">Categoria</th>
+          <th class="num" style="width:12%">Mensile</th>
+          <th class="num" style="width:12%">Annuale</th>
+          <th style="width:11%">Freq.</th>
+          <th style="width:14%">Rinnovo</th>
+          <th style="width:11%">Stato</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4</div>
+  </div>`;
+
+  const cleanup = ()=>{
+    window.removeEventListener('afterprint', cleanup);
+    root.innerHTML = '';
+  };
+  window.addEventListener('afterprint', cleanup);
+  // piccolo delay: lascia layout stampabile
+  setTimeout(()=> window.print(), 50);
+}
 
 /* ================================================================
    FORM MODAL
@@ -5245,5 +5998,8 @@ document.getElementById('formOverlay').addEventListener('focusin', (e)=>{
   subscriptions.forEach(sub=> fetchAndCacheBrandIcon(sub));
 })();
 </script>
+
+<!-- Documento stampa (solo @media print) -->
+<div id="printRoot" aria-hidden="true"></div>
 </body>
 </html>
