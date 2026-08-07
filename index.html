@@ -1414,6 +1414,8 @@ input[type="date"].m3-date-native{
   display:none;
 }
 .m3-date.open .m3-date-pop{display:block;}
+.m3-date-pop.m3-date-pop-open{display:block !important;z-index:500 !important;}
+body > .m3-select-menu.m3-select-menu-open{display:block !important;z-index:500 !important;}
 .m3-date-pop-head{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
   margin-bottom:12px;
@@ -3390,6 +3392,11 @@ function openForm(id, presetName){
   updateIconPreview();
 
   formOverlay.classList.add('active');
+  // Dopo l'animazione, togli transform dal modal (rompe position:fixed dei menu)
+  setTimeout(()=>{
+    const modal = formOverlay.querySelector('.modal');
+    if(modal){ modal.style.transform = 'none'; modal.style.opacity = '1'; }
+  }, 360);
   // Evita che lo stesso tap che ha scelto il suggerimento chiuda subito l'overlay
   suppressOverlayCloseUntil = Date.now() + 600;
 
@@ -3782,6 +3789,8 @@ document.getElementById('btnEditRenewal').addEventListener('click', ()=>{
 function closeForm(){
   hideSuggestions();
   formOverlay.classList.remove('active', 'from-fab', 'from-qa-top');
+  const _m = formOverlay.querySelector('.modal');
+  if(_m){ _m.style.transform = ''; _m.style.opacity = ''; }
   editingId = null;
 }
 
@@ -4540,13 +4549,22 @@ function enhanceDateInput(input){
     const rect = trigger.getBoundingClientRect();
     const gap = 6;
     const popH = pop.offsetHeight || 340;
+    const popW = Math.min(320, window.innerWidth - 16);
     const spaceBelow = window.innerHeight - rect.bottom - gap;
-    const placeBelow = spaceBelow >= Math.min(popH, 280) || spaceBelow > rect.top;
-    pop.style.left = Math.min(Math.max(8, rect.left), window.innerWidth - 328) + 'px';
+    const spaceAbove = rect.top - gap;
+    const placeBelow = spaceBelow >= Math.min(popH, 280) || spaceBelow > spaceAbove;
+    let left = rect.left;
+    if(left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
+    if(left < 8) left = 8;
+    pop.style.width = popW + 'px';
+    pop.style.left = left + 'px';
+    pop.style.zIndex = '500';
     if(placeBelow){
       pop.style.top = (rect.bottom + gap) + 'px';
+      pop.style.bottom = 'auto';
     }else{
       pop.style.top = Math.max(8, rect.top - gap - popH) + 'px';
+      pop.style.bottom = 'auto';
     }
   }
 
@@ -4592,16 +4610,26 @@ function enhanceDateInput(input){
 
   function open(){
     document.querySelectorAll('.m3-date.open').forEach(w=>{
-      if(w !== wrap) w.classList.remove('open');
+      if(w !== wrap){
+        w.classList.remove('open');
+        const p = w.querySelector('.m3-date-pop');
+        if(p && p.parentElement === document.body) w.appendChild(p);
+      }
     });
     const d = parseVal() || new Date();
     viewYear = d.getFullYear();
     viewMonth = d.getMonth();
     renderGrid();
+    if(pop.parentElement !== document.body) document.body.appendChild(pop);
     wrap.classList.add('open');
-    requestAnimationFrame(placePop);
+    pop.classList.add('m3-date-pop-open');
+    requestAnimationFrame(()=>{ placePop(); requestAnimationFrame(placePop); });
   }
-  function close(){ wrap.classList.remove('open'); }
+  function close(){
+    wrap.classList.remove('open');
+    pop.classList.remove('m3-date-pop-open');
+    if(pop.parentElement === document.body) wrap.appendChild(pop);
+  }
 
   function setValue(iso){
     input.value = iso || '';
@@ -4666,8 +4694,19 @@ function enhanceAllDateInputs(){
 }
 
 document.addEventListener('pointerdown', (e)=>{
-  if(e.target.closest('.m3-date')) return;
-  document.querySelectorAll('.m3-date.open').forEach(w=> w.classList.remove('open'));
+  if(e.target.closest('.m3-date') || e.target.closest('.m3-date-pop')) return;
+  document.querySelectorAll('.m3-date.open').forEach(w=>{
+    const input = w.previousElementSibling;
+    if(input && typeof input._m3DateClose === 'function') input._m3DateClose();
+    else {
+      w.classList.remove('open');
+      const p = w.querySelector('.m3-date-pop');
+      if(p && p.parentElement === document.body) w.appendChild(p);
+    }
+  });
+  document.querySelectorAll('body > .m3-date-pop.m3-date-pop-open').forEach(p=>{
+    p.classList.remove('m3-date-pop-open');
+  });
 });
 window.addEventListener('resize', ()=>{
   document.querySelectorAll('.m3-date.open').forEach(w=>{
@@ -4793,10 +4832,15 @@ function enhanceAsMenu(sel){
     const spaceBelow = window.innerHeight - rect.bottom - gap;
     const spaceAbove = rect.top - gap;
     const placeBelow = spaceBelow >= Math.min(maxH, 140) || spaceBelow >= spaceAbove;
-    const height = Math.min(maxH, placeBelow ? spaceBelow : spaceAbove);
-    menu.style.width = Math.max(rect.width, 160) + 'px';
-    menu.style.left = Math.min(rect.left, window.innerWidth - rect.width - 8) + 'px';
-    menu.style.maxHeight = Math.max(120, height) + 'px';
+    const height = Math.min(maxH, Math.max(100, placeBelow ? spaceBelow : spaceAbove));
+    const mw = Math.max(rect.width, 160);
+    let left = rect.left;
+    if(left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8;
+    if(left < 8) left = 8;
+    menu.style.width = mw + 'px';
+    menu.style.left = left + 'px';
+    menu.style.maxHeight = height + 'px';
+    menu.style.zIndex = '500';
     if(placeBelow){
       menu.style.top = (rect.bottom + gap) + 'px';
       menu.style.bottom = 'auto';
@@ -4808,16 +4852,27 @@ function enhanceAsMenu(sel){
 
   function open(){
     document.querySelectorAll('.m3-select.open').forEach(w=>{
-      if(w !== wrap){ w.classList.remove('open'); w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false'); }
+      if(w !== wrap){
+        w.classList.remove('open');
+        w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+        const m = w.querySelector('.m3-select-menu');
+        // rimetti menu nel wrap se era sul body
+        if(m && m.parentElement === document.body) w.appendChild(m);
+      }
     });
     rebuildOptions();
+    // Portal su body: evita offset sbagliati da transform del modal
+    if(menu.parentElement !== document.body) document.body.appendChild(menu);
     wrap.classList.add('open');
+    menu.classList.add('m3-select-menu-open');
     trigger.setAttribute('aria-expanded', 'true');
-    requestAnimationFrame(placeMenu);
+    requestAnimationFrame(()=>{ placeMenu(); requestAnimationFrame(placeMenu); });
   }
   function close(){
     wrap.classList.remove('open');
+    menu.classList.remove('m3-select-menu-open');
     trigger.setAttribute('aria-expanded', 'false');
+    if(menu.parentElement === document.body) wrap.appendChild(menu);
   }
 
   trigger.addEventListener('click', (e)=>{
@@ -4826,6 +4881,7 @@ function enhanceAsMenu(sel){
     if(wrap.classList.contains('open')) close(); else open();
   });
 
+  menu._m3Wrap = wrap;
   wrap.appendChild(trigger);
   wrap.appendChild(menu);
   sel.parentNode.insertBefore(wrap, sel.nextSibling);
@@ -4843,10 +4899,14 @@ function syncSelectUI(selOrId){
 }
 
 document.addEventListener('pointerdown', (e)=>{
-  if(e.target.closest('.m3-select')) return;
+  if(e.target.closest('.m3-select') || e.target.closest('.m3-select-menu')) return;
   document.querySelectorAll('.m3-select.open').forEach(w=>{
-    w.classList.remove('open');
-    w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+    const sel = document.getElementById(w.dataset.for);
+    if(sel && typeof sel._m3Close === 'function') sel._m3Close();
+    else {
+      w.classList.remove('open');
+      w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+    }
   });
 });
 document.addEventListener('keydown', (e)=>{
