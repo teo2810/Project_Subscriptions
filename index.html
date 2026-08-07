@@ -430,10 +430,13 @@ img,svg{max-width:100%;height:auto;}
 
 /* ---------- Views ---------- */
 .view{display:none;}
-.view.active{display:block;animation:viewIn .28s ease;}
+.view.active{display:block;animation:viewIn .32s cubic-bezier(.2,.9,.3,1) both;}
 @keyframes viewIn{
-  from{opacity:0;transform:translateY(6px);}
+  from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
+}
+@media (min-width:769px){
+  .view.active{animation-duration:.36s;}
 }
 
 /* ---------- Cards ---------- */
@@ -1613,39 +1616,62 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 }
 
 
-/* Sheet/modal: entra dal basso come menu “+” chat */
+/* Modal: animazioni di entrata (mobile sheet / desktop card) */
 .modal-overlay{
-  transition:background .25s ease;
+  transition:background .28s ease;
 }
 .modal-overlay.active{
-  animation:overlayIn .25s ease;
+  animation:overlayIn .28s ease;
 }
 @keyframes overlayIn{
   from{background:transparent;}
   to{background:var(--m3-scrim);}
 }
 .modal-overlay .modal{
-  transform:translateY(110%) scale(.96);
   opacity:0;
-  transition:transform .32s cubic-bezier(.2,.9,.3,1.1), opacity .22s ease;
+  transform:translateY(110%) scale(.96);
   transform-origin:bottom center;
 }
 .modal-overlay.active .modal{
-  transform:translateY(0) scale(1);
+  animation:modalSheetIn .36s cubic-bezier(.2,.9,.3,1.05) both;
+}
+@keyframes modalSheetIn{
+  from{opacity:0;transform:translateY(110%) scale(.96);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+/* Dopo l'entrata: nessuna transform residua (menu fixed allineati) */
+.modal-overlay.active .modal.is-settled{
+  animation:none;
   opacity:1;
+  transform:none;
 }
 @media (min-width:769px){
   .modal-overlay .modal{
-    transform:translateY(12px) scale(.98);
     transform-origin:center center;
   }
   .modal-overlay.active .modal{
-    transform:translateY(0) scale(1);
+    animation:modalDeskIn .34s cubic-bezier(.2,.9,.3,1.05) both;
+  }
+  @keyframes modalDeskIn{
+    from{opacity:0;transform:translateY(18px) scale(.94);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+  }
+  .modal-overlay.active .modal.is-settled{
+    animation:none;
+    opacity:1;
+    transform:none;
   }
 }
-/* Origine dal FAB (angolo basso destro) quando aperto da fab */
 .modal-overlay.from-fab .modal{
   transform-origin:bottom right;
+}
+@media (prefers-reduced-motion:reduce){
+  .modal-overlay.active,
+  .modal-overlay.active .modal{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
 }
 
 
@@ -2916,7 +2942,13 @@ function applyChartView(mode){
   document.querySelectorAll('.chart-panel').forEach(p=>{
     const on = p.dataset.panel === chartViewMode;
     p.style.display = on ? '' : 'none';
-    if(on){ p.classList.remove('active'); void p.offsetWidth; p.classList.add('active'); }
+    if(on){
+      p.classList.remove('active');
+      p.style.animation = 'none';
+      void p.offsetWidth;
+      p.style.animation = '';
+      p.classList.add('active');
+    }
   });
   if(chartViewMode === 'radar'){
     // ridisegna su canvas visibile
@@ -2952,7 +2984,6 @@ function renderSummaryBar(){
     catBars.innerHTML = cats.map(c=>{
       const val = catTotals[c];
       const pctTotal = total ? (val/total*100) : 0;
-      // larghezza visuale: radice quadrata → i piccoli non collassano a 0
       const visual = Math.sqrt(val / maxCat) * 100;
       const color = CATEGORY_COLORS[c] || '#8a8f9c';
       return `<div class="cat-bar-row" title="${escapeHtml(c)}: ${fmtMoney(val)}/mese (${pctTotal.toFixed(1)}% del totale)">
@@ -2961,6 +2992,13 @@ function renderSummaryBar(){
         <div class="cat-bar-val">${fmtMoney(val)}<span class="cat-bar-pct">${pctTotal.toFixed(0)}%</span></div>
       </div>`;
     }).join('');
+    // Riavvia animazione barre (desktop incluso)
+    catBars.querySelectorAll('.cat-bar-fill').forEach((el,i)=>{
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+      el.style.animationDelay = (0.02 + i * 0.05) + 's';
+    });
   }
 
   // Mini barra totale (composizione %) — secondaria
@@ -3409,13 +3447,19 @@ function openForm(id, presetName){
   }
   updateIconPreview();
 
+  const modalEl = formOverlay.querySelector('.modal');
+  if(modalEl){
+    modalEl.classList.remove('is-settled');
+    // restart CSS animation
+    modalEl.style.animation = 'none';
+    void modalEl.offsetWidth;
+    modalEl.style.animation = '';
+  }
   formOverlay.classList.add('active');
-  // Dopo l'animazione, togli transform dal modal (rompe position:fixed dei menu)
+  // Dopo l'entrata: settled = transform none per menu allineati, senza inline style
   setTimeout(()=>{
-    const modal = formOverlay.querySelector('.modal');
-    if(modal){ modal.style.transform = 'none'; modal.style.opacity = '1'; }
-  }, 360);
-  // Evita che lo stesso tap che ha scelto il suggerimento chiuda subito l'overlay
+    formOverlay.querySelector('.modal')?.classList.add('is-settled');
+  }, 380);
   suppressOverlayCloseUntil = Date.now() + 600;
 
   if(prefill){
@@ -3808,7 +3852,12 @@ function closeForm(){
   hideSuggestions();
   formOverlay.classList.remove('active', 'from-fab', 'from-qa-top');
   const _m = formOverlay.querySelector('.modal');
-  if(_m){ _m.style.transform = ''; _m.style.opacity = ''; }
+  if(_m){
+    _m.classList.remove('is-settled');
+    _m.style.transform = '';
+    _m.style.opacity = '';
+    _m.style.animation = '';
+  }
   editingId = null;
 }
 
