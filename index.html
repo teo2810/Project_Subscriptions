@@ -2589,6 +2589,14 @@ function loadData(){
     const raw = safeGet(scopedKey(STORAGE_KEY));
     subscriptions = raw ? JSON.parse(raw) : [];
   }catch(e){ subscriptions = []; }
+  // Normalizza record legacy incompleti
+  subscriptions = (subscriptions || []).map(s=>{
+    if(!s || typeof s !== 'object') return s;
+    if(!s.status) s.status = 'Attivo';
+    if(!s.category) s.category = 'Altro';
+    if(!s.frequency) s.frequency = 'Mensile';
+    return s;
+  });
   try{
     const rawH = safeGet(scopedKey(HISTORY_KEY));
     history = rawH ? JSON.parse(rawH) : [];
@@ -2686,7 +2694,7 @@ function getUpcomingRenewal(sub, refDate){
    usate dal calendario annuale a muro. Per Mensile: stesso giorno ogni mese
    dell'anno (dal mese di attivazione in poi). Per Annuale: un solo giorno l'anno. */
 function getOccurrencesInYear(sub, year){
-  if(!sub.nextRenewal || sub.status !== 'Attivo') return [];
+  if(!sub.nextRenewal || !isActiveSub(sub)) return [];
   const anchor = new Date(sub.nextRenewal);
   if(isNaN(anchor)) return [];
   const start = sub.startDate ? new Date(sub.startDate) : anchor;
@@ -2714,7 +2722,7 @@ function rollForwardRenewals(){
   let changed = false;
   const today = new Date(); today.setHours(0,0,0,0);
   subscriptions.forEach(sub=>{
-    if(sub.status !== 'Attivo' || !sub.nextRenewal) return;
+    if(!isActiveSub(sub) || !sub.nextRenewal) return;
     const current = new Date(sub.nextRenewal);
     if(isNaN(current) || current >= today) return;
     const upcoming = getUpcomingRenewal(sub, today);
@@ -2724,6 +2732,12 @@ function rollForwardRenewals(){
     }
   });
   if(changed) saveData();
+}
+
+function isActiveSub(sub){
+  // Tratta status mancante/legacy come Attivo (altrimenti sparisce dai grafici)
+  const st = (sub && sub.status != null) ? String(sub.status).trim() : 'Attivo';
+  return st === 'Attivo' || st === '';
 }
 
 function monthlyEquivalent(sub){
@@ -2736,7 +2750,7 @@ function yearlyEquivalent(sub){
 }
 
 function computeTotals(){
-  const active = subscriptions.filter(s => s.status === 'Attivo');
+  const active = subscriptions.filter(isActiveSub);
   const monthly = active.reduce((sum,s)=> sum + monthlyEquivalent(s), 0);
   const yearly = active.reduce((sum,s)=> sum + yearlyEquivalent(s), 0);
   const activeCount = active.length;
@@ -2875,13 +2889,17 @@ function renderCharts(t){
 
 /* Calcola i totali di spesa mensile per categoria (una volta, riusata da barra + radar) */
 function getCategoryMonthlyTotals(){
-  const active = subscriptions.filter(s=>s.status==='Attivo');
+  // Tutti gli abbonamenti ATTIVI (non solo i prossimi rinnovi).
+  // I rinnovi in dashboard sono una lista separata a 45 giorni.
+  const active = subscriptions.filter(isActiveSub);
   const catTotals = {};
   active.forEach(s=>{
-    catTotals[s.category] = (catTotals[s.category]||0) + monthlyEquivalent(s);
+    const cat = (s.category && String(s.category).trim()) || 'Altro';
+    catTotals[cat] = (catTotals[cat]||0) + monthlyEquivalent(s);
   });
   const cats = Object.keys(catTotals).sort((a,b)=> catTotals[b]-catTotals[a]);
-  return { catTotals, cats, total: cats.reduce((s,c)=> s+catTotals[c], 0) };
+  const total = cats.reduce((s,c)=> s+catTotals[c], 0);
+  return { catTotals, cats, total, activeCount: active.length };
 }
 
 /* Barra segmentata + radar: due viste della stessa spesa mensile per categoria.
@@ -2890,7 +2908,7 @@ function getCategoryMonthlyTotals(){
 
 let chartViewMode = safeGet('subManager_chartView_v1') || 'bars';
 function applyChartView(mode){
-  chartViewMode = mode || 'bars';
+  chartViewMode = (mode === 'mix' || mode === 'radar' || mode === 'bars') ? mode : 'bars';
   safeSet('subManager_chartView_v1', chartViewMode);
   document.querySelectorAll('#chartViewToggle .summary-toggle-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.chartview === chartViewMode);
@@ -3142,7 +3160,7 @@ function renderTable(){
   const tbody = document.getElementById('tableBody');
 
   // Totale della vista filtrata corrente, rispetta il toggle Mensile/Annuale
-  const activeInList = list.filter(s=>s.status==='Attivo');
+  const activeInList = list.filter(isActiveSub);
   const total = activeInList.reduce((sum,s)=> sum + (tableAmountView==='annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s)), 0);
   document.getElementById('tableTotalCount').textContent = `${list.length} abbonament${list.length===1?'o':'i'}`;
   document.getElementById('tableTotalAmount').textContent = fmtMoney(total);
@@ -3812,7 +3830,7 @@ subForm.addEventListener('submit', (e)=>{
   const name = document.getElementById('f_name').value.trim();
   const price = document.getElementById('f_price').value;
   const startDate = document.getElementById('f_startDate').value;
-  const frequency = document.getElementById('f_frequency').value;
+  let frequency = document.getElementById('f_frequency').value || 'Mensile';
   let nextRenewal = document.getElementById('f_nextRenewal').value;
 
   let valid = true;
@@ -3838,20 +3856,29 @@ subForm.addEventListener('submit', (e)=>{
     nextRenewal = calcNextRenewal(startDate, frequency);
   }
 
+  // Categoria/stato: fallback se il select custom non ha sincronizzato il nativo
+  let category = document.getElementById('f_category').value;
+  if(!category){
+    const known = detectKnownService(name);
+    category = (known && known.category) || 'Altro';
+  }
+  let status = document.getElementById('f_status').value || 'Attivo';
+  if(status !== 'Attivo' && status !== 'Disattivato') status = 'Attivo';
+
   const data = {
     id: editingId || generateId(),
     name,
-    category: document.getElementById('f_category').value,
-    color: document.getElementById('f_color').value,
+    category,
+    color: document.getElementById('f_color').value || (CATEGORY_COLORS[category] || '#8a8f9c'),
     customIcon: document.getElementById('f_customIcon').value || null,
     price: parseFloat(price),
-    currency: document.getElementById('f_currency').value,
-    frequency: document.getElementById('f_frequency').value,
+    currency: document.getElementById('f_currency').value || '€',
+    frequency,
     startDate,
     nextRenewal,
-    payment: document.getElementById('f_payment').value,
+    payment: document.getElementById('f_payment').value || 'Carta',
     notes: document.getElementById('f_notes').value.trim(),
-    status: document.getElementById('f_status').value
+    status
   };
 
   if(editingId){
@@ -3866,6 +3893,11 @@ subForm.addEventListener('submit', (e)=>{
   logHistoryPoint();
   closeForm();
   refreshAll();
+  // Secondo passaggio: assicura barre/radar dopo chiusura modal e layout
+  requestAnimationFrame(()=>{
+    renderDashboard();
+    applyChartView(chartViewMode || 'bars');
+  });
   fetchAndCacheBrandIcon(data); // tentativo asincrono, non blocca l'interfaccia
 });
 
@@ -4150,7 +4182,7 @@ function renderUpcomingList(){
   const today = new Date(); today.setHours(0,0,0,0);
   const horizon = new Date(today); horizon.setDate(horizon.getDate() + 45);
   const items = subscriptions
-    .filter(s => s.status === 'Attivo' && s.nextRenewal)
+    .filter(s => isActiveSub(s) && s.nextRenewal)
     .map(s => {
       const d = getUpcomingRenewal(s, today) || new Date(s.nextRenewal);
       return { sub:s, date:d };
@@ -4187,7 +4219,7 @@ document.getElementById('upcomingList')?.addEventListener('click', (e)=>{
    ================================================================ */
 function renderSavings(){
   const el = document.getElementById('savingsList');
-  const active = subscriptions.filter(s=>s.status==='Attivo');
+  const active = subscriptions.filter(isActiveSub);
   if(!active.length){
     el.innerHTML = '<div class="empty-note">Nessun abbonamento attivo da analizzare.</div>';
     return;
