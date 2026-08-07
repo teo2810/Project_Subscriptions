@@ -1,62 +1,63 @@
-# 💳 I Miei Abbonamenti - Gestore e Monitoraggio Spese
+# 💳 I Miei Abbonamenti
 
-Una **Progressive Web App (PWA) standalone** in un singolo file HTML/CSS/JS per tracciare, organizzare e gestire tutti i tuoi abbonamenti ricorrenti (streaming, software, palestra, cloud, AI, gaming, ecc.) in modo semplice, visivo e sicuro.
+**Progressive Web App** in un **singolo file** HTML/CSS/JS per tracciare abbonamenti ricorrenti (streaming, software, palestra, cloud, AI, gaming, utenze…) in modo semplice, visivo e **offline-first**.
 
----
-
-## 🌟 Caratteristiche Principali
-
-* **🚀 Standalone & Zero Dipendenze**: Un unico file HTML autosufficiente. Non richiede installazioni, Node.js o server web: funziona con un semplice doppio clic anche offline da protocollo `file://`.
-* **👥 Gestione Multi-Profilo**: Supporto per più profili distinti (es. *Personale*, *Famiglia*, *Lavoro*). Ogni profilo mantiene i propri abbonamenti e il proprio storico spese in modo indipendente.
-* **🎨 Tema Chiaro / Scuro**: Interfaccia moderna responsive con toggle istantaneo tra Dark Mode e Light Mode.
-* **🔍 Auto-Completamento & Loghi Automatici**:
-  * Riconoscimento intelligente dei servizi noti (Netflix, Spotify, ChatGPT, Amazon Prime, Google One, iCloud, Disney+, PlayStation, ecc.).
-  * Suggerimento di piani tariffari e icone vettoriali pre-integrate.
-  * Integrazione con CDN pubblico (*Simple Icons*) per il recupero e il salvataggio in cache locale dei loghi ufficiali ad alta risoluzione.
-* **📊 Dashboard & Analytics**:
-  * Grafici interattivi (Barre e Torta) per visualizzare l'impatto economico per abbonamento e categoria.
-  * Mini-calendario del mese corrente con evidenziazione del giorno di rinnovo.
-  * Statistiche immediate: Spesa mensile media, spesa annua stimata e totale abbonamenti attivi.
-* **📅 Calendario Annuale Scadenze**: Vista a "parete" per visualizzare tutte le scadenze dei 12 mesi dell'anno a colpo d'occhio.
-* **💡 Simulatore di Risparmio**: Calcola istantaneamente quanto denaro potresti risparmiare disattivando o mettendo in pausa determinati abbonamenti.
-* **🖨️ Report Stampabile e Tabelle Avanzate**: Filtra per categoria e stato (Attivo/Disattivato), cerca per nome, ordina per prezzo o data di rinnovo e genera un report stampabile con layout ottimizzato.
-* **🔒 Privacy & Backup Dati**:
-  * Tutti i dati sono memorizzati **esclusivamente in locale** nel browser dell'utente (`localStorage`) con wrapper sicuro di fallback in memoria.
-  * Esportazione ed importazione completa di backup in formato `.json`.
+> Apri `index.html` con un doppio clic — nessuna installazione, nessun account, nessun server obbligatorio.
 
 ---
 
-## 🚀 Come Utilizzare l'App
+## Caratteristiche
 
-### Apertura Diretta
-1. Scarica o salva il file HTML (es. `index.html`).
-2. Fai doppio clic sul file per aprirlo in un qualsiasi browser web moderno (Chrome, Safari, Firefox, Edge, Brave).
-
-### Installazione come Web App (PWA)
-Grazie ai tag manifest inline e al meta theme-color:
-* **Da Desktop (Chrome/Edge)**: Clicca sull'icona di installazione nella barra degli indirizzi o seleziona *"Installa I Miei Abbonamenti"*.
-* **Da Mobile (iOS Safari / Android Chrome)**: Apri il menu di condivisione del browser e seleziona **"Aggiungi alla schermata Home"**.
-
----
-
-## 🛠️ Architettura Tecnica
-
-* **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3 con Custom Properties (CSS Variables) per il tematizzazione.
-* **Grafici**: Canvas API standard HTML5 (senza librerie esterne pesanti).
-* **Persistenza**:
-  * Wrapper di salvataggio sicuro (`safeGet` / `safeSet`) per prevenire errori in ambiti sandboxati o in modalità incognito.
-  * Namespace separato per profilo (`subManager_subscriptions_v1::[profileId]`).
-* **Loghi & Asset**: SVG inline per i servizi noti + supporto per upload di icone personalizzate o recupero automatico via Simple Icons API.
+| Area | Cosa offre |
+|------|------------|
+| **Standalone** | Un solo file, zero dipendenze di build. Funziona da `file://` e offline. |
+| **Multi-profilo** | Profili separati (es. Personale, Famiglia, Lavoro) con dati e storico indipendenti. |
+| **Tema** | Chiaro / scuro, interfaccia responsive mobile-first (Material Design 3). |
+| **Inserimento rapido** | Autocompletamento servizi noti, piani suggeriti, icone integrate + cache loghi. |
+| **Dashboard** | Spesa mensile/annuale, attivi, grafici per area (barre / composizione / radar), prossimi rinnovi. |
+| **Elenco** | Ricerca, filtri, ordinamento, card mobile, stampa A4. |
+| **Calendario** | Vista anno e mese sulle scadenze. |
+| **Risparmio** | Simulazione “quanto risparmi se disattivi…”. |
+| **Backup** | Export / import JSON del profilo corrente; avvisi se il backup è assente o datato. |
 
 ---
 
-## 💾 Struttura Dati Backup JSON
+## Privacy
 
-Un file di backup esportato contiene la seguente struttura JSON:
+- I dati restano **solo sul dispositivo** (`localStorage`), con wrapper sicuro e fallback in memoria.
+- **Nessun account**, analytics o sync cloud obbligatorio.
+- L’unica rete **opzionale** è il recupero loghi brand (CDN / Simple Icons); offline → icone locali o di categoria.
+- Il backup esiste **solo** se esporti tu un file JSON (o stampi).
+
+---
+
+## Come usarla
+
+### Apertura diretta
+1. Scarica `index.html`
+2. Aprilo in Chrome, Edge, Firefox, Safari o Brave
+
+### Come PWA
+- **Desktop (Chrome/Edge):** icona “Installa” nella barra indirizzi  
+- **Android Chrome / iOS Safari:** *Aggiungi alla schermata Home*
+
+---
+
+## Stack
+
+- **Vanilla** HTML5, CSS3 (custom properties), JavaScript ES6+
+- **Canvas** per i grafici (niente Chart.js)
+- Persistenza: `safeGet` / `safeSet` + namespace per profilo  
+  (`subManager_subscriptions_v1::[profileId]`, ecc.)
+- SVG inline per servizi noti; upload icona personalizzata; loghi esterni in cache locale
+
+---
+
+## Backup JSON (esempio)
 
 ```json
 {
-  "version": "2026-07-28.8",
+  "version": "1.0.0",
   "profile": {
     "id": "default",
     "name": "Personale",
@@ -81,8 +82,22 @@ Un file di backup esportato contiene la seguente struttura JSON:
 }
 ```
 
+Importando un file, i dati del **profilo attivo** vengono sostituiti: controlla le date prima di confermare.
+
 ---
 
-## 📄 Licenza
+## Sviluppo
 
-Distribuito liberamente per uso personale.
+UI e codice evoluti con supporto **AI** (**Claude** e **Grok / xAI**), sotto direzione e scelte dell’autore.
+
+Contributi e feedback sono benvenuti: preferisci patch piccole, senza dipendenze pesanti se non necessarie.
+
+---
+
+## Licenza
+
+Distribuito liberamente per **uso personale**.  
+Fornito “**così com’è**”, senza garanzia.  
+I marchi e i loghi dei servizi restano dei rispettivi titolari.
+
+> Non sostituisce un consulente finanziario: è uno strumento di organizzazione personale.
