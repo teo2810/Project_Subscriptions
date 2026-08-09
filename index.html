@@ -2368,7 +2368,7 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 .mobile-sub-card{
   padding:12px 14px !important;
   min-height:52px !important;
-  margin-bottom:8px !important;
+  margin-bottom:0 !important;
   background:linear-gradient(145deg, #f3f8f6 0%, #eef4f2 100%) !important;
   border:1px solid rgba(90,168,156,.08) !important;
 }
@@ -3338,6 +3338,286 @@ body:has(#formOverlay.active) .nav-more-btn{
   opacity: 0 !important;
 }
 
+
+/* Lista abbonamenti ≈ Prossimi rinnovi (continuità visiva) */
+.mobile-sub-card{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  min-height: 44px !important;
+  border-radius: 12px !important;
+  background: var(--m3-surface-container-low) !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+.mobile-sub-card .name{
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.mobile-sub-card .price{
+  flex: 0 0 auto !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink) !important;
+}
+.mobile-sub-card .status-dot{
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+}
+.mobile-sub-card .actions{
+  display: flex; gap: 0; flex: none;
+}
+.mobile-sub-card .actions button{
+  border: none; background: transparent; cursor: pointer;
+  padding: 6px; border-radius: 8px; color: var(--ink-soft);
+  min-width: 36px; min-height: 36px; font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.mobile-sub-card .svc-icon-sm,
+.mobile-sub-card .svc-icon{
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 8px !important;
+  flex: none;
+}
+.upcoming-item{
+  min-height: 44px !important;
+  padding: 8px 10px !important;
+  gap: 10px !important;
+  border-radius: 12px !important;
+}
+.upcoming-item .svc-icon-sm,
+.upcoming-item .svc-icon{
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 8px !important;
+}
+.table-mobile-list{ gap: 6px !important; }
+.upcoming-list{ gap: 6px !important; }
+
+
+/* Righe unificate: lista abbonamenti = prossimi rinnovi */
+.table-mobile-list,
+.upcoming-list{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+.sub-row{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 10px !important;
+  min-height: 44px !important;
+  box-sizing: border-box !important;
+  border-radius: 12px !important;
+  background: var(--m3-surface-container-low) !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  cursor: pointer;
+  text-align: left !important;
+}
+.sub-row:active{
+  background: var(--m3-surface-container) !important;
+}
+.sub-row .svc-icon-sm,
+.sub-row .svc-icon{
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 8px !important;
+  flex: 0 0 auto !important;
+}
+.sub-row-name{
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: var(--ink) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.sub-row-meta{
+  flex: 0 0 auto !important;
+  min-width: 4.5em;
+  text-align: right !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--ink-soft) !important;
+  white-space: nowrap !important;
+}
+.sub-row-amount{
+  flex: 0 0 auto !important;
+  min-width: 3.8em;
+  text-align: right !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: var(--ink) !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap !important;
+}
+.sub-row-unit{
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+.sub-row .status-dot{
+  width: 8px; height: 8px; border-radius: 50%;
+  flex: 0 0 auto;
+}
+.sub-row-actions{
+  display: flex !important;
+  gap: 0 !important;
+  flex: 0 0 auto !important;
+}
+.sub-row-actions button{
+  border: none; background: transparent; cursor: pointer;
+  padding: 6px; border-radius: 8px; color: var(--ink-soft);
+  min-width: 36px; min-height: 36px; font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.sub-row-actions button:active{ background: var(--bg-sunken); }
+/* upcoming senza azioni: stessa griglia mentale */
+.upcoming-item .sub-row-meta{ min-width: 4.5em; }
+
+
+/* Stessa griglia: icona | nome | data | importo | azioni(72px) */
+.table-mobile-list,
+.upcoming-list{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+.sub-row{
+  display: grid !important;
+  grid-template-columns: 28px minmax(0,1fr) 5.6em 4.4em 72px !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  row-gap: 0 !important;
+  padding: 8px 10px !important;
+  min-height: 44px !important;
+  box-sizing: border-box !important;
+  border-radius: 12px !important;
+  background: var(--m3-surface-container-low) !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  cursor: pointer;
+}
+.sub-row .svc-icon-sm,
+.sub-row .svc-icon{
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 8px !important;
+  grid-column: 1;
+}
+.sub-row-name{
+  grid-column: 2;
+  min-width: 0 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: var(--ink) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.sub-row-meta{
+  grid-column: 3;
+  text-align: right !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--ink-soft) !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sub-row-amount{
+  grid-column: 4;
+  text-align: right !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: var(--ink) !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap !important;
+}
+.sub-row-actions{
+  grid-column: 5;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+  width: 72px !important;
+  min-width: 72px !important;
+  height: 36px;
+}
+.sub-row-actions--spacer{
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.sub-row-actions .status-dot{
+  width: 8px; height: 8px; border-radius: 50%; flex: none; margin-right: 2px;
+}
+.sub-row-actions button{
+  border: none; background: transparent; cursor: pointer;
+  padding: 4px; border-radius: 8px; color: var(--ink-soft);
+  width: 32px; height: 32px; min-width: 32px; font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+
+/* Spacing IDENTICO tra righe lista e rinnovi */
+.table-mobile-list,
+.upcoming-list{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  row-gap: 6px !important;
+}
+.table-mobile-list > .sub-row,
+.table-mobile-list > .mobile-sub-card,
+.upcoming-list > .sub-row,
+.upcoming-list > .upcoming-item{
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+
+/* Override definitivo altezza+padding+gap (stessa riga ovunque) */
+.sub-row.mobile-sub-card,
+.sub-row.upcoming-item,
+.mobile-sub-card.sub-row,
+.upcoming-item.sub-row{
+  padding: 8px 10px !important;
+  min-height: 44px !important;
+  height: auto !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: var(--m3-surface-container-low) !important;
+}
+.table-mobile-list,
+.upcoming-list{
+  gap: 6px !important;
+  row-gap: 6px !important;
+}
+
 </style>
 </head>
 <body>
@@ -3946,7 +4226,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.0.5';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -4535,6 +4815,13 @@ document.querySelectorAll('.nav-item').forEach(item=>{
 /* ================================================================
    THEME
    ================================================================ */
+function themeIconSvg(theme){
+  // light → mostra luna (vai a scuro); dark → mostra sole (vai a chiaro)
+  if(theme === 'dark'){
+    return '<svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  }
+  return '<svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" stroke="currentColor" stroke-width="1.8"/></svg>';
+}
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme', theme);
   document.documentElement.style.colorScheme = theme;
@@ -4542,7 +4829,18 @@ function applyTheme(theme){
   const meta = document.querySelector('meta[name="theme-color"]');
   if(meta) meta.setAttribute('content', theme === 'dark' ? '#0e1315' : '#3d9b8f');
   const toggle = document.getElementById('themeToggle');
-  if(toggle) toggle.title = theme === 'dark' ? 'Modalità chiara' : 'Modalità scura';
+  if(toggle){
+    toggle.title = theme === 'dark' ? 'Modalità chiara' : 'Modalità scura';
+    toggle.setAttribute('aria-label', theme === 'dark' ? 'Passa a tema chiaro' : 'Passa a tema scuro');
+    toggle.innerHTML = themeIconSvg(theme);
+  }
+  // icona anche nella bolla Tema
+  const sd = document.getElementById('sdTheme');
+  if(sd){
+    const label = sd.querySelector('.speed-dial-label');
+    const labHtml = label ? label.outerHTML : '<span class="speed-dial-label">Tema</span>';
+    sd.innerHTML = themeIconSvg(theme).replace('id="themeIcon"', 'aria-hidden="true"') + labHtml;
+  }
   safeSet(THEME_KEY, theme);
 }
 document.getElementById('themeToggle').addEventListener('click', ()=>{
@@ -4947,14 +5245,15 @@ function renderTableMobileList(list){
     const amount = tableAmountView === 'annuale' ? yearlyEquivalent(s) : monthlyEquivalent(s);
     const unit = tableAmountView === 'annuale' ? '/anno' : '/mese';
     return `
-    <div class="mobile-sub-card" data-id="${s.id}">
+    <div class="sub-row mobile-sub-card" data-id="${s.id}">
       ${serviceIconHtml(s,'svc-icon-sm')}
-      <span class="name">${escapeHtml(s.name)}</span>
-      <span class="price">${fmtMoney(amount, s.currency)}${unit}</span>
-      <span class="status-dot" style="background:${statusDotColor(s)}"></span>
-      <div class="actions">
-        <button title="Duplica" data-action="dup" data-id="${s.id}">⧉</button>
-        <button title="Elimina" data-action="del" data-id="${s.id}">🗑</button>
+      <span class="sub-row-name">${escapeHtml(s.name)}</span>
+      <span class="sub-row-meta">${s.nextRenewal ? escapeHtml(fmtDate(s.nextRenewal)) : '—'}</span>
+      <span class="sub-row-amount">${fmtMoney(amount, s.currency)}</span>
+      <div class="sub-row-actions actions">
+        <span class="status-dot" style="background:${statusDotColor(s)}" title="${escapeHtml(s.status)}"></span>
+        <button type="button" title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica">⧉</button>
+        <button type="button" title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina">🗑</button>
       </div>
     </div>`;
   }).join('');
@@ -6088,11 +6387,12 @@ function renderUpcomingList(){
   el.innerHTML = items.map(({sub, date}) => {
     const days = Math.round((date - today) / 86400000);
     const when = days === 0 ? 'Oggi' : (days === 1 ? 'Domani' : fmtDate(date.toISOString().slice(0,10)));
-    return `<div class="upcoming-item" data-id="${sub.id}">
+    return `<div class="sub-row upcoming-item" data-id="${sub.id}">
       ${serviceIconHtml(sub,'svc-icon-sm')}
-      <span class="up-name">${escapeHtml(sub.name)}</span>
-      <span class="up-date">${when}</span>
-      <span class="up-amount">${fmtMoney(monthlyEquivalent(sub), sub.currency)}</span>
+      <span class="sub-row-name">${escapeHtml(sub.name)}</span>
+      <span class="sub-row-meta">${when}</span>
+      <span class="sub-row-amount">${fmtMoney(monthlyEquivalent(sub), sub.currency)}</span>
+      <div class="sub-row-actions sub-row-actions--spacer" aria-hidden="true"></div>
     </div>`;
   }).join('');
 }
