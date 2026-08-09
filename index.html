@@ -1217,6 +1217,10 @@ select.m3-native-hidden{
   .modal h2, .modal .modal-sub{padding:0 var(--s-4);}
   .modal h2{padding-top:var(--s-4);}
   .modal .modal-sub{margin-bottom:var(--s-3);}
+  /* Bug fix: il testo del box conferma (elimina abbonamento/profilo) non
+     era in questa lista e restava a 0 padding, attaccato al bordo, mentre
+     titolo e pulsanti avevano il loro margine — testo disallineato. */
+  .confirm-box p{padding:0 var(--s-4);margin-top:0;}
   .modal form{display:flex;flex-direction:column;min-height:0;flex:1;}
   .modal .form-grid{overflow-y:auto;padding:var(--s-3) var(--s-4);flex:1;}
   .modal-footer{
@@ -1226,7 +1230,11 @@ select.m3-native-hidden{
   }
 
   .topbar{padding:var(--s-3) var(--s-4);}
-  .form-pair{grid-template-columns:1fr;}
+  /* Bug fix: qui .form-pair collassava a 1 colonna, mandando "Valuta"
+     (un select minuscolo, solo il simbolo) su una riga intera per conto
+     suo. Tenerla affiancata al prezzo è più compatto e ha più senso: il
+     prezzo prende più spazio (1.5fr), la valuta lo stretto necessario. */
+  .form-pair{grid-template-columns:1.5fr 1fr;}
 }
 
 /* Mobile subscription cards */
@@ -1949,7 +1957,11 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 .upcoming-list{max-height:none;overflow:visible;gap:6px;}
 .upcoming-item{
   padding:8px 10px !important;border-radius:12px !important;
-  background:rgba(255,255,255,.72) !important;
+  /* Bug fix: qui c'era un vecchio sfondo bianco semitrasparente
+     (rgba(255,255,255,.72)) rimasto da una versione precedente, diverso
+     da quello delle righe della lista abbonamenti — da cui la differenza
+     di colore notata. Ora eredita lo stesso sfondo, sovrascritto in modo
+     definitivo più sotto per essere certi che vinca sempre. */
   border:1px solid rgba(0,0,0,.03);
 }
 .upcoming-item .up-name{font-size:13px !important;}
@@ -3651,6 +3663,42 @@ body:has(#formOverlay.active) .nav-more-btn{
   row-gap: 6px !important;
 }
 
+/* Fix definitivo: righe "Prossimi rinnovi" identiche a righe lista
+   abbonamenti — stesso colore di sfondo, garantito qui a fine foglio
+   di stile (massima priorità in cascata) indipendentemente da eventuali
+   altre regole residue. */
+.upcoming-item,
+.upcoming-item.sub-row,
+.sub-row.upcoming-item{
+  background: var(--m3-surface-container-low) !important;
+}
+
+/* Bug fix tema scuro: esistevano DUE regole [data-theme="dark"] separate
+   e mai allineate — una per le righe abbonamenti (.mobile-sub-card) e una
+   diversa per le righe "Prossimi rinnovi" (.upcoming-item) — con due
+   gradienti di grigio leggermente diversi tra loro. Risultato: la stessa
+   incoerenza segnalata in chiaro, ma in scuro. Ora usano lo stesso identico
+   sfondo, qui garantito con la massima priorità di cascata.
+   Stesso sfondo applicato anche alle celle del calendario: prima erano
+   quasi invisibili (background quasi identico allo sfondo della card che
+   le contiene, nessun contrasto). Un'unica "chip" scura coerente in tutta
+   l'app, invece di tre stili diversi. */
+[data-theme="dark"] .mobile-sub-card,
+[data-theme="dark"] .sub-row.mobile-sub-card,
+[data-theme="dark"] .mobile-sub-card.sub-row,
+[data-theme="dark"] .upcoming-item,
+[data-theme="dark"] .upcoming-item.sub-row,
+[data-theme="dark"] .sub-row.upcoming-item,
+[data-theme="dark"] .cal-cell{
+  background: linear-gradient(135deg, #2a383c 0%, #222c32 45%, #1c2429 100%) !important;
+  border-color: rgba(94,191,178,.12) !important;
+  color: var(--ink) !important;
+}
+[data-theme="dark"] .cal-cell.empty{
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
 </style>
 </head>
 <body>
@@ -4050,29 +4098,42 @@ body:has(#formOverlay.active) .nav-more-btn{
           </div>
         </div>
 
-        <div class="form-field">
-          <label>Frequenza *</label>
-          <select id="f_frequency">
-            <option value="Mensile">Mensile</option>
-            <option value="Annuale">Annuale</option>
-          </select>
-          <div class="err"></div>
+        <div class="form-pair">
+          <div class="form-field">
+            <label>Frequenza *</label>
+            <select id="f_frequency">
+              <option value="Mensile">Mensile</option>
+              <option value="Annuale">Annuale</option>
+            </select>
+            <div class="err"></div>
+          </div>
+
+          <div class="form-field" id="field-payment">
+            <label>Metodo di pagamento</label>
+            <select id="f_payment">
+              <option value="Carta">Carta</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Altro">Altro</option>
+            </select>
+            <div class="err"></div>
+          </div>
         </div>
 
-        <div class="form-field" id="field-payment">
-          <label>Metodo di pagamento</label>
-          <select id="f_payment">
-            <option value="Carta">Carta</option>
-            <option value="PayPal">PayPal</option>
-            <option value="Altro">Altro</option>
-          </select>
-          <div class="err"></div>
-        </div>
+        <div class="form-pair">
+          <div class="form-field">
+            <label>Data sottoscrizione *</label>
+            <input type="date" id="f_startDate">
+            <div class="err" id="err_startDate"></div>
+          </div>
 
-        <div class="form-field">
-          <label>Data sottoscrizione *</label>
-          <input type="date" id="f_startDate">
-          <div class="err" id="err_startDate"></div>
+          <div class="form-field">
+            <label>Stato</label>
+            <select id="f_status">
+              <option value="Attivo">Attivo</option>
+              <option value="Disattivato">Disattivato</option>
+            </select>
+            <div class="err"></div>
+          </div>
         </div>
 
         <div class="form-field">
@@ -4083,15 +4144,6 @@ body:has(#formOverlay.active) .nav-more-btn{
           </div>
           <input type="date" id="f_nextRenewal" style="display:none;">
           <div class="err" id="err_nextRenewal"></div>
-        </div>
-
-        <div class="form-field">
-          <label>Stato</label>
-          <select id="f_status">
-            <option value="Attivo">Attivo</option>
-            <option value="Disattivato">Disattivato</option>
-          </select>
-          <div class="err"></div>
         </div>
 
         <div class="form-field full">
@@ -5301,6 +5353,9 @@ function renderTable(){
   if([...sortSelect.options].some(o=>o.value===combo)) sortSelect.value = combo;
 
   renderTableMobileList(list);
+
+  // Contenuto stampabile sempre pronto in anticipo (vedi nota in buildPrintSheet).
+  if(typeof buildPrintSheet === 'function') buildPrintSheet();
 }
 
 /* Versione a card della stessa lista, per mobile: niente scroll orizzontale,
@@ -5460,19 +5515,26 @@ document.getElementById('tableBody').addEventListener('click', (e)=>{
 
 document.getElementById('btnPrint').addEventListener('click', printSubscriptionsSheet);
 
-function printSubscriptionsSheet(){
+/* Bug fix: prima il contenuto stampabile veniva scritto dentro #printRoot
+   SOLO nell'istante del click su "stampa", subito seguito da window.print().
+   Nel visualizzatore usato (WebView di Android/Files, non Chrome desktop)
+   quella finestra di tempo a volte non basta: lo "scatto" della stampa
+   avviene prima che il DOM appena scritto sia stato dipinto, con
+   conseguente foglio bianco — indipendentemente da quanti
+   requestAnimationFrame si aggiungano prima di print().
+   La soluzione robusta è non dipendere da quel timing: il contenuto viene
+   ora ricostruito ogni volta che la tabella viene renderizzata (quindi è
+   SEMPRE già pronto in anticipo, non nell'istante critico del click). */
+function buildPrintSheet(){
   const root = document.getElementById('printRoot');
-  if(!root){ window.print(); return; }
+  if(!root) return;
 
-  // Bug fix: prima si stampava SEMPRE l'elenco completo, ignorando ricerca/categoria/stato
-  // impostati in tabella. Ora si stampa esattamente quello che si sta guardando.
   const filtersActive = typeof hasActiveTableFilters === 'function' && hasActiveTableFilters();
   const list = (filtersActive ? getFilteredSorted() : subscriptions.slice()).sort((a,b)=>{
     const an = (a.name||'').toLowerCase(), bn = (b.name||'').toLowerCase();
     return an < bn ? -1 : an > bn ? 1 : 0;
   });
 
-  // Totali coerenti con la lista effettivamente stampata (non sempre il totale generale).
   const activeInList = list.filter(isActiveSub);
   const totalMonthly = activeInList.reduce((sum,s)=> sum + monthlyEquivalent(s), 0);
   const totalYearly = activeInList.reduce((sum,s)=> sum + yearlyEquivalent(s), 0);
@@ -5516,10 +5578,22 @@ function printSubscriptionsSheet(){
     </table>
     <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4${list.length > 34 ? ' (elenco lungo: potrebbe sforare su una seconda pagina)' : ''}</div>
   </div>`;
+}
+
+function printSubscriptionsSheet(){
+  const root = document.getElementById('printRoot');
+  if(!root){ window.print(); return; }
+
+  // Contenuto sempre già pronto (ricostruito ad ogni renderTable); qui lo
+  // aggiorniamo un'ultima volta per freschezza, ma anche se questa riga
+  // non facesse in tempo a dipingersi, il contenuto della volta precedente
+  // sarebbe comunque presente e visibile — mai più un foglio vuoto.
+  buildPrintSheet();
 
   const cleanup = ()=>{
     window.removeEventListener('afterprint', cleanup);
-    root.innerHTML = '';
+    // Non svuotiamo più #printRoot dopo la stampa: lo lasciamo pronto,
+    // così anche una seconda stampa ravvicinata non parte da zero.
   };
   window.addEventListener('afterprint', cleanup);
   // Bug fix: un setTimeout fisso di 50ms non basta su alcuni browser mobile,
@@ -6227,7 +6301,12 @@ function openConfirm(title, text, callback){
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmText').textContent = text;
   confirmCallback = callback;
-  confirmOverlay.classList.add('active');
+  // Bug fix: mancava la stessa chiamata usata da ogni altro modal dell'app
+  // (playModalEnter) che applica le classi anim-in/is-settled. Senza di
+  // essa il modal restava per sempre a opacity:0 / traslato fuori schermo
+  // — tecnicamente "attivo" ma del tutto invisibile (soprattutto su
+  // mobile, dove parte traslato dal basso).
+  playModalEnter(confirmOverlay);
 }
 document.getElementById('confirmCancel').addEventListener('click', ()=>{
   confirmOverlay.classList.remove('active'); confirmCallback = null;
@@ -7872,7 +7951,14 @@ document.getElementById('sdInfo')?.addEventListener('click', (e)=>{
     if(btn) btn.click();
     else {
       const ov = document.getElementById('aboutOverlay');
-      if(ov){ ov.classList.add('active'); }
+      // Stesso identico bug del cestino: senza playModalEnter il modal
+      // resta a opacity:0 anche se "active". Percorso di fallback raro
+      // (scatta solo se il bottone About non esiste), sistemato per
+      // coerenza durante il controllo generale.
+      if(ov){
+        if(typeof playModalEnter === 'function') playModalEnter(ov);
+        else ov.classList.add('active');
+      }
     }
   }, 150);
 });
