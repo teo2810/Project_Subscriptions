@@ -2399,11 +2399,14 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
 }
 .mobile-sub-card{
+  /* padding/min-height/margin superati dalla regola combinata più sotto
+     (.sub-row.mobile-sub-card); background/border rimossi da qui — erano
+     il gradiente "diverso" che causava il colore non allineato alle
+     righe dei Prossimi rinnovi. Ora impostati solo nella regola finale
+     a fine foglio di stile, un'unica fonte di verità. */
   padding:12px 14px !important;
   min-height:52px !important;
   margin-bottom:0 !important;
-  background:linear-gradient(145deg, #f3f8f6 0%, #eef4f2 100%) !important;
-  border:1px solid rgba(90,168,156,.08) !important;
 }
 .table-wrap{
   padding:8px !important;
@@ -2593,14 +2596,9 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   color:var(--m3-on-primary-container) !important;
 }
 [data-theme="dark"] .period-label{color:var(--ink) !important;}
-[data-theme="dark"] .upcoming-item{
-  background:linear-gradient(145deg, #222a30 0%, #1c2429 100%) !important;
-  border-color:rgba(255,255,255,.05) !important;
-}
-[data-theme="dark"] .cal-cell{
-  background:linear-gradient(145deg, #1c2429 0%, #171e22 100%) !important;
-  color:var(--ink) !important;
-}
+/* Sfondo di .upcoming-item e .cal-cell in tema scuro: rimosso da qui
+   (era il gradiente "diverso" che causava l'incoerenza) — impostato solo
+   nella regola finale unificata a fine foglio di stile. */
 [data-theme="dark"] .app-header{
   background:linear-gradient(180deg, #1a2428 0%, #151c20 100%) !important;
   border-bottom:1px solid rgba(255,255,255,.05);
@@ -3667,10 +3665,19 @@ body:has(#formOverlay.active) .nav-more-btn{
    abbonamenti — stesso colore di sfondo, garantito qui a fine foglio
    di stile (massima priorità in cascata) indipendentemente da eventuali
    altre regole residue. */
+/* Fix: la riga precedente copriva solo le righe "Prossimi rinnovi", non
+   quelle della lista Abbonamenti (.mobile-sub-card) — che aveva ancora
+   una vecchia regola con un gradiente leggermente diverso
+   (#f3f8f6→#eef4f2) mai neutralizzata. Ora entrambe usano lo stesso
+   sfondo, qui garantito con la massima priorità di cascata. */
 .upcoming-item,
 .upcoming-item.sub-row,
-.sub-row.upcoming-item{
+.sub-row.upcoming-item,
+.mobile-sub-card,
+.mobile-sub-card.sub-row,
+.sub-row.mobile-sub-card{
   background: var(--m3-surface-container-low) !important;
+  border: none !important;
 }
 
 /* Bug fix tema scuro: esistevano DUE regole [data-theme="dark"] separate
@@ -3695,6 +3702,81 @@ body:has(#formOverlay.active) .nav-more-btn{
   color: var(--ink) !important;
 }
 [data-theme="dark"] .cal-cell.empty{
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+/* ================================================================
+   UNIFICAZIONE DEFINITIVA "SCHEDE" (card/pannelli di sfondo)
+   ================================================================
+   Nel file si erano accumulate nel tempo decine di gradienti leggermente
+   diversi tra loro (dashboard, tabella, calendario, riepilogo...): stessa
+   famiglia di colore ma opacità/angoli/stop diversi, da cui la sensazione
+   di schede "quasi ma non del tutto" uguali. Da qui in poi UNA SOLA
+   ricetta di sfondo sfumato pastello per ogni scheda/pannello dell'app,
+   sia in chiaro che in scuro. Lo sfondo di pagina resta bianco/nero
+   (var(--bg)); tutto il resto — schede, tabella, calendario, riepilogo
+   rinnovi — condivide questo identico sfondo. */
+.card,
+.summary-card,
+.hero-chart-card,
+.dash-charts,
+.dash-upcoming,
+.saving-card,
+.table-wrap,
+.table-total-row,
+.topbar,
+.year-month-block,
+.wallcal-wrap{
+  background: linear-gradient(165deg, rgba(94,191,178,.14) 0%, rgba(94,191,178,.03) 45%, var(--surface-elev) 100%) !important;
+  border: 1px solid rgba(90,168,156,.12) !important;
+  box-shadow: 0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
+}
+[data-theme="dark"] .card,
+[data-theme="dark"] .summary-card,
+[data-theme="dark"] .hero-chart-card,
+[data-theme="dark"] .dash-charts,
+[data-theme="dark"] .dash-upcoming,
+[data-theme="dark"] .saving-card,
+[data-theme="dark"] .table-wrap,
+[data-theme="dark"] .table-total-row,
+[data-theme="dark"] .topbar,
+[data-theme="dark"] .year-month-block,
+[data-theme="dark"] .wallcal-wrap{
+  background: linear-gradient(165deg, rgba(94,191,178,.16) 0%, #1a2126 45%) !important;
+  border-color: rgba(94,191,178,.14) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.3) !important;
+  color: var(--ink) !important;
+}
+
+/* Le "finestre" (i modal: nuovo/modifica abbonamento, conferma eliminazione,
+   backup, profilo, info, e tutte quelle richiamate dal menù a bolle) usano
+   già un'unica variabile condivisa (--surface-elev) senza eccezioni per
+   nessuna di esse — qui lo rendiamo esplicito e blindato allo stesso modo
+   delle schede, cosicché restino sempre coerenti anche in scuro. */
+.modal-overlay .modal{
+  background: var(--surface-elev) !important;
+}
+[data-theme="dark"] .modal-overlay .modal{
+  background: linear-gradient(165deg, #1c252b 0%, #161d21 100%) !important;
+  border: 1px solid rgba(94,191,178,.10) !important;
+}
+
+/* Bug fix: in tema chiaro le righe (abbonamenti/rinnovi) e le celle del
+   calendario avevano un fondo troppo simile a quello — ora sfumato — della
+   scheda che le contiene: bordi praticamente invisibili, come segnalato.
+   Qui, SOLO in chiaro, si dà loro un fondo più marcato e un bordo netto,
+   così restano ben distinguibili anche su una scheda a sua volta sfumata.
+   Il tema scuro (già corretto) non viene toccato. */
+.sub-row.mobile-sub-card,
+.mobile-sub-card.sub-row,
+.sub-row.upcoming-item,
+.upcoming-item.sub-row,
+.cal-cell{
+  background: #dfe9e5 !important;
+  border: 1px solid rgba(90,168,156,.28) !important;
+}
+.cal-cell.empty{
   background: transparent !important;
   border-color: transparent !important;
 }
@@ -3988,7 +4070,7 @@ body:has(#formOverlay.active) .nav-more-btn{
         <div>
           <strong>Reset totale</strong>
           <p class="empty-note" style="margin:4px 0 8px;">Elimina definitivamente tutti gli abbonamenti e lo storico.</p>
-          <button class="btn btn-danger" id="btnResetAll">🗑 Reset dati</button>
+          <button class="btn btn-danger" id="btnResetAll"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></span> Reset dati</button>
         </div>
       </div>
     </section>
@@ -4140,7 +4222,7 @@ body:has(#formOverlay.active) .nav-more-btn{
           <label>Prossimo rinnovo</label>
           <div class="renewal-display" id="renewalDisplay">
             <span id="renewalDisplayText">—</span>
-            <button type="button" class="btn btn-sm btn-ghost" id="btnEditRenewal">✏️ Modifica</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="btnEditRenewal"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span> Modifica</button>
           </div>
           <input type="date" id="f_nextRenewal" style="display:none;">
           <div class="err" id="err_nextRenewal"></div>
@@ -4200,7 +4282,7 @@ body:has(#formOverlay.active) .nav-more-btn{
       <div class="backup-block">
         <strong>Reset</strong>
         <p>Elimina abbonamenti e storico di questo profilo.</p>
-        <button class="btn btn-danger" id="btnResetAllModal">🗑 Reset dati</button>
+        <button class="btn btn-danger" id="btnResetAllModal"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></span> Reset dati</button>
       </div>
     </div>
     <div class="modal-footer">
