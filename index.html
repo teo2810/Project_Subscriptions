@@ -292,7 +292,7 @@ img,svg{max-width:100%;height:auto;}
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-size:12px;font-weight:700;
 }
-.profile-dropdown-item .profile-actions{margin-left:auto;display:flex;gap:2px;}
+.profile-dropdown-item .profile-actions{margin-left:auto;display:flex;gap:4px;}
 .profile-dropdown-item .profile-actions span{
   opacity:.55;font-size:14px;padding:8px;border-radius:8px;
   min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;
@@ -578,6 +578,12 @@ canvas{max-width:100%;}
 }
 .table-total-row strong{font-size:var(--fs-md);}
 .table-total-row #tableTotalUnit{color:var(--ink-soft);font-size:var(--fs-xs);}
+.filter-active-chip{
+  margin-left:8px;border:none;border-radius:999px;padding:3px 10px;
+  background:var(--accent-soft);color:var(--accent);font-size:var(--fs-xs);
+  font-weight:600;cursor:pointer;
+}
+.filter-active-chip:hover{opacity:.85;}
 
 input[type="file"]{font-size:var(--fs-sm);color:var(--ink-soft);max-width:100%;}
 input[type="file"]::file-selector-button{
@@ -631,7 +637,7 @@ tr:hover td{background:var(--bg-sunken);}
 .badge-soon{background:var(--warn-soft);color:var(--warn);}
 .cat-tag{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);}
 .cat-dot{width:8px;height:8px;border-radius:50%;flex:none;}
-.actions-cell{display:flex;gap:2px;}
+.actions-cell{display:flex;gap:4px;}
 .actions-cell button{
   border:none;background:transparent;cursor:pointer;
   padding:8px;border-radius:8px;color:var(--ink-soft);
@@ -2161,6 +2167,12 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   }
   body *{visibility:hidden !important;}
   #printRoot, #printRoot *{visibility:visible !important;}
+  /* Bug fix: 'visibility:hidden' su tutto il body a volte produce un foglio
+     bianco su Chrome Android / WebView in stampa (il motore di stampa mobile
+     non sempre gestisce bene l'override di visibility su alberi profondi).
+     'display:none' è molto più affidabile: toglie del tutto dal render tree
+     ogni figlio diretto del body tranne #printRoot. */
+  body > *:not(#printRoot){display:none !important;}
   #printRoot{
     display:block !important;
     position:absolute !important;
@@ -2183,6 +2195,11 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
     width:100%;border-collapse:collapse;font-size:9pt;
     table-layout:fixed;
   }
+  /* Bug fix: senza queste due regole, con più righe di quelle che stanno in una
+     pagina, la tabella sforava senza ripetere l'intestazione e tagliando le righe
+     a metà tra una pagina e l'altra — illeggibile. */
+  .print-doc thead{display:table-header-group;}
+  .print-doc tr{page-break-inside:avoid;break-inside:avoid;}
   .print-doc th,.print-doc td{
     border-bottom:0.5pt solid #ccc;
     padding:4pt 5pt;text-align:left;vertical-align:top;
@@ -2196,6 +2213,10 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   .print-doc .foot{
     margin-top:10pt;font-size:8pt;color:#666;
   }
+  /* Elenchi lunghi: riduco un po' i corpi per aumentare le chance di stare su un unico A4. */
+  .print-doc-dense table{font-size:8pt;}
+  .print-doc-dense th,.print-doc-dense td{padding:3pt 4pt;}
+  .print-doc-dense .totals{margin-bottom:8pt;}
   .sidebar,.app-header,.fab-new,.qa-popover,.qa-scrim,
   .modal-overlay,.bottom-nav,.nav-rail,#toast{display:none !important;}
 }
@@ -3495,7 +3516,7 @@ body:has(#formOverlay.active) .nav-more-btn{
 .upcoming-item .sub-row-meta{ min-width: 4.5em; }
 
 
-/* Stessa griglia: icona | nome | data | importo | azioni(72px) */
+/* Stessa griglia: icona | nome | data | importo | azioni(92px) */
 .table-mobile-list,
 .upcoming-list{
   display: flex !important;
@@ -3504,9 +3525,9 @@ body:has(#formOverlay.active) .nav-more-btn{
 }
 .sub-row{
   display: grid !important;
-  grid-template-columns: 28px minmax(0,1fr) 5.6em 4.4em 72px !important;
+  grid-template-columns: 28px minmax(0,1fr) 5.6em 4.4em 92px !important;
   align-items: center !important;
-  column-gap: 10px !important;
+  column-gap: 12px !important;
   row-gap: 0 !important;
   padding: 8px 10px !important;
   min-height: 44px !important;
@@ -3560,9 +3581,15 @@ body:has(#formOverlay.active) .nav-more-btn{
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  gap: 0 !important;
-  width: 72px !important;
-  min-width: 72px !important;
+  /* Bug fix v2: la spaziatura precedente dipendeva da uno "slack" residuo
+     tra contenuto e larghezza fissa della colonna — poco prevedibile e,
+     secondo il feedback, ancora troppo stretta accanto al prezzo. Ora il
+     distacco dal prezzo è un margine esplicito e fisso sul pallino, non
+     un effetto collaterale del packing flex: risultato deterministico e
+     coerente in ogni riga, indipendentemente dal contenuto. */
+  gap: 8px !important;
+  width: 92px !important;
+  min-width: 92px !important;
   height: 36px;
 }
 .sub-row-actions--spacer{
@@ -3570,14 +3597,20 @@ body:has(#formOverlay.active) .nav-more-btn{
   pointer-events: none !important;
 }
 .sub-row-actions .status-dot{
-  width: 8px; height: 8px; border-radius: 50%; flex: none; margin-right: 2px;
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+  margin-left: 8px; margin-right: 0;
 }
 .sub-row-actions button{
   border: none; background: transparent; cursor: pointer;
   padding: 4px; border-radius: 8px; color: var(--ink-soft);
-  width: 32px; height: 32px; min-width: 32px; font-size: 13px;
+  width: 30px; height: 30px; min-width: 30px;
   display: inline-flex; align-items: center; justify-content: center;
 }
+.sub-row-actions button:active{ background: var(--bg-sunken); }
+.row-action-icon{
+  width: 17px; height: 17px; display: inline-flex;
+}
+.row-action-icon svg{ width: 100%; height: 100%; display: block; }
 
 
 /* Spacing IDENTICO tra righe lista e rinnovi */
@@ -3774,6 +3807,7 @@ body:has(#formOverlay.active) .nav-more-btn{
           <span id="tableTotalCount">0 abbonamenti</span> ·
           <strong id="tableTotalAmount">€0,00</strong>
           <span id="tableTotalUnit">/mese</span>
+          <button type="button" id="btnClearTableFilters" class="filter-active-chip" style="display:none;">Filtri attivi · Cancella</button>
         </div>
         <div class="summary-toggle" id="tableAmountToggle">
           <button type="button" class="summary-toggle-btn active" data-amountview="mensile">Mensile</button>
@@ -4191,17 +4225,26 @@ const memoryFallback = {};
 function safeGet(key){
   try{ return localStorage.getItem(key); }
   catch(e){
-    storageAvailable = false;
+    // localStorage inaccessibile (permessi bloccati/incognito): uso solo qui il fallback in memoria.
     return (key in memoryFallback) ? memoryFallback[key] : null;
   }
 }
 function safeSet(key, value){
-  try{ localStorage.setItem(key, value); }
-  catch(e){
-    storageAvailable = false;
-    memoryFallback[key] = value;
+  try{
+    localStorage.setItem(key, value);
+  }catch(e){
+    // Errore di QUOTA (spazio esaurito, es. troppe icone salvate) è diverso da storage
+    // del tutto inaccessibile: nel primo caso localStorage FUNZIONA ancora per letture
+    // e per scritture più piccole, quindi non deve disattivare tutta la persistenza.
+    const isQuotaError = e && (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014);
+    memoryFallback[key] = value; // tengo comunque il valore disponibile per la sessione corrente
+    if(!isQuotaError){
+      storageAvailable = false;
+      warnStorageUnavailableOnce();
+    }else{
+      warnStorageQuotaOnce();
+    }
   }
-  if(!storageAvailable) warnStorageUnavailableOnce();
 }
 function safeRemove(key){
   try{ localStorage.removeItem(key); }
@@ -4215,6 +4258,12 @@ function warnStorageUnavailableOnce(){
   storageWarningShown = true;
   showToast('⚠️ Salvataggio permanente non disponibile in questa anteprima. Apri il file in un browser (non nell\'anteprima integrata) per non perdere i dati.');
 }
+let storageQuotaWarningShown = false;
+function warnStorageQuotaOnce(){
+  if(storageQuotaWarningShown) return;
+  storageQuotaWarningShown = true;
+  showToast('⚠️ Spazio di salvataggio quasi esaurito (probabilmente troppe icone salvate). Rimuovi qualche icona personalizzata per liberare spazio.');
+}
 
 /* ---------------- STORAGE KEYS ---------------- */
 const STORAGE_KEY = 'subManager_subscriptions_v1';
@@ -4226,7 +4275,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2.0.5';
+const APP_VERSION = '2.0';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -4797,6 +4846,11 @@ function activateNavView(item, opts){
   const panel = document.getElementById('view-'+target);
   if(panel) panel.classList.add('active');
 
+  // Bug fix: lasciando la Tabella con ricerca/filtri attivi, il box ricerca
+  // restava visivamente "aperto" anche in altre viste. Lo richiudo sempre
+  // (senza cancellare i valori, così tornando su Tabella i filtri sono ancora lì).
+  if(target !== 'table') closeSearchTile();
+
   if(target !== 'settings') __lastView = target;
   if(target === 'dashboard') renderDashboard();
   if(target === 'table') renderTable();
@@ -5183,6 +5237,18 @@ function statusDotColor(sub){
   return 'var(--accent)';
 }
 
+/* Icone azioni riga (modifica/duplica/elimina), stesso stile line-icon del
+   resto dell'app (stroke sottile, currentColor) al posto delle emoji ✏️⧉🗑
+   che rendevano in modo incoerente tra dispositivi e sembravano "attaccate". */
+const ROW_ACTION_ICONS = {
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  dup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>',
+  del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>'
+};
+function rowActionIcon(name){
+  return `<span class="row-action-icon" aria-hidden="true">${ROW_ACTION_ICONS[name] || ''}</span>`;
+}
+
 function renderTable(){
   populateCategoryFilter();
   const list = getFilteredSorted();
@@ -5194,6 +5260,10 @@ function renderTable(){
   document.getElementById('tableTotalCount').textContent = `${list.length} abbonament${list.length===1?'o':'i'}`;
   document.getElementById('tableTotalAmount').textContent = fmtMoney(total);
   document.getElementById('tableTotalUnit').textContent = tableAmountView==='annuale' ? '/anno' : '/mese';
+  // Indicatore filtri attivi: rende visibile quando ricerca/categoria/stato sono
+  // ancora impostati da una sessione precedente (bug: restavano attivi in silenzio).
+  const clearChip = document.getElementById('btnClearTableFilters');
+  if(clearChip) clearChip.style.display = hasActiveTableFilters() ? '' : 'none';
 
   if(!list.length){
     tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--ink-soft);padding:24px;">Nessun abbonamento trovato.</td></tr>`;
@@ -5213,9 +5283,9 @@ function renderTable(){
       <td>${fmtDate(s.nextRenewal)}</td>
       <td>${statusBadge(s)}</td>
       <td class="actions-cell">
-        <button title="Modifica" data-action="edit" data-id="${s.id}">✏️</button>
-        <button title="Duplica" data-action="dup" data-id="${s.id}">⧉</button>
-        <button title="Elimina" data-action="del" data-id="${s.id}">🗑</button>
+        <button title="Modifica" data-action="edit" data-id="${s.id}">${rowActionIcon('edit')}</button>
+        <button title="Duplica" data-action="dup" data-id="${s.id}">${rowActionIcon('dup')}</button>
+        <button title="Elimina" data-action="del" data-id="${s.id}">${rowActionIcon('del')}</button>
       </td>
     </tr>`;
   }).join('');
@@ -5252,8 +5322,8 @@ function renderTableMobileList(list){
       <span class="sub-row-amount">${fmtMoney(amount, s.currency)}</span>
       <div class="sub-row-actions actions">
         <span class="status-dot" style="background:${statusDotColor(s)}" title="${escapeHtml(s.status)}"></span>
-        <button type="button" title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica">⧉</button>
-        <button type="button" title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina">🗑</button>
+        <button type="button" title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica">${rowActionIcon('dup')}</button>
+        <button type="button" title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina">${rowActionIcon('del')}</button>
       </div>
     </div>`;
   }).join('');
@@ -5294,11 +5364,18 @@ document.querySelectorAll('th[data-sort]').forEach(th=>{
 document.getElementById('searchInput').addEventListener('input', renderTable);
 
 /* Search tile expand/collapse */
+// Esposte fuori dalla IIFE così activateNavView() può chiudere la ricerca
+// quando si lascia la vista Tabella (bug: restava aperta cambiando pagina).
+let closeSearchTile = ()=>{};
+let hasActiveTableFilters = ()=> false;
+let resetTableFilters = ()=>{};
 (function initSearchTile(){
   const toolbar = document.getElementById('tableToolbar');
   const btn = document.getElementById('searchTileBtn');
   const closeBtn = document.getElementById('searchTileClose');
   const input = document.getElementById('searchInput');
+  const filterCategory = document.getElementById('filterCategory');
+  const filterStatus = document.getElementById('filterStatus');
   if(!toolbar || !btn || !input) return;
 
   function openSearch(e){
@@ -5331,6 +5408,25 @@ document.getElementById('searchInput').addEventListener('input', renderTable);
       if(!input.value.trim()) toolbar.classList.remove('is-search-open');
     }, 180);
   });
+
+  // Chiude il box ricerca SENZA cancellare il testo: usato quando si naviga via
+  // dalla tabella, per non lasciare l'interfaccia "aperta" in un'altra vista.
+  closeSearchTile = function(){
+    toolbar.classList.remove('is-search-open');
+  };
+  hasActiveTableFilters = function(){
+    return !!(input.value.trim() || (filterCategory && filterCategory.value) || (filterStatus && filterStatus.value));
+  };
+  resetTableFilters = function(){
+    input.value = '';
+    if(filterCategory) filterCategory.value = '';
+    if(filterStatus) filterStatus.value = '';
+    if(typeof syncSelectUI === 'function'){
+      if(filterCategory) syncSelectUI(filterCategory);
+      if(filterStatus) syncSelectUI(filterStatus);
+    }
+    toolbar.classList.remove('is-search-open');
+  };
 })();
 
 document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
@@ -5342,6 +5438,10 @@ document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
 });
 document.getElementById('filterCategory').addEventListener('change', renderTable);
 document.getElementById('filterStatus').addEventListener('change', renderTable);
+document.getElementById('btnClearTableFilters')?.addEventListener('click', ()=>{
+  resetTableFilters();
+  renderTable();
+});
 
 document.getElementById('tableBody').addEventListener('click', (e)=>{
   const btn = e.target.closest('button[data-action]');
@@ -5363,11 +5463,20 @@ document.getElementById('btnPrint').addEventListener('click', printSubscriptions
 function printSubscriptionsSheet(){
   const root = document.getElementById('printRoot');
   if(!root){ window.print(); return; }
-  const list = subscriptions.slice().sort((a,b)=>{
+
+  // Bug fix: prima si stampava SEMPRE l'elenco completo, ignorando ricerca/categoria/stato
+  // impostati in tabella. Ora si stampa esattamente quello che si sta guardando.
+  const filtersActive = typeof hasActiveTableFilters === 'function' && hasActiveTableFilters();
+  const list = (filtersActive ? getFilteredSorted() : subscriptions.slice()).sort((a,b)=>{
     const an = (a.name||'').toLowerCase(), bn = (b.name||'').toLowerCase();
     return an < bn ? -1 : an > bn ? 1 : 0;
   });
-  const totals = computeTotals();
+
+  // Totali coerenti con la lista effettivamente stampata (non sempre il totale generale).
+  const activeInList = list.filter(isActiveSub);
+  const totalMonthly = activeInList.reduce((sum,s)=> sum + monthlyEquivalent(s), 0);
+  const totalYearly = activeInList.reduce((sum,s)=> sum + yearlyEquivalent(s), 0);
+
   const profile = (typeof profiles !== 'undefined' && profiles.find(p=>p.id===activeProfileId)) || {name:'Personale'};
   const when = new Date().toLocaleString('it-IT', {dateStyle:'medium', timeStyle:'short'});
   const rows = list.map(s=>{
@@ -5383,13 +5492,13 @@ function printSubscriptionsSheet(){
     </tr>`;
   }).join('') || '<tr><td colspan="7">Nessun abbonamento</td></tr>';
 
-  root.innerHTML = `<div class="print-doc">
+  root.innerHTML = `<div class="print-doc${list.length > 22 ? ' print-doc-dense' : ''}">
     <h1>I Miei Abbonamenti</h1>
-    <div class="meta">Profilo: ${escapeHtml(profile.name)} · Stampato il ${escapeHtml(when)}</div>
+    <div class="meta">Profilo: ${escapeHtml(profile.name)} · Stampato il ${escapeHtml(when)}${filtersActive ? ' · Vista filtrata' : ''}</div>
     <div class="totals">
-      <div>Mensile<br><strong>${fmtMoney(totals.monthly)}</strong></div>
-      <div>Annuale<br><strong>${fmtMoney(totals.yearly)}</strong></div>
-      <div>Attivi<br><strong>${totals.activeCount}</strong> / ${list.length}</div>
+      <div>Mensile<br><strong>${fmtMoney(totalMonthly)}</strong></div>
+      <div>Annuale<br><strong>${fmtMoney(totalYearly)}</strong></div>
+      <div>Attivi<br><strong>${activeInList.length}</strong> / ${list.length}</div>
     </div>
     <table>
       <thead>
@@ -5405,7 +5514,7 @@ function printSubscriptionsSheet(){
       </thead>
       <tbody>${rows}</tbody>
     </table>
-    <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4</div>
+    <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4${list.length > 34 ? ' (elenco lungo: potrebbe sforare su una seconda pagina)' : ''}</div>
   </div>`;
 
   const cleanup = ()=>{
@@ -5413,8 +5522,17 @@ function printSubscriptionsSheet(){
     root.innerHTML = '';
   };
   window.addEventListener('afterprint', cleanup);
-  // piccolo delay: lascia layout stampabile
-  setTimeout(()=> window.print(), 50);
+  // Bug fix: un setTimeout fisso di 50ms non basta su alcuni browser mobile,
+  // dove il motore di stampa può "fotografare" la pagina prima che il nuovo
+  // contenuto di #printRoot sia stato dipinto (risultato: foglio bianco).
+  // Due requestAnimationFrame + lettura di un layout property forzano il
+  // browser a completare un ciclo di layout/paint prima di stampare.
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      void root.offsetHeight; // forza il reflow
+      window.print();
+    });
+  });
 }
 
 /* ================================================================
@@ -7137,13 +7255,20 @@ function enhanceAsMenu(sel){
   }
 
   function open(){
+    // Bug fix: prima si cercava il menu con w.querySelector('.m3-select-menu'),
+    // ma una volta "portato" su document.body il menu non è più dentro w — la
+    // ricerca falliva silenziosamente e il menu precedente restava aperto per
+    // sempre, impilandosi con quelli aperti dopo (bug visibile: più tendine
+    // filtri sovrapposte contemporaneamente). Ora si chiude passando dal
+    // riferimento affidabile _m3Close, lo stesso usato per il click fuori.
     document.querySelectorAll('.m3-select.open').forEach(w=>{
-      if(w !== wrap){
+      if(w === wrap) return;
+      const otherSel = document.getElementById(w.dataset.for);
+      if(otherSel && typeof otherSel._m3Close === 'function'){
+        otherSel._m3Close();
+      }else{
         w.classList.remove('open');
         w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
-        const m = w.querySelector('.m3-select-menu');
-        // rimetti menu nel wrap se era sul body
-        if(m && m.parentElement === document.body) w.appendChild(m);
       }
     });
     rebuildOptions();
@@ -7197,9 +7322,17 @@ document.addEventListener('pointerdown', (e)=>{
 });
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape'){
+    // Stesso bug del click-fuori: bisogna passare da _m3Close(), non da
+    // manipolazione diretta del wrap, altrimenti il menu portato su body
+    // resta visibile anche dopo Escape.
     document.querySelectorAll('.m3-select.open').forEach(w=>{
-      w.classList.remove('open');
-      w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+      const sel = document.getElementById(w.dataset.for);
+      if(sel && typeof sel._m3Close === 'function'){
+        sel._m3Close();
+      }else{
+        w.classList.remove('open');
+        w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+      }
     });
   }
 });
@@ -7225,8 +7358,8 @@ function renderProfileDropdownList(){
       <div class="profile-avatar-dot" style="background:${p.color}">${getProfileInitial(p.name)}</div>
       <span style="flex:1;">${escapeHtml(p.name)}</span>
       <div class="profile-actions">
-        <span data-action="rename" data-id="${p.id}" title="Rinomina">✏️</span>
-        ${profiles.length > 1 ? `<span data-action="delete" data-id="${p.id}" title="Elimina">🗑</span>` : ''}
+        <span data-action="rename" data-id="${p.id}" title="Rinomina">${rowActionIcon('edit')}</span>
+        ${profiles.length > 1 ? `<span data-action="delete" data-id="${p.id}" title="Elimina">${rowActionIcon('del')}</span>` : ''}
       </div>
     </div>`).join('');
 }
@@ -7646,8 +7779,8 @@ function renderProfilePickerList(){
         <small>${p.id===activeProfileId?'Profilo attivo':'Tocca per attivare'}</small>
       </div>
       <div class="row-actions">
-        <button type="button" data-action="rename" data-id="${p.id}" title="Rinomina" aria-label="Rinomina">✏️</button>
-        ${profiles.length>1?`<button type="button" data-action="delete" data-id="${p.id}" title="Elimina" aria-label="Elimina">🗑</button>`:''}
+        <button type="button" data-action="rename" data-id="${p.id}" title="Rinomina" aria-label="Rinomina">${rowActionIcon('edit')}</button>
+        ${profiles.length>1?`<button type="button" data-action="delete" data-id="${p.id}" title="Elimina" aria-label="Elimina">${rowActionIcon('del')}</button>`:''}
       </div>
     </div>`).join('');
 }
