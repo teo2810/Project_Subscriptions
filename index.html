@@ -292,7 +292,7 @@ img,svg{max-width:100%;height:auto;}
   display:flex;align-items:center;justify-content:center;
   color:#fff;font-size:12px;font-weight:700;
 }
-.profile-dropdown-item .profile-actions{margin-left:auto;display:flex;gap:4px;}
+.profile-dropdown-item .profile-actions{margin-left:auto;display:flex;gap:2px;}
 .profile-dropdown-item .profile-actions span{
   opacity:.55;font-size:14px;padding:8px;border-radius:8px;
   min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;
@@ -578,12 +578,6 @@ canvas{max-width:100%;}
 }
 .table-total-row strong{font-size:var(--fs-md);}
 .table-total-row #tableTotalUnit{color:var(--ink-soft);font-size:var(--fs-xs);}
-.filter-active-chip{
-  margin-left:8px;border:none;border-radius:999px;padding:3px 10px;
-  background:var(--accent-soft);color:var(--accent);font-size:var(--fs-xs);
-  font-weight:600;cursor:pointer;
-}
-.filter-active-chip:hover{opacity:.85;}
 
 input[type="file"]{font-size:var(--fs-sm);color:var(--ink-soft);max-width:100%;}
 input[type="file"]::file-selector-button{
@@ -637,7 +631,7 @@ tr:hover td{background:var(--bg-sunken);}
 .badge-soon{background:var(--warn-soft);color:var(--warn);}
 .cat-tag{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);}
 .cat-dot{width:8px;height:8px;border-radius:50%;flex:none;}
-.actions-cell{display:flex;gap:4px;}
+.actions-cell{display:flex;gap:2px;}
 .actions-cell button{
   border:none;background:transparent;cursor:pointer;
   padding:8px;border-radius:8px;color:var(--ink-soft);
@@ -1217,10 +1211,6 @@ select.m3-native-hidden{
   .modal h2, .modal .modal-sub{padding:0 var(--s-4);}
   .modal h2{padding-top:var(--s-4);}
   .modal .modal-sub{margin-bottom:var(--s-3);}
-  /* Bug fix: il testo del box conferma (elimina abbonamento/profilo) non
-     era in questa lista e restava a 0 padding, attaccato al bordo, mentre
-     titolo e pulsanti avevano il loro margine — testo disallineato. */
-  .confirm-box p{padding:0 var(--s-4);margin-top:0;}
   .modal form{display:flex;flex-direction:column;min-height:0;flex:1;}
   .modal .form-grid{overflow-y:auto;padding:var(--s-3) var(--s-4);flex:1;}
   .modal-footer{
@@ -1230,11 +1220,7 @@ select.m3-native-hidden{
   }
 
   .topbar{padding:var(--s-3) var(--s-4);}
-  /* Bug fix: qui .form-pair collassava a 1 colonna, mandando "Valuta"
-     (un select minuscolo, solo il simbolo) su una riga intera per conto
-     suo. Tenerla affiancata al prezzo è più compatto e ha più senso: il
-     prezzo prende più spazio (1.5fr), la valuta lo stretto necessario. */
-  .form-pair{grid-template-columns:1.5fr 1fr;}
+  .form-pair{grid-template-columns:1fr;}
 }
 
 /* Mobile subscription cards */
@@ -1957,11 +1943,7 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
 .upcoming-list{max-height:none;overflow:visible;gap:6px;}
 .upcoming-item{
   padding:8px 10px !important;border-radius:12px !important;
-  /* Bug fix: qui c'era un vecchio sfondo bianco semitrasparente
-     (rgba(255,255,255,.72)) rimasto da una versione precedente, diverso
-     da quello delle righe della lista abbonamenti — da cui la differenza
-     di colore notata. Ora eredita lo stesso sfondo, sovrascritto in modo
-     definitivo più sotto per essere certi che vinca sempre. */
+  background:rgba(255,255,255,.72) !important;
   border:1px solid rgba(0,0,0,.03);
 }
 .upcoming-item .up-name{font-size:13px !important;}
@@ -2179,12 +2161,6 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   }
   body *{visibility:hidden !important;}
   #printRoot, #printRoot *{visibility:visible !important;}
-  /* Bug fix: 'visibility:hidden' su tutto il body a volte produce un foglio
-     bianco su Chrome Android / WebView in stampa (il motore di stampa mobile
-     non sempre gestisce bene l'override di visibility su alberi profondi).
-     'display:none' è molto più affidabile: toglie del tutto dal render tree
-     ogni figlio diretto del body tranne #printRoot. */
-  body > *:not(#printRoot){display:none !important;}
   #printRoot{
     display:block !important;
     position:absolute !important;
@@ -2207,11 +2183,6 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
     width:100%;border-collapse:collapse;font-size:9pt;
     table-layout:fixed;
   }
-  /* Bug fix: senza queste due regole, con più righe di quelle che stanno in una
-     pagina, la tabella sforava senza ripetere l'intestazione e tagliando le righe
-     a metà tra una pagina e l'altra — illeggibile. */
-  .print-doc thead{display:table-header-group;}
-  .print-doc tr{page-break-inside:avoid;break-inside:avoid;}
   .print-doc th,.print-doc td{
     border-bottom:0.5pt solid #ccc;
     padding:4pt 5pt;text-align:left;vertical-align:top;
@@ -2225,10 +2196,6 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   .print-doc .foot{
     margin-top:10pt;font-size:8pt;color:#666;
   }
-  /* Elenchi lunghi: riduco un po' i corpi per aumentare le chance di stare su un unico A4. */
-  .print-doc-dense table{font-size:8pt;}
-  .print-doc-dense th,.print-doc-dense td{padding:3pt 4pt;}
-  .print-doc-dense .totals{margin-bottom:8pt;}
   .sidebar,.app-header,.fab-new,.qa-popover,.qa-scrim,
   .modal-overlay,.bottom-nav,.nav-rail,#toast{display:none !important;}
 }
@@ -2399,14 +2366,11 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   box-shadow:0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
 }
 .mobile-sub-card{
-  /* padding/min-height/margin superati dalla regola combinata più sotto
-     (.sub-row.mobile-sub-card); background/border rimossi da qui — erano
-     il gradiente "diverso" che causava il colore non allineato alle
-     righe dei Prossimi rinnovi. Ora impostati solo nella regola finale
-     a fine foglio di stile, un'unica fonte di verità. */
   padding:12px 14px !important;
   min-height:52px !important;
   margin-bottom:0 !important;
+  background:linear-gradient(145deg, #f3f8f6 0%, #eef4f2 100%) !important;
+  border:1px solid rgba(90,168,156,.08) !important;
 }
 .table-wrap{
   padding:8px !important;
@@ -2596,9 +2560,14 @@ body:has(.modal-overlay.active) .fab-new{display:none !important;}
   color:var(--m3-on-primary-container) !important;
 }
 [data-theme="dark"] .period-label{color:var(--ink) !important;}
-/* Sfondo di .upcoming-item e .cal-cell in tema scuro: rimosso da qui
-   (era il gradiente "diverso" che causava l'incoerenza) — impostato solo
-   nella regola finale unificata a fine foglio di stile. */
+[data-theme="dark"] .upcoming-item{
+  background:linear-gradient(145deg, #222a30 0%, #1c2429 100%) !important;
+  border-color:rgba(255,255,255,.05) !important;
+}
+[data-theme="dark"] .cal-cell{
+  background:linear-gradient(145deg, #1c2429 0%, #171e22 100%) !important;
+  color:var(--ink) !important;
+}
 [data-theme="dark"] .app-header{
   background:linear-gradient(180deg, #1a2428 0%, #151c20 100%) !important;
   border-bottom:1px solid rgba(255,255,255,.05);
@@ -3526,7 +3495,7 @@ body:has(#formOverlay.active) .nav-more-btn{
 .upcoming-item .sub-row-meta{ min-width: 4.5em; }
 
 
-/* Stessa griglia: icona | nome | data | importo | azioni(92px) */
+/* Stessa griglia: icona | nome | data | importo | azioni(72px) */
 .table-mobile-list,
 .upcoming-list{
   display: flex !important;
@@ -3535,9 +3504,9 @@ body:has(#formOverlay.active) .nav-more-btn{
 }
 .sub-row{
   display: grid !important;
-  grid-template-columns: 28px minmax(0,1fr) 5.6em 4.4em 92px !important;
+  grid-template-columns: 28px minmax(0,1fr) 5.6em 4.4em 72px !important;
   align-items: center !important;
-  column-gap: 12px !important;
+  column-gap: 10px !important;
   row-gap: 0 !important;
   padding: 8px 10px !important;
   min-height: 44px !important;
@@ -3591,15 +3560,9 @@ body:has(#formOverlay.active) .nav-more-btn{
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
-  /* Bug fix v2: la spaziatura precedente dipendeva da uno "slack" residuo
-     tra contenuto e larghezza fissa della colonna — poco prevedibile e,
-     secondo il feedback, ancora troppo stretta accanto al prezzo. Ora il
-     distacco dal prezzo è un margine esplicito e fisso sul pallino, non
-     un effetto collaterale del packing flex: risultato deterministico e
-     coerente in ogni riga, indipendentemente dal contenuto. */
-  gap: 8px !important;
-  width: 92px !important;
-  min-width: 92px !important;
+  gap: 0 !important;
+  width: 72px !important;
+  min-width: 72px !important;
   height: 36px;
 }
 .sub-row-actions--spacer{
@@ -3607,20 +3570,14 @@ body:has(#formOverlay.active) .nav-more-btn{
   pointer-events: none !important;
 }
 .sub-row-actions .status-dot{
-  width: 8px; height: 8px; border-radius: 50%; flex: none;
-  margin-left: 8px; margin-right: 0;
+  width: 8px; height: 8px; border-radius: 50%; flex: none; margin-right: 2px;
 }
 .sub-row-actions button{
   border: none; background: transparent; cursor: pointer;
   padding: 4px; border-radius: 8px; color: var(--ink-soft);
-  width: 30px; height: 30px; min-width: 30px;
+  width: 32px; height: 32px; min-width: 32px; font-size: 13px;
   display: inline-flex; align-items: center; justify-content: center;
 }
-.sub-row-actions button:active{ background: var(--bg-sunken); }
-.row-action-icon{
-  width: 17px; height: 17px; display: inline-flex;
-}
-.row-action-icon svg{ width: 100%; height: 100%; display: block; }
 
 
 /* Spacing IDENTICO tra righe lista e rinnovi */
@@ -3661,124 +3618,271 @@ body:has(#formOverlay.active) .nav-more-btn{
   row-gap: 6px !important;
 }
 
-/* Fix definitivo: righe "Prossimi rinnovi" identiche a righe lista
-   abbonamenti — stesso colore di sfondo, garantito qui a fine foglio
-   di stile (massima priorità in cascata) indipendentemente da eventuali
-   altre regole residue. */
-/* Fix: la riga precedente copriva solo le righe "Prossimi rinnovi", non
-   quelle della lista Abbonamenti (.mobile-sub-card) — che aveva ancora
-   una vecchia regola con un gradiente leggermente diverso
-   (#f3f8f6→#eef4f2) mai neutralizzata. Ora entrambe usano lo stesso
-   sfondo, qui garantito con la massima priorità di cascata. */
-.upcoming-item,
-.upcoming-item.sub-row,
-.sub-row.upcoming-item,
-.mobile-sub-card,
-.mobile-sub-card.sub-row,
+
+/* Più spazio al nome: date corte, azioni strette, rinnovi senza colonna vuota */
 .sub-row.mobile-sub-card{
+  grid-template-columns: 28px minmax(0, 1fr) auto auto 56px !important;
+  column-gap: 8px !important;
+}
+.sub-row.upcoming-item{
+  grid-template-columns: 28px minmax(0, 1fr) auto auto !important;
+  column-gap: 8px !important;
+}
+.sub-row.upcoming-item .sub-row-actions--spacer{ display: none !important; }
+.sub-row-meta{
+  min-width: 0 !important;
+  max-width: 5.2em;
+  font-size: 11.5px !important;
+}
+.sub-row-amount{
+  min-width: 0 !important;
+  font-size: 12px !important;
+}
+.sub-row-name{
+  font-size: 13.5px !important;
+}
+.sub-row-actions{
+  width: 56px !important;
+  min-width: 56px !important;
+}
+.sub-row-actions button{
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  padding: 2px !important;
+}
+.sub-row-actions .status-dot{ margin-right: 0 !important; }
+
+/* Giorno corrente — evidenza chiara in tutti i calendari */
+.cal-cell.is-today{
+  background: color-mix(in srgb, var(--m3-primary) 18%, var(--m3-surface-container-low)) !important;
+  box-shadow: inset 0 0 0 2px var(--m3-primary) !important;
+}
+.cal-cell.is-today .daynum{
+  color: var(--m3-primary) !important;
+  font-weight: 800 !important;
+}
+.wallcal td.is-today,
+.wallcal-cell.is-today{
+  background: color-mix(in srgb, var(--m3-primary) 18%, var(--bg-elev, #fff)) !important;
+  outline: 2px solid var(--m3-primary) !important;
+  outline-offset: -2px !important;
+}
+.wallcal td.is-today .wallcal-daynum,
+.wallcal-cell.is-today .wallcal-daynum,
+.wallcal-cell.is-today .daynum{
+  color: var(--m3-primary) !important;
+  font-weight: 800 !important;
+}
+
+
+/* Calendario: numero e icone non attaccati al bordo */
+.cal-cell{
+  padding: 7px 6px 6px !important;
+}
+.cal-cell .daynum{
+  display: block;
+  margin: 0 0 4px 1px !important;
+  line-height: 1.2;
+}
+.cal-cell .mini-stickers{
+  margin-top: 2px !important;
+  margin-left: 1px !important;
+  gap: 3px !important;
+}
+.wallcal td,
+.wallcal-cell{
+  padding: 6px 5px !important;
+}
+.wallcal-daynum{
+  margin-bottom: 3px !important;
+  display: block;
+}
+.wallcal-stickers{
+  margin-top: 3px !important;
+  gap: 3px !important;
+}
+.wallcal-sticker{ padding: 1px !important; }
+
+/* Lista = Prossimi rinnovi: stesso sfondo, stessa griglia mentale */
+.sub-row.mobile-sub-card,
+.sub-row.upcoming-item{
+  background: var(--m3-surface-container-low) !important;
+  column-gap: 10px !important;
+  padding: 8px 12px !important;
+}
+/* lista: icona | nome | data | importo | dot+azioni equispaziati */
+.sub-row.mobile-sub-card{
+  grid-template-columns: 28px minmax(0,1fr) auto auto auto !important;
+}
+.sub-row.upcoming-item{
+  grid-template-columns: 28px minmax(0,1fr) auto auto !important;
+}
+.sub-row-meta{
+  max-width: none !important;
+  min-width: 2.8em !important;
+  text-align: right !important;
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+}
+.sub-row-amount{
+  min-width: 3.2em !important;
+  text-align: right !important;
+}
+.sub-row-actions{
+  width: auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+}
+.sub-row-actions .status-dot{
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 !important;
+  flex: none;
+}
+.sub-row-actions button{
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  margin: 0 !important;
+}
+
+
+/* === Righe lista = righe prossimi rinnovi (identiche) === */
+.sub-row.mobile-sub-card,
+.sub-row.upcoming-item{
+  display: grid !important;
+  grid-template-columns: 28px minmax(0,1fr) auto auto !important;
+  column-gap: 10px !important;
+  align-items: center !important;
+  padding: 10px 12px !important;
+  min-height: 48px !important;
+  border-radius: 14px !important;
   background: var(--m3-surface-container-low) !important;
   border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
 }
-
-/* Bug fix tema scuro: esistevano DUE regole [data-theme="dark"] separate
-   e mai allineate — una per le righe abbonamenti (.mobile-sub-card) e una
-   diversa per le righe "Prossimi rinnovi" (.upcoming-item) — con due
-   gradienti di grigio leggermente diversi tra loro. Risultato: la stessa
-   incoerenza segnalata in chiaro, ma in scuro. Ora usano lo stesso identico
-   sfondo, qui garantito con la massima priorità di cascata.
-   Stesso sfondo applicato anche alle celle del calendario: prima erano
-   quasi invisibili (background quasi identico allo sfondo della card che
-   le contiene, nessun contrasto). Un'unica "chip" scura coerente in tutta
-   l'app, invece di tre stili diversi. */
-[data-theme="dark"] .mobile-sub-card,
-[data-theme="dark"] .sub-row.mobile-sub-card,
-[data-theme="dark"] .mobile-sub-card.sub-row,
-[data-theme="dark"] .upcoming-item,
-[data-theme="dark"] .upcoming-item.sub-row,
-[data-theme="dark"] .sub-row.upcoming-item,
-[data-theme="dark"] .cal-cell{
-  background: linear-gradient(135deg, #2a383c 0%, #222c32 45%, #1c2429 100%) !important;
-  border-color: rgba(94,191,178,.12) !important;
-  color: var(--ink) !important;
+/* azioni in coda, fuori dalla griglia base: overlay sulla 4a colonna allargata solo in lista */
+.sub-row.mobile-sub-card{
+  grid-template-columns: 28px minmax(0,1fr) auto auto max-content !important;
 }
-[data-theme="dark"] .cal-cell.empty{
+.sub-row-actions{
+  display: grid !important;
+  grid-template-columns: 12px 32px 32px !important;
+  align-items: center !important;
+  justify-items: center !important;
+  column-gap: 4px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.sub-row-actions .status-dot{
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  justify-self: center;
+}
+.sub-row-actions button{
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 10px !important;
   background: transparent !important;
-  border-color: transparent !important;
+  color: var(--ink-soft) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
-
-/* ================================================================
-   UNIFICAZIONE DEFINITIVA "SCHEDE" (card/pannelli di sfondo)
-   ================================================================
-   Nel file si erano accumulate nel tempo decine di gradienti leggermente
-   diversi tra loro (dashboard, tabella, calendario, riepilogo...): stessa
-   famiglia di colore ma opacità/angoli/stop diversi, da cui la sensazione
-   di schede "quasi ma non del tutto" uguali. Da qui in poi UNA SOLA
-   ricetta di sfondo sfumato pastello per ogni scheda/pannello dell'app,
-   sia in chiaro che in scuro. Lo sfondo di pagina resta bianco/nero
-   (var(--bg)); tutto il resto — schede, tabella, calendario, riepilogo
-   rinnovi — condivide questo identico sfondo. */
-.card,
-.summary-card,
-.hero-chart-card,
-.dash-charts,
-.dash-upcoming,
-.saving-card,
-.table-wrap,
-.table-total-row,
-.topbar,
-.year-month-block,
-.wallcal-wrap{
-  background: linear-gradient(165deg, rgba(94,191,178,.14) 0%, rgba(94,191,178,.03) 45%, var(--surface-elev) 100%) !important;
-  border: 1px solid rgba(90,168,156,.12) !important;
-  box-shadow: 0 1px 3px rgba(20,40,44,.05), 0 3px 10px rgba(20,40,44,.04) !important;
-}
-[data-theme="dark"] .card,
-[data-theme="dark"] .summary-card,
-[data-theme="dark"] .hero-chart-card,
-[data-theme="dark"] .dash-charts,
-[data-theme="dark"] .dash-upcoming,
-[data-theme="dark"] .saving-card,
-[data-theme="dark"] .table-wrap,
-[data-theme="dark"] .table-total-row,
-[data-theme="dark"] .topbar,
-[data-theme="dark"] .year-month-block,
-[data-theme="dark"] .wallcal-wrap{
-  background: linear-gradient(165deg, rgba(94,191,178,.16) 0%, #1a2126 45%) !important;
-  border-color: rgba(94,191,178,.14) !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,.3) !important;
+.sub-row-actions button:active{
+  background: var(--m3-state-press) !important;
   color: var(--ink) !important;
 }
+.sub-row-actions button svg{
+  display: block;
+  flex: none;
+}
+.sub-row-meta, .sub-row-amount{
+  font-size: 12px !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap !important;
+}
+.sub-row-name{
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+.table-mobile-list,
+.upcoming-list{
+  gap: 8px !important;
+  row-gap: 8px !important;
+}
+/* niente riquadro “extra” diverso: le righe sono il riquadro */
+.dash-upcoming .upcoming-list{
+  margin: 0;
+  padding: 0;
+}
 
-/* Le "finestre" (i modal: nuovo/modifica abbonamento, conferma eliminazione,
-   backup, profilo, info, e tutte quelle richiamate dal menù a bolle) usano
-   già un'unica variabile condivisa (--surface-elev) senza eccezioni per
-   nessuna di esse — qui lo rendiamo esplicito e blindato allo stesso modo
-   delle schede, cosicché restino sempre coerenti anche in scuro. */
-.modal-overlay .modal{
+
+/* Scheda unica lista abbonamenti = stile Prossimi rinnovi */
+.list-sheet-card{
   background: var(--surface-elev) !important;
+  border: none !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 14px 14px 12px !important;
+  box-shadow: var(--surface-shadow) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
 }
-[data-theme="dark"] .modal-overlay .modal{
-  background: linear-gradient(165deg, #1c252b 0%, #161d21 100%) !important;
-  border: 1px solid rgba(94,191,178,.10) !important;
-}
-
-/* Bug fix: in tema chiaro le righe (abbonamenti/rinnovi) e le celle del
-   calendario avevano un fondo troppo simile a quello — ora sfumato — della
-   scheda che le contiene: bordi praticamente invisibili, come segnalato.
-   Qui, SOLO in chiaro, si dà loro un fondo più marcato e un bordo netto,
-   così restano ben distinguibili anche su una scheda a sua volta sfumata.
-   Il tema scuro (già corretto) non viene toccato. */
-.sub-row.mobile-sub-card,
-.mobile-sub-card.sub-row,
-.sub-row.upcoming-item,
-.upcoming-item.sub-row,
-.cal-cell{
-  background: #dfe9e5 !important;
-  border: 1px solid rgba(90,168,156,.28) !important;
-}
-.cal-cell.empty{
+.list-sheet-card .table-total-row{
+  margin: 0 !important;
   background: transparent !important;
-  border-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 4px 2px 2px !important;
+}
+.list-sheet-card .toolbar,
+.list-sheet-card #tableToolbar{
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.list-sheet-card .table-mobile-list{
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 8px !important;
+}
+.list-sheet-card .table-wrap{
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+/* righe dentro la scheda: stesso look dei rinnovi */
+.list-sheet-card .sub-row.mobile-sub-card,
+.dash-upcoming .sub-row.upcoming-item{
+  background: var(--m3-surface-container-low) !important;
+  border-radius: 14px !important;
+  padding: 10px 12px !important;
+  min-height: 48px !important;
+}
+.dash-upcoming{
+  padding: 14px 14px 12px !important;
+}
+.dash-upcoming .upcoming-list{
+  gap: 8px !important;
 }
 
 </style>
@@ -3932,12 +4036,12 @@ body:has(#formOverlay.active) .nav-more-btn{
         <button class="btn btn-primary btn-new-compact" id="btnNewFromTable" title="Nuovo abbonamento">+ Nuovo</button>
       </div>
 
+      <div class="list-sheet-card" id="tableSheetCard">
       <div class="table-total-row" id="tableTotalRow">
         <div>
           <span id="tableTotalCount">0 abbonamenti</span> ·
           <strong id="tableTotalAmount">€0,00</strong>
           <span id="tableTotalUnit">/mese</span>
-          <button type="button" id="btnClearTableFilters" class="filter-active-chip" style="display:none;">Filtri attivi · Cancella</button>
         </div>
         <div class="summary-toggle" id="tableAmountToggle">
           <button type="button" class="summary-toggle-btn active" data-amountview="mensile">Mensile</button>
@@ -3995,6 +4099,7 @@ body:has(#formOverlay.active) .nav-more-btn{
         </table>
       </div>
       <div class="table-mobile-list" id="tableMobileList"></div>
+      </div><!-- /list-sheet-card -->
     </section>
 
     <!-- ---------- CALENDAR ---------- -->
@@ -4070,7 +4175,7 @@ body:has(#formOverlay.active) .nav-more-btn{
         <div>
           <strong>Reset totale</strong>
           <p class="empty-note" style="margin:4px 0 8px;">Elimina definitivamente tutti gli abbonamenti e lo storico.</p>
-          <button class="btn btn-danger" id="btnResetAll"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></span> Reset dati</button>
+          <button class="btn btn-danger" id="btnResetAll">🗑 Reset dati</button>
         </div>
       </div>
     </section>
@@ -4180,52 +4285,48 @@ body:has(#formOverlay.active) .nav-more-btn{
           </div>
         </div>
 
-        <div class="form-pair">
-          <div class="form-field">
-            <label>Frequenza *</label>
-            <select id="f_frequency">
-              <option value="Mensile">Mensile</option>
-              <option value="Annuale">Annuale</option>
-            </select>
-            <div class="err"></div>
-          </div>
-
-          <div class="form-field" id="field-payment">
-            <label>Metodo di pagamento</label>
-            <select id="f_payment">
-              <option value="Carta">Carta</option>
-              <option value="PayPal">PayPal</option>
-              <option value="Altro">Altro</option>
-            </select>
-            <div class="err"></div>
-          </div>
+        <div class="form-field">
+          <label>Frequenza *</label>
+          <select id="f_frequency">
+            <option value="Mensile">Mensile</option>
+            <option value="Annuale">Annuale</option>
+          </select>
+          <div class="err"></div>
         </div>
 
-        <div class="form-pair">
-          <div class="form-field">
-            <label>Data sottoscrizione *</label>
-            <input type="date" id="f_startDate">
-            <div class="err" id="err_startDate"></div>
-          </div>
+        <div class="form-field" id="field-payment">
+          <label>Metodo di pagamento</label>
+          <select id="f_payment">
+            <option value="Carta">Carta</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Altro">Altro</option>
+          </select>
+          <div class="err"></div>
+        </div>
 
-          <div class="form-field">
-            <label>Stato</label>
-            <select id="f_status">
-              <option value="Attivo">Attivo</option>
-              <option value="Disattivato">Disattivato</option>
-            </select>
-            <div class="err"></div>
-          </div>
+        <div class="form-field">
+          <label>Data sottoscrizione *</label>
+          <input type="date" id="f_startDate">
+          <div class="err" id="err_startDate"></div>
         </div>
 
         <div class="form-field">
           <label>Prossimo rinnovo</label>
           <div class="renewal-display" id="renewalDisplay">
             <span id="renewalDisplayText">—</span>
-            <button type="button" class="btn btn-sm btn-ghost" id="btnEditRenewal"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span> Modifica</button>
+            <button type="button" class="btn btn-sm btn-ghost" id="btnEditRenewal">✏️ Modifica</button>
           </div>
           <input type="date" id="f_nextRenewal" style="display:none;">
           <div class="err" id="err_nextRenewal"></div>
+        </div>
+
+        <div class="form-field">
+          <label>Stato</label>
+          <select id="f_status">
+            <option value="Attivo">Attivo</option>
+            <option value="Disattivato">Disattivato</option>
+          </select>
+          <div class="err"></div>
         </div>
 
         <div class="form-field full">
@@ -4282,7 +4383,7 @@ body:has(#formOverlay.active) .nav-more-btn{
       <div class="backup-block">
         <strong>Reset</strong>
         <p>Elimina abbonamenti e storico di questo profilo.</p>
-        <button class="btn btn-danger" id="btnResetAllModal"><span class="row-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></span> Reset dati</button>
+        <button class="btn btn-danger" id="btnResetAllModal">🗑 Reset dati</button>
       </div>
     </div>
     <div class="modal-footer">
@@ -4359,26 +4460,17 @@ const memoryFallback = {};
 function safeGet(key){
   try{ return localStorage.getItem(key); }
   catch(e){
-    // localStorage inaccessibile (permessi bloccati/incognito): uso solo qui il fallback in memoria.
+    storageAvailable = false;
     return (key in memoryFallback) ? memoryFallback[key] : null;
   }
 }
 function safeSet(key, value){
-  try{
-    localStorage.setItem(key, value);
-  }catch(e){
-    // Errore di QUOTA (spazio esaurito, es. troppe icone salvate) è diverso da storage
-    // del tutto inaccessibile: nel primo caso localStorage FUNZIONA ancora per letture
-    // e per scritture più piccole, quindi non deve disattivare tutta la persistenza.
-    const isQuotaError = e && (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014);
-    memoryFallback[key] = value; // tengo comunque il valore disponibile per la sessione corrente
-    if(!isQuotaError){
-      storageAvailable = false;
-      warnStorageUnavailableOnce();
-    }else{
-      warnStorageQuotaOnce();
-    }
+  try{ localStorage.setItem(key, value); }
+  catch(e){
+    storageAvailable = false;
+    memoryFallback[key] = value;
   }
+  if(!storageAvailable) warnStorageUnavailableOnce();
 }
 function safeRemove(key){
   try{ localStorage.removeItem(key); }
@@ -4392,12 +4484,6 @@ function warnStorageUnavailableOnce(){
   storageWarningShown = true;
   showToast('⚠️ Salvataggio permanente non disponibile in questa anteprima. Apri il file in un browser (non nell\'anteprima integrata) per non perdere i dati.');
 }
-let storageQuotaWarningShown = false;
-function warnStorageQuotaOnce(){
-  if(storageQuotaWarningShown) return;
-  storageQuotaWarningShown = true;
-  showToast('⚠️ Spazio di salvataggio quasi esaurito (probabilmente troppe icone salvate). Rimuovi qualche icona personalizzata per liberare spazio.');
-}
 
 /* ---------------- STORAGE KEYS ---------------- */
 const STORAGE_KEY = 'subManager_subscriptions_v1';
@@ -4409,7 +4495,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2.0';
+const APP_VERSION = '2.0.9';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -4918,6 +5004,22 @@ function fmtDate(dateStr){
   if(isNaN(d)) return '-';
   return d.toLocaleDateString('it-IT');
 }
+/** Data compatta per le righe lista: DD/MM (anno solo se diverso da corrente) */
+function fmtDateShort(dateStr){
+  if(!dateStr) return '—';
+  const d = new Date(dateStr);
+  if(isNaN(d)) return '—';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const x = new Date(d); x.setHours(0,0,0,0);
+  const diff = Math.round((x - today) / 86400000);
+  if(diff === 0) return 'Oggi';
+  if(diff === 1) return 'Domani';
+  if(diff === -1) return 'Ieri';
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  if(d.getFullYear() !== today.getFullYear()) return dd + '/' + mm + '/' + String(d.getFullYear()).slice(2);
+  return dd + '/' + mm;
+}
 
 /* ================================================================
    TOAST
@@ -4979,11 +5081,6 @@ function activateNavView(item, opts){
   document.querySelectorAll('.view').forEach(v=> v.classList.remove('active'));
   const panel = document.getElementById('view-'+target);
   if(panel) panel.classList.add('active');
-
-  // Bug fix: lasciando la Tabella con ricerca/filtri attivi, il box ricerca
-  // restava visivamente "aperto" anche in altre viste. Lo richiudo sempre
-  // (senza cancellare i valori, così tornando su Tabella i filtri sono ancora lì).
-  if(target !== 'table') closeSearchTile();
 
   if(target !== 'settings') __lastView = target;
   if(target === 'dashboard') renderDashboard();
@@ -5371,18 +5468,6 @@ function statusDotColor(sub){
   return 'var(--accent)';
 }
 
-/* Icone azioni riga (modifica/duplica/elimina), stesso stile line-icon del
-   resto dell'app (stroke sottile, currentColor) al posto delle emoji ✏️⧉🗑
-   che rendevano in modo incoerente tra dispositivi e sembravano "attaccate". */
-const ROW_ACTION_ICONS = {
-  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
-  dup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2.2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>',
-  del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>'
-};
-function rowActionIcon(name){
-  return `<span class="row-action-icon" aria-hidden="true">${ROW_ACTION_ICONS[name] || ''}</span>`;
-}
-
 function renderTable(){
   populateCategoryFilter();
   const list = getFilteredSorted();
@@ -5394,10 +5479,6 @@ function renderTable(){
   document.getElementById('tableTotalCount').textContent = `${list.length} abbonament${list.length===1?'o':'i'}`;
   document.getElementById('tableTotalAmount').textContent = fmtMoney(total);
   document.getElementById('tableTotalUnit').textContent = tableAmountView==='annuale' ? '/anno' : '/mese';
-  // Indicatore filtri attivi: rende visibile quando ricerca/categoria/stato sono
-  // ancora impostati da una sessione precedente (bug: restavano attivi in silenzio).
-  const clearChip = document.getElementById('btnClearTableFilters');
-  if(clearChip) clearChip.style.display = hasActiveTableFilters() ? '' : 'none';
 
   if(!list.length){
     tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--ink-soft);padding:24px;">Nessun abbonamento trovato.</td></tr>`;
@@ -5417,9 +5498,9 @@ function renderTable(){
       <td>${fmtDate(s.nextRenewal)}</td>
       <td>${statusBadge(s)}</td>
       <td class="actions-cell">
-        <button title="Modifica" data-action="edit" data-id="${s.id}">${rowActionIcon('edit')}</button>
-        <button title="Duplica" data-action="dup" data-id="${s.id}">${rowActionIcon('dup')}</button>
-        <button title="Elimina" data-action="del" data-id="${s.id}">${rowActionIcon('del')}</button>
+        <button title="Modifica" data-action="edit" data-id="${s.id}">✏️</button>
+        <button title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M6 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <button title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </td>
     </tr>`;
   }).join('');
@@ -5435,9 +5516,6 @@ function renderTable(){
   if([...sortSelect.options].some(o=>o.value===combo)) sortSelect.value = combo;
 
   renderTableMobileList(list);
-
-  // Contenuto stampabile sempre pronto in anticipo (vedi nota in buildPrintSheet).
-  if(typeof buildPrintSheet === 'function') buildPrintSheet();
 }
 
 /* Versione a card della stessa lista, per mobile: niente scroll orizzontale,
@@ -5455,12 +5533,12 @@ function renderTableMobileList(list){
     <div class="sub-row mobile-sub-card" data-id="${s.id}">
       ${serviceIconHtml(s,'svc-icon-sm')}
       <span class="sub-row-name">${escapeHtml(s.name)}</span>
-      <span class="sub-row-meta">${s.nextRenewal ? escapeHtml(fmtDate(s.nextRenewal)) : '—'}</span>
+      <span class="sub-row-meta">${s.nextRenewal ? escapeHtml(fmtDateShort(s.nextRenewal)) : '—'}</span>
       <span class="sub-row-amount">${fmtMoney(amount, s.currency)}</span>
       <div class="sub-row-actions actions">
         <span class="status-dot" style="background:${statusDotColor(s)}" title="${escapeHtml(s.status)}"></span>
-        <button type="button" title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica">${rowActionIcon('dup')}</button>
-        <button type="button" title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina">${rowActionIcon('del')}</button>
+        <button type="button" title="Duplica" data-action="dup" data-id="${s.id}" aria-label="Duplica"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M6 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <button type="button" title="Elimina" data-action="del" data-id="${s.id}" aria-label="Elimina"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>`;
   }).join('');
@@ -5501,18 +5579,11 @@ document.querySelectorAll('th[data-sort]').forEach(th=>{
 document.getElementById('searchInput').addEventListener('input', renderTable);
 
 /* Search tile expand/collapse */
-// Esposte fuori dalla IIFE così activateNavView() può chiudere la ricerca
-// quando si lascia la vista Tabella (bug: restava aperta cambiando pagina).
-let closeSearchTile = ()=>{};
-let hasActiveTableFilters = ()=> false;
-let resetTableFilters = ()=>{};
 (function initSearchTile(){
   const toolbar = document.getElementById('tableToolbar');
   const btn = document.getElementById('searchTileBtn');
   const closeBtn = document.getElementById('searchTileClose');
   const input = document.getElementById('searchInput');
-  const filterCategory = document.getElementById('filterCategory');
-  const filterStatus = document.getElementById('filterStatus');
   if(!toolbar || !btn || !input) return;
 
   function openSearch(e){
@@ -5545,25 +5616,6 @@ let resetTableFilters = ()=>{};
       if(!input.value.trim()) toolbar.classList.remove('is-search-open');
     }, 180);
   });
-
-  // Chiude il box ricerca SENZA cancellare il testo: usato quando si naviga via
-  // dalla tabella, per non lasciare l'interfaccia "aperta" in un'altra vista.
-  closeSearchTile = function(){
-    toolbar.classList.remove('is-search-open');
-  };
-  hasActiveTableFilters = function(){
-    return !!(input.value.trim() || (filterCategory && filterCategory.value) || (filterStatus && filterStatus.value));
-  };
-  resetTableFilters = function(){
-    input.value = '';
-    if(filterCategory) filterCategory.value = '';
-    if(filterStatus) filterStatus.value = '';
-    if(typeof syncSelectUI === 'function'){
-      if(filterCategory) syncSelectUI(filterCategory);
-      if(filterStatus) syncSelectUI(filterStatus);
-    }
-    toolbar.classList.remove('is-search-open');
-  };
 })();
 
 document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
@@ -5575,10 +5627,6 @@ document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
 });
 document.getElementById('filterCategory').addEventListener('change', renderTable);
 document.getElementById('filterStatus').addEventListener('change', renderTable);
-document.getElementById('btnClearTableFilters')?.addEventListener('click', ()=>{
-  resetTableFilters();
-  renderTable();
-});
 
 document.getElementById('tableBody').addEventListener('click', (e)=>{
   const btn = e.target.closest('button[data-action]');
@@ -5597,30 +5645,14 @@ document.getElementById('tableBody').addEventListener('click', (e)=>{
 
 document.getElementById('btnPrint').addEventListener('click', printSubscriptionsSheet);
 
-/* Bug fix: prima il contenuto stampabile veniva scritto dentro #printRoot
-   SOLO nell'istante del click su "stampa", subito seguito da window.print().
-   Nel visualizzatore usato (WebView di Android/Files, non Chrome desktop)
-   quella finestra di tempo a volte non basta: lo "scatto" della stampa
-   avviene prima che il DOM appena scritto sia stato dipinto, con
-   conseguente foglio bianco — indipendentemente da quanti
-   requestAnimationFrame si aggiungano prima di print().
-   La soluzione robusta è non dipendere da quel timing: il contenuto viene
-   ora ricostruito ogni volta che la tabella viene renderizzata (quindi è
-   SEMPRE già pronto in anticipo, non nell'istante critico del click). */
-function buildPrintSheet(){
+function printSubscriptionsSheet(){
   const root = document.getElementById('printRoot');
-  if(!root) return;
-
-  const filtersActive = typeof hasActiveTableFilters === 'function' && hasActiveTableFilters();
-  const list = (filtersActive ? getFilteredSorted() : subscriptions.slice()).sort((a,b)=>{
+  if(!root){ window.print(); return; }
+  const list = subscriptions.slice().sort((a,b)=>{
     const an = (a.name||'').toLowerCase(), bn = (b.name||'').toLowerCase();
     return an < bn ? -1 : an > bn ? 1 : 0;
   });
-
-  const activeInList = list.filter(isActiveSub);
-  const totalMonthly = activeInList.reduce((sum,s)=> sum + monthlyEquivalent(s), 0);
-  const totalYearly = activeInList.reduce((sum,s)=> sum + yearlyEquivalent(s), 0);
-
+  const totals = computeTotals();
   const profile = (typeof profiles !== 'undefined' && profiles.find(p=>p.id===activeProfileId)) || {name:'Personale'};
   const when = new Date().toLocaleString('it-IT', {dateStyle:'medium', timeStyle:'short'});
   const rows = list.map(s=>{
@@ -5636,13 +5668,13 @@ function buildPrintSheet(){
     </tr>`;
   }).join('') || '<tr><td colspan="7">Nessun abbonamento</td></tr>';
 
-  root.innerHTML = `<div class="print-doc${list.length > 22 ? ' print-doc-dense' : ''}">
+  root.innerHTML = `<div class="print-doc">
     <h1>I Miei Abbonamenti</h1>
-    <div class="meta">Profilo: ${escapeHtml(profile.name)} · Stampato il ${escapeHtml(when)}${filtersActive ? ' · Vista filtrata' : ''}</div>
+    <div class="meta">Profilo: ${escapeHtml(profile.name)} · Stampato il ${escapeHtml(when)}</div>
     <div class="totals">
-      <div>Mensile<br><strong>${fmtMoney(totalMonthly)}</strong></div>
-      <div>Annuale<br><strong>${fmtMoney(totalYearly)}</strong></div>
-      <div>Attivi<br><strong>${activeInList.length}</strong> / ${list.length}</div>
+      <div>Mensile<br><strong>${fmtMoney(totals.monthly)}</strong></div>
+      <div>Annuale<br><strong>${fmtMoney(totals.yearly)}</strong></div>
+      <div>Attivi<br><strong>${totals.activeCount}</strong> / ${list.length}</div>
     </div>
     <table>
       <thead>
@@ -5658,37 +5690,16 @@ function buildPrintSheet(){
       </thead>
       <tbody>${rows}</tbody>
     </table>
-    <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4${list.length > 34 ? ' (elenco lungo: potrebbe sforare su una seconda pagina)' : ''}</div>
+    <div class="foot">Documento generato dall'app · layout ottimizzato per un foglio A4</div>
   </div>`;
-}
-
-function printSubscriptionsSheet(){
-  const root = document.getElementById('printRoot');
-  if(!root){ window.print(); return; }
-
-  // Contenuto sempre già pronto (ricostruito ad ogni renderTable); qui lo
-  // aggiorniamo un'ultima volta per freschezza, ma anche se questa riga
-  // non facesse in tempo a dipingersi, il contenuto della volta precedente
-  // sarebbe comunque presente e visibile — mai più un foglio vuoto.
-  buildPrintSheet();
 
   const cleanup = ()=>{
     window.removeEventListener('afterprint', cleanup);
-    // Non svuotiamo più #printRoot dopo la stampa: lo lasciamo pronto,
-    // così anche una seconda stampa ravvicinata non parte da zero.
+    root.innerHTML = '';
   };
   window.addEventListener('afterprint', cleanup);
-  // Bug fix: un setTimeout fisso di 50ms non basta su alcuni browser mobile,
-  // dove il motore di stampa può "fotografare" la pagina prima che il nuovo
-  // contenuto di #printRoot sia stato dipinto (risultato: foglio bianco).
-  // Due requestAnimationFrame + lettura di un layout property forzano il
-  // browser a completare un ciclo di layout/paint prima di stampare.
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      void root.offsetHeight; // forza il reflow
-      window.print();
-    });
-  });
+  // piccolo delay: lascia layout stampabile
+  setTimeout(()=> window.print(), 50);
 }
 
 /* ================================================================
@@ -6383,12 +6394,7 @@ function openConfirm(title, text, callback){
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmText').textContent = text;
   confirmCallback = callback;
-  // Bug fix: mancava la stessa chiamata usata da ogni altro modal dell'app
-  // (playModalEnter) che applica le classi anim-in/is-settled. Senza di
-  // essa il modal restava per sempre a opacity:0 / traslato fuori schermo
-  // — tecnicamente "attivo" ma del tutto invisibile (soprattutto su
-  // mobile, dove parte traslato dal basso).
-  playModalEnter(confirmOverlay);
+  confirmOverlay.classList.add('active');
 }
 document.getElementById('confirmCancel').addEventListener('click', ()=>{
   confirmOverlay.classList.remove('active'); confirmCallback = null;
@@ -6453,12 +6459,12 @@ function buildCalendarGrid(year, month, labelsElId, gridElId, compact){
       const stickersHtml = shown.map(s=>
         `<span class="wallcal-sticker" data-id="${s.id}">${serviceIconHtml(s,'svc-icon-xs')}</span>`
       ).join('') + (restCount > 0 ? `<span class="wallcal-more">+${restCount}</span>` : '');
-      html += `<div class="cal-cell" style="min-height:34px;padding:3px;${isToday?'border-color:var(--accent);':''}">` +
+      html += `<div class="cal-cell${isToday?' is-today':''}" style="min-height:34px;padding:3px;">` +
         `<div class="daynum">${day}</div>` +
         `<div class="mini-stickers">${stickersHtml}</div>` +
         `</div>`;
     }else{
-      html += `<div class="cal-cell" style="${isToday?'border-color:var(--accent);':''}"><div class="daynum">${day}</div>` +
+      html += `<div class="cal-cell${isToday?' is-today':''}"><div class="daynum">${day}</div>` +
         evs.map(s=>{
           const tip = escapeHtml(s.name) + (s.notes&&s.notes.trim()?' — '+escapeHtml(s.notes.trim()):'');
           return `<div class="cal-event" data-id="${s.id}" title="${tip}" style="cursor:pointer;">${serviceIconHtml(s,'svc-icon-xs')}<span class="cal-event-name">${escapeHtml(s.name)}</span></div>`;
@@ -6665,7 +6671,7 @@ function renderUpcomingList(){
   }
   el.innerHTML = items.map(({sub, date}) => {
     const days = Math.round((date - today) / 86400000);
-    const when = days === 0 ? 'Oggi' : (days === 1 ? 'Domani' : fmtDate(date.toISOString().slice(0,10)));
+    const when = days === 0 ? 'Oggi' : (days === 1 ? 'Domani' : fmtDateShort(date.toISOString().slice(0,10)));
     return `<div class="sub-row upcoming-item" data-id="${sub.id}">
       ${serviceIconHtml(sub,'svc-icon-sm')}
       <span class="sub-row-name">${escapeHtml(sub.name)}</span>
@@ -7372,10 +7378,17 @@ function enhanceAsMenu(sel){
       item.textContent = opt.textContent;
       item.tabIndex = -1;
       item.addEventListener('click', (e)=>{
+        e.preventDefault();
         e.stopPropagation();
         sel.value = opt.value;
         sync();
         close();
+        // chiudi eventuali altri menu rimasti aperti
+        document.querySelectorAll('body > .m3-select-menu').forEach(m=>{
+          m.classList.remove('m3-select-menu-open');
+        });
+        document.querySelectorAll('.m3-select.open').forEach(w=> w.classList.remove('open'));
+        wrap.classList.remove('open');
         sel.dispatchEvent(new Event('change', {bubbles:true}));
       });
       menu.appendChild(item);
@@ -7416,35 +7429,48 @@ function enhanceAsMenu(sel){
   }
 
   function open(){
-    // Bug fix: prima si cercava il menu con w.querySelector('.m3-select-menu'),
-    // ma una volta "portato" su document.body il menu non è più dentro w — la
-    // ricerca falliva silenziosamente e il menu precedente restava aperto per
-    // sempre, impilandosi con quelli aperti dopo (bug visibile: più tendine
-    // filtri sovrapposte contemporaneamente). Ora si chiude passando dal
-    // riferimento affidabile _m3Close, lo stesso usato per il click fuori.
+    // chiudi TUTTI gli altri select (anche menu portati su body)
+    document.querySelectorAll('.m3-select-menu.m3-select-menu-open').forEach(m=>{
+      m.classList.remove('m3-select-menu-open');
+      m.style.display = '';
+      const owner = document.querySelector('.m3-select[data-for="'+(m.dataset.forSel||'')+'"]');
+      // rimetti nel wrap se possibile
+      const wraps = document.querySelectorAll('.m3-select');
+      wraps.forEach(w=>{
+        if(w.contains(m) || (m.dataset.ownerId && w.dataset.for === m.dataset.ownerId)) return;
+      });
+    });
     document.querySelectorAll('.m3-select.open').forEach(w=>{
       if(w === wrap) return;
-      const otherSel = document.getElementById(w.dataset.for);
-      if(otherSel && typeof otherSel._m3Close === 'function'){
-        otherSel._m3Close();
-      }else{
-        w.classList.remove('open');
-        w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+      w.classList.remove('open');
+      w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
+      const m = w.querySelector('.m3-select-menu');
+      if(m){
+        m.classList.remove('m3-select-menu-open');
+        if(m.parentElement === document.body) w.appendChild(m);
       }
+    });
+    // menu orfani sul body
+    document.querySelectorAll('body > .m3-select-menu').forEach(m=>{
+      m.classList.remove('m3-select-menu-open');
+      m.style.display = 'none';
     });
     rebuildOptions();
     // Portal su body: evita offset sbagliati da transform del modal
     if(menu.parentElement !== document.body) document.body.appendChild(menu);
     wrap.classList.add('open');
     menu.classList.add('m3-select-menu-open');
+    menu.style.display = 'block';
     trigger.setAttribute('aria-expanded', 'true');
     requestAnimationFrame(()=>{ placeMenu(); requestAnimationFrame(placeMenu); });
   }
   function close(){
     wrap.classList.remove('open');
     menu.classList.remove('m3-select-menu-open');
+    menu.style.display = 'none';
     trigger.setAttribute('aria-expanded', 'false');
     if(menu.parentElement === document.body) wrap.appendChild(menu);
+    menu.style.display = '';
   }
 
   trigger.addEventListener('click', (e)=>{
@@ -7483,17 +7509,9 @@ document.addEventListener('pointerdown', (e)=>{
 });
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape'){
-    // Stesso bug del click-fuori: bisogna passare da _m3Close(), non da
-    // manipolazione diretta del wrap, altrimenti il menu portato su body
-    // resta visibile anche dopo Escape.
     document.querySelectorAll('.m3-select.open').forEach(w=>{
-      const sel = document.getElementById(w.dataset.for);
-      if(sel && typeof sel._m3Close === 'function'){
-        sel._m3Close();
-      }else{
-        w.classList.remove('open');
-        w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
-      }
+      w.classList.remove('open');
+      w.querySelector('.m3-select-trigger')?.setAttribute('aria-expanded','false');
     });
   }
 });
@@ -7519,8 +7537,8 @@ function renderProfileDropdownList(){
       <div class="profile-avatar-dot" style="background:${p.color}">${getProfileInitial(p.name)}</div>
       <span style="flex:1;">${escapeHtml(p.name)}</span>
       <div class="profile-actions">
-        <span data-action="rename" data-id="${p.id}" title="Rinomina">${rowActionIcon('edit')}</span>
-        ${profiles.length > 1 ? `<span data-action="delete" data-id="${p.id}" title="Elimina">${rowActionIcon('del')}</span>` : ''}
+        <span data-action="rename" data-id="${p.id}" title="Rinomina">✏️</span>
+        ${profiles.length > 1 ? `<span data-action="delete" data-id="${p.id}" title="Elimina">🗑</span>` : ''}
       </div>
     </div>`).join('');
 }
@@ -7940,8 +7958,8 @@ function renderProfilePickerList(){
         <small>${p.id===activeProfileId?'Profilo attivo':'Tocca per attivare'}</small>
       </div>
       <div class="row-actions">
-        <button type="button" data-action="rename" data-id="${p.id}" title="Rinomina" aria-label="Rinomina">${rowActionIcon('edit')}</button>
-        ${profiles.length>1?`<button type="button" data-action="delete" data-id="${p.id}" title="Elimina" aria-label="Elimina">${rowActionIcon('del')}</button>`:''}
+        <button type="button" data-action="rename" data-id="${p.id}" title="Rinomina" aria-label="Rinomina">✏️</button>
+        ${profiles.length>1?`<button type="button" data-action="delete" data-id="${p.id}" title="Elimina" aria-label="Elimina">🗑</button>`:''}
       </div>
     </div>`).join('');
 }
@@ -8033,14 +8051,7 @@ document.getElementById('sdInfo')?.addEventListener('click', (e)=>{
     if(btn) btn.click();
     else {
       const ov = document.getElementById('aboutOverlay');
-      // Stesso identico bug del cestino: senza playModalEnter il modal
-      // resta a opacity:0 anche se "active". Percorso di fallback raro
-      // (scatta solo se il bottone About non esiste), sistemato per
-      // coerenza durante il controllo generale.
-      if(ov){
-        if(typeof playModalEnter === 'function') playModalEnter(ov);
-        else ov.classList.add('active');
-      }
+      if(ov){ ov.classList.add('active'); }
     }
   }, 150);
 });
