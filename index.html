@@ -1297,7 +1297,7 @@ select.m3-native-hidden{
   }
   .toolbar-filters{
     display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px !important;
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 36px !important;
     gap:6px !important;
     align-items:center !important;
     width:100% !important;
@@ -3885,6 +3885,417 @@ body:has(#formOverlay.active) .nav-more-btn{
   gap: 8px !important;
 }
 
+
+/* Conferma sempre sopra Backup / Profili / Info */
+#confirmOverlay{
+  z-index: 480 !important;
+}
+#confirmOverlay .modal{
+  opacity: 1 !important;
+  transform: none !important;
+  max-width: min(420px, calc(100vw - 32px));
+}
+#confirmOverlay #confirmText{
+  white-space: pre-line;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0 0 16px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+@media (max-width:768px){
+  #confirmOverlay{
+    align-items: flex-end !important;
+    padding: 12px !important;
+  }
+  #confirmOverlay .modal{
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 24px !important;
+    margin: 0 !important;
+  }
+}
+
+
+/* Lista unica (desktop + mobile): niente tabella doppia */
+.table-wrap{ display: none !important; }
+.table-mobile-list{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+@media print{
+  .table-wrap{ display: block !important; }
+  .table-mobile-list{ display: none !important; }
+}
+/* Detail sheet abbonamento */
+#detailOverlay{ z-index: 460 !important; }
+#detailOverlay .detail-sheet{
+  width: min(440px, calc(100vw - 24px));
+  max-height: min(92dvh, 820px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  border-radius: 24px !important;
+  background: var(--surface-elev);
+}
+#detailOverlay .detail-hero{
+  position: relative;
+  padding: 20px 20px 28px;
+  text-align: center;
+  color: #fff;
+  background: var(--detail-accent, #e50914);
+  flex: none;
+}
+#detailOverlay .detail-hero-actions{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+#detailOverlay .detail-hero-actions .right-actions{
+  display: flex; gap: 8px;
+}
+#detailOverlay .detail-icon-btn{
+  width: 40px; height: 40px; border-radius: 999px;
+  border: none; background: rgba(0,0,0,.28); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; font-weight: 600;
+  padding: 0 12px; min-width: 40px;
+}
+#detailOverlay .detail-icon-btn.wide{ width: auto; border-radius: 999px; }
+#detailOverlay .detail-logo{
+  width: 88px; height: 88px; border-radius: 50%;
+  margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.25); overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+#detailOverlay .detail-logo .svc-icon,
+#detailOverlay .detail-logo .svc-icon-sm,
+#detailOverlay .detail-logo > *{
+  width: 56px !important; height: 56px !important;
+  border-radius: 14px !important;
+}
+#detailOverlay .detail-name{
+  font-size: 26px; font-weight: 800; margin: 0 0 4px; letter-spacing: -0.02em;
+}
+#detailOverlay .detail-sub{
+  font-size: 14px; opacity: .85; margin: 0;
+}
+#detailOverlay .detail-body{
+  padding: 16px; overflow-y: auto; flex: 1; min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+#detailOverlay .detail-stats{
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 0; margin-bottom: 14px;
+  background: var(--m3-surface-container-low);
+  border-radius: 16px; overflow: hidden;
+}
+#detailOverlay .detail-stat{
+  padding: 12px 8px; text-align: center;
+  border-right: 1px solid var(--line);
+}
+#detailOverlay .detail-stat:last-child{ border-right: none; }
+#detailOverlay .detail-stat .v{
+  font-size: 15px; font-weight: 800; color: var(--ink);
+}
+#detailOverlay .detail-stat .l{
+  font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 2px;
+}
+#detailOverlay .detail-row{
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px; margin-bottom: 8px;
+  background: var(--m3-surface-container-low);
+  border-radius: 14px;
+}
+#detailOverlay .detail-row .ico{
+  width: 28px; text-align: center; flex: none; opacity: .7;
+}
+#detailOverlay .detail-row .lab{ flex: 1; font-weight: 600; font-size: 14px; color: var(--ink); }
+#detailOverlay .detail-row .val{ font-size: 13px; font-weight: 600; color: var(--ink-soft); text-align: right; }
+#detailOverlay .detail-notes{
+  padding: 14px; background: var(--m3-surface-container-low);
+  border-radius: 14px; margin-bottom: 12px;
+}
+#detailOverlay .detail-notes .lab{ font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+#detailOverlay .detail-notes .txt{ font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+#detailOverlay .detail-suspend{
+  width: 100%; margin-top: 4px;
+}
+@media (max-width:768px){
+  #detailOverlay{ align-items: flex-end !important; padding: 12px !important; }
+  #detailOverlay .detail-sheet{
+    width: 100% !important; max-width: 100% !important;
+    margin: 0 !important; border-radius: 24px 24px 0 0 !important;
+    max-height: min(92dvh, 860px) !important;
+  }
+}
+/* z-index audit: tutti i modal sopra la UI */
+#confirmOverlay{ z-index: 500 !important; }
+#backupOverlay, #profilePickerOverlay, #profileOverlay, #aboutOverlay{ z-index: 420 !important; }
+#formOverlay{ z-index: 450 !important; }
+#detailOverlay{ z-index: 440 !important; }
+.modal-overlay.active{ pointer-events: auto !important; }
+.modal-overlay.active .modal{ pointer-events: auto !important; }
+
+
+/* Filtri sempre su UNA riga (scroll orizzontale se serve) */
+#filterBar,
+.toolbar-filters{
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  grid-template-columns: none !important;
+}
+#filterBar::-webkit-scrollbar{ display: none; }
+#filterBar > .search-tile,
+#filterBar > .m3-select,
+#filterBar > .select,
+#filterBar > #btnPrint{
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+#filterBar > .m3-select,
+#filterBar > .select{
+  max-width: 110px !important;
+}
+#filterBar .m3-select-trigger{
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 4px 10px !important;
+  font-size: 11.5px !important;
+  white-space: nowrap;
+}
+#filterBar .search-tile{
+  flex: 0 0 40px !important;
+  width: 40px !important;
+  transition: flex-basis .35s cubic-bezier(.22,1,.36,1), width .35s cubic-bezier(.22,1,.36,1);
+}
+#filterBar #btnPrint{
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  flex: 0 0 36px !important;
+}
+/* Ricerca: la lente si allarga a campo */
+#tableToolbar.is-search-open #filterBar{
+  grid-template-columns: none !important;
+}
+#tableToolbar.is-search-open #filterBar > .m3-select{ display: none !important; }
+#tableToolbar.is-search-open #filterBar > #btnPrint{ display: none !important; }
+#tableToolbar.is-search-open #filterBar > .search-tile{
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+#tableToolbar.is-search-open .search-tile-btn{
+  display: none !important;
+}
+#tableToolbar.is-search-open .search-tile .input-search{
+  display: block !important;
+  animation: searchExpand .35s cubic-bezier(.22,1,.36,1) both;
+}
+#tableToolbar.is-search-open .search-tile-close{ display: block !important; }
+@keyframes searchExpand{
+  from{ opacity: .4; transform: scaleX(.35); transform-origin: left center; }
+  to{ opacity: 1; transform: scaleX(1); transform-origin: left center; }
+}
+.search-tile-btn{
+  display: inline-flex !important;
+  width: 40px !important;
+  height: 36px !important;
+  border-radius: 12px !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--m3-surface-container-low) !important;
+  transition: transform .2s ease, background .2s ease;
+}
+.search-tile-btn:active{ transform: scale(0.94); }
+
+/* Form: stesso linguaggio del dettaglio */
+#formOverlay .modal{
+  border-radius: 24px !important;
+  overflow: hidden;
+}
+#formOverlay .modal h2{
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+
+
+/* Filtri: una riga compatta, tutto visibile o scroll fluido */
+#filterBar.toolbar-filters,
+#filterBar{
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  grid-template-columns: none !important;
+}
+#filterBar::-webkit-scrollbar{ height: 0; display: none; }
+#filterBar > *{
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+}
+#filterBar > .search-tile{
+  width: 36px !important;
+  flex: 0 0 36px !important;
+}
+#filterBar > .m3-select{
+  max-width: 92px !important;
+  width: auto !important;
+}
+#filterBar .m3-select-trigger{
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  border-radius: 10px !important;
+  gap: 4px !important;
+}
+#filterBar .m3-select-value{
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#filterBar .m3-select-chevron{ width: 12px !important; height: 12px !important; }
+#filterBar #btnPrint{
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  flex: 0 0 34px !important;
+  border-radius: 10px !important;
+  padding: 0 !important;
+}
+#tableToolbar.is-search-open #filterBar > .search-tile{
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 120px !important;
+}
+
+/* Form = stessa shell del dettaglio */
+
+#formOverlay .detail-hero-actions{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative;z-index:2;
+}
+#formOverlay .detail-hero-actions .right-actions{display:flex;gap:8px;align-items:center;}
+#formOverlay .detail-icon-btn{
+  height:40px;min-width:40px;border-radius:999px;border:none;
+  background:rgba(0,0,0,.32);color:#fff !important;
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;font-weight:700;padding:0 14px;line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+#formOverlay .detail-icon-btn.wide{width:auto;min-width:72px;}
+
+#formOverlay .form-sheet{
+  padding: 0 !important;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: min(92dvh, 860px) !important;
+  width: min(440px, calc(100vw - 24px)) !important;
+  border-radius: 24px !important;
+}
+#formOverlay .form-hero{
+  flex: none;
+}
+#formOverlay .form-body-sheet{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+#formOverlay .form-body-sheet .form-grid{
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+  padding: 14px 14px 8px;
+  margin: 0;
+  gap: 10px;
+}
+#formOverlay .form-body-sheet .modal-footer{
+  flex: none;
+  padding: 10px 14px 14px;
+  margin: 0;
+  border-top: 1px solid var(--line);
+  background: var(--surface-elev);
+}
+#formOverlay .form-hero .detail-name{
+  font-size: 22px;
+}
+#formOverlay .modal-sub{ display: none !important; }
+@media (max-width:768px){
+  #formOverlay{ align-items: flex-end !important; padding: 12px !important; }
+  
+#formOverlay .detail-hero-actions{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:relative;z-index:2;
+}
+#formOverlay .detail-hero-actions .right-actions{display:flex;gap:8px;align-items:center;}
+#formOverlay .detail-icon-btn{
+  height:40px;min-width:40px;border-radius:999px;border:none;
+  background:rgba(0,0,0,.32);color:#fff !important;
+  display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;font-weight:700;padding:0 14px;line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+#formOverlay .detail-icon-btn.wide{width:auto;min-width:72px;}
+
+#formOverlay .form-sheet{
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 24px 24px 0 0 !important;
+    margin: 0 !important;
+  }
+}
+/* campi come righe dettaglio */
+#formOverlay .form-field{
+  background: var(--m3-surface-container-low);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+#formOverlay .form-field label{
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  margin-bottom: 4px;
+}
+#formOverlay .form-field input,
+#formOverlay .form-field select,
+#formOverlay .form-field textarea{
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 0 !important;
+  min-height: 32px;
+  box-shadow: none !important;
+}
+#formOverlay .form-field input:focus,
+#formOverlay .form-field select:focus,
+#formOverlay .form-field textarea:focus{
+  outline: none !important;
+  border: none !important;
+}
+
 </style>
 </head>
 <body>
@@ -4062,22 +4473,33 @@ body:has(#formOverlay.active) .nav-more-btn{
             <button type="button" class="search-tile-close" id="searchTileClose" title="Chiudi" aria-label="Chiudi ricerca">×</button>
           </div>
           <select class="select" id="filterCategory" aria-label="Categoria">
-            <option value="">Categoria</option>
+            <option value="">Cat.</option>
           </select>
           <select class="select" id="filterStatus" aria-label="Stato">
             <option value="">Stato</option>
-            <option value="Attivo">Attivo</option>
+            <option value="Attivo">On</option>
             <option value="Disattivato">Off</option>
           </select>
+          <select class="select" id="filterFrequency" aria-label="Frequenza">
+            <option value="">Piano</option>
+            <option value="Mensile">Mensile</option>
+            <option value="Annuale">Annuale</option>
+            <option value="Settimanale">Settimanale</option>
+            <option value="Bimestrale">Bimestrale</option>
+            <option value="Trimestrale">Trimestrale</option>
+            <option value="Semestrale">Semestrale</option>
+            <option value="Biennale">Biennale</option>
+            <option value="Altro">Altro</option>
+          </select>
           <select class="select" id="sortSelect" aria-label="Ordina">
-            <option value="nextRenewal-asc">Scadenza ↑</option>
-            <option value="nextRenewal-desc">Scadenza ↓</option>
-            <option value="monthly-desc">Prezzo ↓</option>
-            <option value="monthly-asc">Prezzo ↑</option>
+            <option value="nextRenewal-asc">Scad. ↑</option>
+            <option value="nextRenewal-desc">Scad. ↓</option>
+            <option value="monthly-desc">€ ↓</option>
+            <option value="monthly-asc">€ ↑</option>
             <option value="name-asc">A–Z</option>
             <option value="name-desc">Z–A</option>
           </select>
-          <button class="btn btn-sm btn-icon" id="btnPrint" title="Stampa" aria-label="Stampa">🖨️</button>
+          <button class="btn btn-sm btn-icon" id="btnPrint" title="Stampa" aria-label="Stampa"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9V4h12v5M6 18h12v-5H6v5z" stroke="currentColor" stroke-width="1.7"/><path d="M4 9h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9z" stroke="currentColor" stroke-width="1.7"/></svg></button>
         </div>
       </div>
 
@@ -4211,10 +4633,19 @@ body:has(#formOverlay.active) .nav-more-btn{
 
 <!-- ============ MODAL: FORM ============ -->
 <div class="modal-overlay" id="formOverlay">
-  <div class="modal">
-    <h2 id="formTitle">Nuovo abbonamento</h2>
-    <div class="modal-sub">Compila i campi. I campi con * sono obbligatori.</div>
-    <form id="subForm" novalidate>
+  <div class="modal detail-sheet form-sheet">
+    <div class="detail-hero form-hero" id="formHero">
+      <div class="detail-hero-actions">
+        <button type="button" class="detail-icon-btn" id="formHeroCancel" aria-label="Chiudi">←</button>
+        <div class="right-actions">
+          <button type="submit" form="subForm" class="detail-icon-btn wide" id="formHeroSave">Salva</button>
+        </div>
+      </div>
+      <div class="detail-logo" id="formHeroLogo"></div>
+      <h2 class="detail-name" id="formTitle">Nuovo abbonamento</h2>
+      <p class="detail-sub" id="formHeroSub">Compila i dettagli sotto</p>
+    </div>
+    <form id="subForm" novalidate class="form-body-sheet">
       <div class="form-grid">
         <div class="form-field full" style="position:relative;" id="nameFieldWrap">
           <label>Nome servizio *</label>
@@ -4290,8 +4721,25 @@ body:has(#formOverlay.active) .nav-more-btn{
           <select id="f_frequency">
             <option value="Mensile">Mensile</option>
             <option value="Annuale">Annuale</option>
+            <option value="Settimanale">Settimanale</option>
+            <option value="Bimestrale">Bimestrale</option>
+            <option value="Trimestrale">Trimestrale</option>
+            <option value="Semestrale">Semestrale</option>
+            <option value="Biennale">Biennale (2 anni)</option>
+            <option value="Altro">Altro…</option>
           </select>
           <div class="err"></div>
+        </div>
+        <div class="form-field full" id="customFreqRow" style="display:none;">
+          <label>Ogni</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="number" id="f_customEvery" min="1" step="1" value="2" style="max-width:88px;" inputmode="numeric">
+            <select id="f_customUnit">
+              <option value="settimane">settimane</option>
+              <option value="mesi">mesi</option>
+              <option value="anni">anni</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-field" id="field-payment">
@@ -4324,7 +4772,7 @@ body:has(#formOverlay.active) .nav-more-btn{
           <label>Stato</label>
           <select id="f_status">
             <option value="Attivo">Attivo</option>
-            <option value="Disattivato">Disattivato</option>
+            <option value="Disattivato">Sospeso</option>
           </select>
           <div class="err"></div>
         </div>
@@ -4344,6 +4792,39 @@ body:has(#formOverlay.active) .nav-more-btn{
         <button type="submit" class="btn btn-primary" id="btnSaveForm" style="display:none;">Salva</button>
       </div>
     </form>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="detailOverlay">
+  <div class="modal detail-sheet">
+    <div class="detail-hero" id="detailHero">
+      <div class="detail-hero-actions">
+        <button type="button" class="detail-icon-btn" id="detailBack" aria-label="Indietro">←</button>
+        <div class="right-actions">
+          <button type="button" class="detail-icon-btn wide" id="detailEdit">Modifica</button>
+          <button type="button" class="detail-icon-btn" id="detailDelete" aria-label="Elimina"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+      <div class="detail-logo" id="detailLogo"></div>
+      <h2 class="detail-name" id="detailName">—</h2>
+      <p class="detail-sub" id="detailSub">—</p>
+    </div>
+    <div class="detail-body">
+      <div class="detail-stats">
+        <div class="detail-stat"><div class="v" id="detailFreq">—</div><div class="l">Piano</div></div>
+        <div class="detail-stat"><div class="v" id="detailPrice">—</div><div class="l">Costo</div></div>
+        <div class="detail-stat"><div class="v" id="detailStatus">—</div><div class="l">Stato</div></div>
+      </div>
+      <div class="detail-row"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="lab">Prossimo pagamento</span><span class="val" id="detailNext">—</span></div>
+      <div class="detail-row"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><span class="lab">Categoria</span><span class="val" id="detailCat">—</span></div>
+      <div class="detail-row"><span class="ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.7"/></svg></span><span class="lab">Pagamento</span><span class="val" id="detailPay">—</span></div>
+      <div class="detail-notes">
+        <div class="lab"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="vertical-align:-3px;margin-right:6px"><path d="M7 4h10a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.7"/></svg>Note</div>
+        <div class="txt" id="detailNotes">Nessuna nota</div>
+      </div>
+      <button type="button" class="btn" id="detailSuspend" style="width:100%;">Sospendi abbonamento</button>
+    </div>
   </div>
 </div>
 
@@ -4495,7 +4976,7 @@ const ACTIVE_PROFILE_KEY = 'subManager_activeProfile_v1';
 
 /* Versione visibile in "Backup & Dati" per verificare di avere l'ultima consegna.
    Aggiornare questa stringa ad ogni nuova versione fornita. */
-const APP_VERSION = '2.0.9';
+const APP_VERSION = '2.3.2';
 const THEME_KEY   = 'subManager_theme_v1';
 
 /* ---------------- CATEGORY COLORS (default) ---------------- */
@@ -4838,20 +5319,16 @@ function generateId(){
 /* ================================================================
    CALCOLI
    ================================================================ */
-function calcNextRenewal(startDate, frequency){
-  // Calcola la prima data di rinnovo dopo oggi partendo dalla data di attivazione,
-  // aggiungendo periodi (1 mese o 1 anno) finché non supera la data odierna.
+function calcNextRenewal(startDate, frequencyOrSub){
   const start = new Date(startDate);
   if(isNaN(start)) return '';
   const today = new Date(); today.setHours(0,0,0,0);
   let d = new Date(start);
-  const addPeriod = () => {
-    if(frequency === 'Annuale') d.setFullYear(d.getFullYear()+1);
-    else d.setMonth(d.getMonth()+1);
-  };
-  addPeriod();
-  while(d < today){
-    addPeriod();
+  const sub = (typeof frequencyOrSub === 'object') ? frequencyOrSub : { frequency: frequencyOrSub || 'Mensile' };
+  d = addFrequencyPeriod(d, sub);
+  let guard = 0;
+  while(d < today && guard++ < 600){
+    d = addFrequencyPeriod(d, sub);
   }
   return d.toISOString().slice(0,10);
 }
@@ -4879,15 +5356,12 @@ function getUpcomingRenewal(sub, refDate){
   let d = new Date(sub.nextRenewal);
   if(isNaN(d)) return null;
 
-  if(sub.frequency === 'Annuale'){
-    while(d < ref){
-      d = new Date(d.getFullYear()+1, d.getMonth(), clampDay(d.getFullYear()+1, d.getMonth(), d.getDate()));
-    }
-  }else{
-    while(d < ref){
-      const y = d.getFullYear(), m = d.getMonth()+1;
-      const ny = m>11 ? y+1 : y, nm = m>11 ? 0 : m;
-      d = new Date(ny, nm, clampDay(ny, nm, d.getDate()));
+  let guard = 0;
+  while(d < ref && guard++ < 600){
+    d = addFrequencyPeriod(d, sub);
+    // clamp day for month-based
+    if(sub.frequency !== 'Settimanale' && !(sub.customUnit === 'settimane')){
+      d = new Date(d.getFullYear(), d.getMonth(), clampDay(d.getFullYear(), d.getMonth(), d.getDate()));
     }
   }
   return d;
@@ -4903,17 +5377,35 @@ function getOccurrencesInYear(sub, year){
   const start = sub.startDate ? new Date(sub.startDate) : anchor;
   const occurrences = [];
 
-  if(sub.frequency === 'Annuale'){
-    if(year < start.getFullYear()) return [];
-    const day = clampDay(year, anchor.getMonth(), anchor.getDate());
-    occurrences.push({ month: anchor.getMonth(), day });
-  }else{
-    const day = anchor.getDate();
-    for(let m=0; m<12; m++){
-      // Non mostrare mesi precedenti all'attivazione
-      if(year < start.getFullYear() || (year === start.getFullYear() && m < start.getMonth())) continue;
-      occurrences.push({ month: m, day: clampDay(year, m, day) });
+  // genera occorrenze scorrendo il periodo nell'anno
+  let d = new Date(anchor);
+  // torna indietro fino a prima dell'anno
+  let guard = 0;
+  while(d.getFullYear() >= year && guard++ < 400){
+    const prev = addFrequencyPeriod(new Date(d.getTime() - 86400000*2), sub); // approximate step back via loop
+    // step back one period by inverse: walk from start
+    break;
+  }
+  // parti da ancora e avanza; se ancora dopo l'anno, torna indietro semplificato
+  d = new Date(anchor);
+  guard = 0;
+  while(d.getFullYear() > year && guard++ < 400){
+    // non possiamo invertire facilmente: riparti da startDate
+    break;
+  }
+  d = new Date(start);
+  if(isNaN(d)) d = new Date(anchor);
+  // allinea a ciclo
+  guard = 0;
+  while(d < start && guard++ < 50) d = addFrequencyPeriod(d, sub);
+  guard = 0;
+  while(d.getFullYear() < year && guard++ < 400) d = addFrequencyPeriod(d, sub);
+  guard = 0;
+  while(d.getFullYear() === year && guard++ < 400){
+    if(d >= start){
+      occurrences.push({ month: d.getMonth(), day: d.getDate() });
     }
+    d = addFrequencyPeriod(d, sub);
   }
   return occurrences;
 }
@@ -4943,13 +5435,76 @@ function isActiveSub(sub){
   return st === 'Attivo' || st === '';
 }
 
+/** Periodo in mesi (anche frazionario, es. settimanale ≈ 0.2308) */
+function frequencyToMonths(sub){
+  const f = (sub && sub.frequency) || 'Mensile';
+  if(f === 'Mensile') return 1;
+  if(f === 'Annuale') return 12;
+  if(f === 'Settimanale') return 12/52;
+  if(f === 'Bimestrale') return 2;
+  if(f === 'Trimestrale') return 3;
+  if(f === 'Semestrale') return 6;
+  if(f === 'Biennale') return 24;
+  if(f === 'Altro' || sub.customEvery){
+    const n = Math.max(1, parseFloat(sub.customEvery) || 1);
+    const u = sub.customUnit || 'mesi';
+    if(u === 'settimane') return n * (12/52);
+    if(u === 'anni') return n * 12;
+    return n; // mesi
+  }
+  return 1;
+}
 function monthlyEquivalent(sub){
   const p = parseFloat(sub.price) || 0;
-  return sub.frequency === 'Annuale' ? p/12 : p;
+  const m = frequencyToMonths(sub) || 1;
+  return p / m;
 }
 function yearlyEquivalent(sub){
-  const p = parseFloat(sub.price) || 0;
-  return sub.frequency === 'Annuale' ? p : p*12;
+  return monthlyEquivalent(sub) * 12;
+}
+/** Avanza una data di un periodo in base a frequency/custom */
+function addFrequencyPeriod(date, subOrFreq){
+  const d = new Date(date);
+  const sub = (typeof subOrFreq === 'object' && subOrFreq) ? subOrFreq : { frequency: subOrFreq || 'Mensile' };
+  const f = sub.frequency || 'Mensile';
+  if(f === 'Annuale'){
+    d.setFullYear(d.getFullYear()+1);
+    return d;
+  }
+  if(f === 'Biennale'){
+    d.setFullYear(d.getFullYear()+2);
+    return d;
+  }
+  if(f === 'Settimanale'){
+    d.setDate(d.getDate()+7);
+    return d;
+  }
+  if(f === 'Bimestrale'){ d.setMonth(d.getMonth()+2); return d; }
+  if(f === 'Trimestrale'){ d.setMonth(d.getMonth()+3); return d; }
+  if(f === 'Semestrale'){ d.setMonth(d.getMonth()+6); return d; }
+  if(f === 'Altro' || sub.customEvery){
+    const n = Math.max(1, parseInt(sub.customEvery,10) || 1);
+    const u = sub.customUnit || 'mesi';
+    if(u === 'settimane'){ d.setDate(d.getDate() + 7*n); return d; }
+    if(u === 'anni'){ d.setFullYear(d.getFullYear()+n); return d; }
+    d.setMonth(d.getMonth()+n);
+    return d;
+  }
+  // Mensile default
+  d.setMonth(d.getMonth()+1);
+  return d;
+}
+function frequencyLabel(sub){
+  const f = sub.frequency || 'Mensile';
+  if(f === 'Altro' || (sub.customEvery && f !== 'Mensile' && f !== 'Annuale' && !['Settimanale','Bimestrale','Trimestrale','Semestrale','Biennale'].includes(f))){
+    const n = sub.customEvery || 1;
+    const u = sub.customUnit || 'mesi';
+    return 'Ogni ' + n + ' ' + u;
+  }
+  if(f === 'Altro' && sub.customEvery){
+    return 'Ogni ' + sub.customEvery + ' ' + (sub.customUnit||'mesi');
+  }
+  return f;
 }
 
 function computeTotals(){
@@ -5380,19 +5935,86 @@ function renderRadarChart(catTotals, cats, total){
     });
   }
 
-  if(reduce){ draw(1); return; }
+  // rotazione lenta continua (etichette sempre orizzontali)
+  let rot = 0;
+  function drawRot(progress, rotation){
+    const p = Math.max(0, Math.min(1, progress));
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = getCssColor('--line');
+    ctx.lineWidth = 1;
+    for(let ring=1; ring<=4; ring++){
+      ctx.beginPath();
+      for(let i=0; i<=n; i++){
+        const angle = (Math.PI*2 * i/n) - Math.PI/2 + rotation;
+        const rr = r * ring/4;
+        const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+    cats.forEach((c,i)=>{
+      const angle = (Math.PI*2 * i/n) - Math.PI/2 + rotation;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.lineTo(cx + Math.cos(angle)*r, cy + Math.sin(angle)*r);
+      ctx.stroke();
+    });
+    ctx.beginPath();
+    cats.forEach((c,i)=>{
+      const angle = (Math.PI*2 * i/n) - Math.PI/2 + rotation;
+      const rr = r * Math.sqrt(catTotals[c]/maxVal) * 0.92 * p;
+      const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = hexToRgba(getCssColor('--accent'), 0.22 * p);
+    ctx.fill();
+    ctx.strokeStyle = getCssColor('--accent');
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    cats.forEach((c,i)=>{
+      const angle = (Math.PI*2 * i/n) - Math.PI/2 + rotation;
+      const rr = r * Math.sqrt(catTotals[c]/maxVal) * 0.92 * p;
+      const x = cx + Math.cos(angle)*rr, y = cy + Math.sin(angle)*rr;
+      ctx.beginPath();
+      ctx.arc(x,y,3.5,0,Math.PI*2);
+      ctx.fillStyle = CATEGORY_COLORS[c] || getCssColor('--accent');
+      ctx.fill();
+      if(p > 0.85){
+        const labelX = cx + Math.cos(angle)*(r+34);
+        const labelY = cy + Math.sin(angle)*(r+34);
+        ctx.globalAlpha = (p - 0.85) / 0.15;
+        // testo sempre orizzontale
+        ctx.fillStyle = getCssColor('--ink');
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = Math.cos(angle) > 0.25 ? 'left' : (Math.cos(angle) < -0.25 ? 'right' : 'center');
+        ctx.textBaseline = 'middle';
+        ctx.fillText(c, labelX, labelY - 6);
+        ctx.fillStyle = getCssColor('--ink-soft');
+        ctx.font = '10px sans-serif';
+        ctx.fillText(fmtMoney(catTotals[c]), labelX, labelY + 8);
+        ctx.globalAlpha = 1;
+      }
+    });
+  }
+
+  if(reduce){ drawRot(1, 0); return; }
   const t0 = performance.now();
-  const dur = 780; // crescita più leggibile a ogni refresh
+  const dur = 900;
+  const spinPeriod = 72000; // ~72s per giro: molto fluido
+  let lastNow = t0;
+  let rotSmooth = 0;
   function tick(now){
     const p = Math.min(1, (now - t0) / dur);
-    // ease-out cubic
     const eased = 1 - Math.pow(1 - p, 3);
-    draw(eased);
-    if(p < 1) _radarAnim = requestAnimationFrame(tick);
-    else _radarAnim = null;
+    const dt = Math.min(64, now - lastNow);
+    lastNow = now;
+    // rotazione continua anche durante la crescita (molto lenta)
+    rotSmooth += (dt / spinPeriod) * Math.PI * 2;
+    drawRot(eased, rotSmooth);
+    _radarAnim = requestAnimationFrame(tick);
   }
-  // parte da 0 anche se il canvas era già disegnato
-  draw(0);
+  drawRot(0, 0);
   _radarAnim = requestAnimationFrame(tick);
 }
 
@@ -5422,11 +6044,13 @@ function getFilteredSorted(){
   const search = document.getElementById('searchInput').value.trim().toLowerCase();
   const cat = document.getElementById('filterCategory').value;
   const status = document.getElementById('filterStatus').value;
+  const freq = (document.getElementById('filterFrequency') || {}).value || '';
 
   let list = subscriptions.filter(s=>{
     if(search && !s.name.toLowerCase().includes(search)) return false;
     if(cat && s.category !== cat) return false;
     if(status && s.status !== status) return false;
+    if(freq && s.frequency !== freq) return false;
     return true;
   });
 
@@ -5554,7 +6178,7 @@ document.getElementById('tableMobileList').addEventListener('click', (e)=>{
     return;
   }
   const card = e.target.closest('.mobile-sub-card[data-id]');
-  if(card) openForm(card.dataset.id);
+  if(card) openDetail(card.dataset.id);
 });
 
 document.getElementById('sortSelect').addEventListener('change', (e)=>{
@@ -5627,6 +6251,7 @@ document.getElementById('tableAmountToggle').addEventListener('click', (e)=>{
 });
 document.getElementById('filterCategory').addEventListener('change', renderTable);
 document.getElementById('filterStatus').addEventListener('change', renderTable);
+document.getElementById('filterFrequency')?.addEventListener('change', renderTable);
 
 document.getElementById('tableBody').addEventListener('click', (e)=>{
   const btn = e.target.closest('button[data-action]');
@@ -5729,8 +6354,11 @@ function updateIconPreview(){
     label.textContent = detected ? 'Icona riconosciuta automaticamente dal nome.' : 'Nessuna icona caricata: verrà usata quella riconosciuta automaticamente.';
     btnClear.style.display = 'none';
   }
+  try{ updateFormHero(); }catch(e){}
 }
-document.getElementById('f_name').addEventListener('input', updateIconPreview);
+document.getElementById('f_name').addEventListener('input', ()=>{ updateIconPreview(); try{ updateFormHero(); }catch(e){} });
+document.getElementById('f_price')?.addEventListener('input', ()=>{ try{ updateFormHero(); }catch(e){} });
+document.getElementById('f_frequency')?.addEventListener('change', ()=>{ try{ updateFormHero(); }catch(e){} });
 document.getElementById('f_iconFile').addEventListener('change', (e)=>{
   const file = e.target.files[0];
   if(!file) return;
@@ -5750,6 +6378,7 @@ document.getElementById('btnClearIcon').addEventListener('click', ()=>{
   document.getElementById('f_customIcon').value = '';
   document.getElementById('f_iconFile').value = '';
   updateIconPreview();
+  try{ updateFormHero(); }catch(e){}
 });
 
 function buildColorSwatches(selected){
@@ -5763,6 +6392,7 @@ function buildColorSwatches(selected){
       document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
       sw.classList.add('selected');
       document.getElementById('f_color').value = c;
+      try{ updateFormHero(); updateIconPreview(); }catch(e){}
     });
     row.appendChild(sw);
   });
@@ -5827,17 +6457,34 @@ function openForm(id, presetName){
   enhanceAllDateInputs();
   editingId = id || null;
   try{ setAddMode(false); }catch(e){}
+  const susBtn = document.getElementById('btnSuspendSub');
+  if(susBtn){
+    if(id){
+      const sub = subscriptions.find(s=>s.id===id);
+      susBtn.style.display = '';
+      susBtn.textContent = (sub && sub.status === 'Attivo') ? 'Sospendi' : 'Riattiva';
+    }else{
+      susBtn.style.display = 'none';
+    }
+  }
   // Se non arriviamo dal quick-add, niente layout "card in alto"
   if(!presetName) formOverlay.classList.remove('from-qa-top');
   const sub = id ? subscriptions.find(s=>s.id===id) : null;
   const prefill = (!sub && presetName) ? String(presetName).trim() : '';
 
-  document.getElementById('formTitle').textContent = sub ? 'Modifica abbonamento' : 'Nuovo abbonamento';
+  document.getElementById('formTitle').textContent = sub ? (sub.name || 'Modifica') : 'Nuovo abbonamento';
   document.getElementById('f_name').value = sub ? sub.name : prefill;
   document.getElementById('f_category').value = sub ? sub.category : 'Streaming';
   document.getElementById('f_price').value = sub ? sub.price : '';
   document.getElementById('f_currency').value = sub ? sub.currency : '€';
-  document.getElementById('f_frequency').value = sub ? sub.frequency : 'Mensile';
+  const freqVal = sub ? (sub.frequency || 'Mensile') : 'Mensile';
+  const freqKnown = ['Mensile','Annuale','Settimanale','Bimestrale','Trimestrale','Semestrale','Biennale','Altro'];
+  document.getElementById('f_frequency').value = freqKnown.includes(freqVal) ? freqVal : 'Altro';
+  const ce = document.getElementById('f_customEvery');
+  const cu = document.getElementById('f_customUnit');
+  if(ce) ce.value = sub && sub.customEvery ? sub.customEvery : 2;
+  if(cu) cu.value = sub && sub.customUnit ? sub.customUnit : 'mesi';
+  try{ syncCustomFreqRow(); }catch(e){}
   document.getElementById('f_payment').value = sub ? sub.payment : 'Carta';
   document.getElementById('f_startDate').value = sub ? sub.startDate : '';
   document.getElementById('f_nextRenewal').value = sub ? sub.nextRenewal : '';
@@ -5870,6 +6517,7 @@ function openForm(id, presetName){
     resetToNameOnlyStep();
   }
   updateIconPreview();
+  try{ updateFormHero(); }catch(e){}
 
   if(typeof clearFormKbDock === 'function') clearFormKbDock(formOverlay);
   // Evita dock durante animazione apertura (altrimenti il form "sparisce")
@@ -5945,6 +6593,7 @@ function goToStep2(){
     document.getElementById('planChipsRow').style.display = 'none';
   }
   updateIconPreview();
+  try{ updateFormHero(); }catch(e){}
   // Focus prezzo dopo che il modal è stabile (no preventScroll → niente salto off-screen)
   setTimeout(()=>{
     try{
@@ -6006,6 +6655,7 @@ async function tryLiveFetchIconForForm(entry){
     if(detectKnownService(document.getElementById('f_name').value) === entry){
       document.getElementById('f_customIcon').value = dataUrl;
       updateIconPreview();
+  try{ updateFormHero(); }catch(e){}
     }
   }catch(e){ /* nessuna connessione o logo assente: resta il fallback locale */ }
 }
@@ -6238,11 +6888,29 @@ function tryAutoFillRenewal(){
   const startDate = document.getElementById('f_startDate').value;
   const frequency = document.getElementById('f_frequency').value;
   if(!startDate) return;
-  document.getElementById('f_nextRenewal').value = calcNextRenewal(startDate, frequency);
+  const freqObj = {
+    frequency,
+    customEvery: parseInt(document.getElementById('f_customEvery')?.value, 10) || 1,
+    customUnit: document.getElementById('f_customUnit')?.value || 'mesi'
+  };
+  document.getElementById('f_nextRenewal').value = calcNextRenewal(startDate, freqObj);
   updateRenewalDisplay();
 }
 document.getElementById('f_startDate').addEventListener('input', tryAutoFillRenewal);
-document.getElementById('f_frequency').addEventListener('change', tryAutoFillRenewal);
+
+function syncCustomFreqRow(){
+  const row = document.getElementById('customFreqRow');
+  const sel = document.getElementById('f_frequency');
+  if(!row || !sel) return;
+  row.style.display = sel.value === 'Altro' ? '' : 'none';
+}
+document.getElementById('f_frequency')?.addEventListener('change', ()=>{
+  syncCustomFreqRow();
+  try{ tryAutoFillRenewal(); }catch(e){}
+});
+document.getElementById('f_customEvery')?.addEventListener('input', ()=>{ try{ tryAutoFillRenewal(); }catch(e){} });
+document.getElementById('f_customUnit')?.addEventListener('change', ()=>{ try{ tryAutoFillRenewal(); }catch(e){} });
+
 document.getElementById('f_nextRenewal').addEventListener('input', ()=>{
   nextRenewalManual = true;
   updateRenewalDisplay();
@@ -6270,6 +6938,43 @@ document.getElementById('btnEditRenewal').addEventListener('click', ()=>{
   }
 });
 
+
+function updateFormHero(){
+  const hero = document.getElementById('formHero');
+  const logo = document.getElementById('formHeroLogo');
+  const titleEl = document.getElementById('formTitle');
+  const subEl = document.getElementById('formHeroSub');
+  const name = (document.getElementById('f_name')?.value || '').trim();
+  const color = document.getElementById('f_color')?.value || '#3d9b8f';
+  if(hero){
+    hero.style.background = 'linear-gradient(165deg, ' + color + ' 0%, color-mix(in srgb, ' + color + ' 62%, #000) 100%)';
+  }
+  if(logo){
+    const fake = {
+      name: name || '?',
+      color,
+      category: document.getElementById('f_category')?.value || 'Altro',
+      customIcon: document.getElementById('f_customIcon')?.value || null
+    };
+    try{ logo.innerHTML = serviceIconHtml(fake, 'svc-icon'); }
+    catch(e){ logo.textContent = (name || '?').charAt(0).toUpperCase(); }
+  }
+  if(titleEl){
+    titleEl.textContent = name || (typeof editingId !== 'undefined' && editingId ? 'Modifica' : 'Nuovo abbonamento');
+  }
+  if(subEl){
+    const freq = document.getElementById('f_frequency')?.value || 'Mensile';
+    const priceRaw = document.getElementById('f_price')?.value;
+    let price = '';
+    if(priceRaw !== '' && priceRaw != null && !isNaN(priceRaw)){
+      try{ price = fmtMoney(parseFloat(priceRaw)); }catch(e){ price = priceRaw; }
+    }
+    if(name && price) subEl.textContent = freq + ' · ' + price;
+    else if(name) subEl.textContent = freq;
+    else subEl.textContent = (typeof editingId !== 'undefined' && editingId) ? 'Modifica i dettagli' : 'Inizia dal nome del servizio';
+  }
+}
+
 function closeForm(){
   hideSuggestions();
   formOverlay.classList.remove('active', 'from-fab', 'from-qa-top', 'kb-open');
@@ -6292,6 +6997,7 @@ function clearFormErrors(){
 }
 
 document.getElementById('btnCancelForm').addEventListener('click', closeForm);
+document.getElementById('formHeroCancel')?.addEventListener('click', closeForm);
 formOverlay.addEventListener('click', (e)=>{
   if(Date.now() < suppressOverlayCloseUntil) return;
   if(e.target === formOverlay) closeForm();
@@ -6305,6 +7011,8 @@ subForm.addEventListener('submit', (e)=>{
   const price = document.getElementById('f_price').value;
   const startDate = document.getElementById('f_startDate').value;
   let frequency = document.getElementById('f_frequency').value || 'Mensile';
+  const customEvery = parseInt(document.getElementById('f_customEvery')?.value, 10) || 1;
+  const customUnit = document.getElementById('f_customUnit')?.value || 'mesi';
   let nextRenewal = document.getElementById('f_nextRenewal').value;
 
   let valid = true;
@@ -6326,8 +7034,9 @@ subForm.addEventListener('submit', (e)=>{
   if(!valid) return;
 
   // Se il rinnovo non è indicato, lo calcolo dalla data di attivazione + frequenza
+  const freqObj = { frequency, customEvery, customUnit };
   if(!nextRenewal && startDate){
-    nextRenewal = calcNextRenewal(startDate, frequency);
+    nextRenewal = calcNextRenewal(startDate, freqObj);
   }
 
   // Categoria/stato: fallback se il select custom non ha sincronizzato il nativo
@@ -6348,6 +7057,8 @@ subForm.addEventListener('submit', (e)=>{
     price: parseFloat(price),
     currency: document.getElementById('f_currency').value || '€',
     frequency,
+    customEvery: frequency === 'Altro' ? customEvery : null,
+    customUnit: frequency === 'Altro' ? customUnit : null,
     startDate,
     nextRenewal,
     payment: document.getElementById('f_payment').value || 'Carta',
@@ -6386,6 +7097,105 @@ function duplicateSub(id){
   refreshAll();
 }
 
+
+/* ================================================================
+   DETAIL SHEET (vista abbonamento stile card)
+   ================================================================ */
+let detailSubId = null;
+function closeDetail(){
+  const ov = document.getElementById('detailOverlay');
+  if(ov) ov.classList.remove('active');
+  detailSubId = null;
+}
+function openDetail(id){
+  const sub = subscriptions.find(s=>s.id===id);
+  if(!sub) return;
+  detailSubId = id;
+  const accent = sub.color || (CATEGORY_COLORS && CATEGORY_COLORS[sub.category]) || '#3d9b8f';
+  const hero = document.getElementById('detailHero');
+  if(hero) hero.style.setProperty('--detail-accent', accent);
+  // darken a bit for text
+  if(hero) hero.style.background = `linear-gradient(165deg, ${accent} 0%, color-mix(in srgb, ${accent} 70%, #000) 100%)`;
+
+  const logo = document.getElementById('detailLogo');
+  if(logo) logo.innerHTML = serviceIconHtml(sub, 'svc-icon');
+  document.getElementById('detailName').textContent = sub.name || '—';
+  const started = sub.startDate ? ('Dal ' + fmtDateShort(sub.startDate)) : (sub.status === 'Attivo' ? 'Attivo' : 'Sospeso');
+  document.getElementById('detailSub').textContent = started;
+  document.getElementById('detailFreq').textContent = frequencyLabel(sub);
+  const priceLabel = fmtMoney(sub.price, sub.currency);
+  document.getElementById('detailPrice').textContent = priceLabel;
+  document.getElementById('detailStatus').textContent = sub.status === 'Attivo' ? 'Attivo' : 'Sospeso';
+  document.getElementById('detailNext').textContent = sub.nextRenewal ? fmtDate(sub.nextRenewal) : '—';
+  document.getElementById('detailCat').textContent = sub.category || '—';
+  document.getElementById('detailPay').textContent = sub.payment || sub.paymentMethod || '—';
+  document.getElementById('detailNotes').textContent = (sub.notes && sub.notes.trim()) ? sub.notes.trim() : 'Nessuna nota';
+
+  const sus = document.getElementById('detailSuspend');
+  if(sus){
+    if(sub.status === 'Attivo'){
+      sus.textContent = 'Segna come sospeso';
+      sus.className = 'btn detail-suspend';
+    }else{
+      sus.textContent = 'Riattiva abbonamento';
+      sus.className = 'btn btn-primary detail-suspend';
+    }
+  }
+
+  const ov = document.getElementById('detailOverlay');
+  const modal = ov && ov.querySelector('.modal');
+  if(modal){ modal.style.opacity='1'; modal.style.transform='none'; modal.classList.add('is-settled'); }
+  ov.classList.add('active');
+  if(typeof playModalEnter === 'function') try{ playModalEnter(ov); }catch(e){}
+}
+function toggleSuspendSub(id){
+  const sub = subscriptions.find(s=>s.id===id);
+  if(!sub) return;
+  if(sub.status === 'Attivo'){
+    openConfirm('Sospendi abbonamento',
+      `Vuoi sospendere "${sub.name}"?\nLo storico resta salvato. Potrai riattivarlo in seguito da una nuova data.`,
+      ()=>{
+        sub.status = 'Disattivato';
+        saveData();
+        try{ logHistoryPoint(); }catch(e){}
+        showToast('Abbonamento sospeso. Lo storico è conservato.');
+        refreshAll();
+        openDetail(id);
+      });
+  }else{
+    openConfirm('Riattiva abbonamento',
+      `Riattivare "${sub.name}"?\nPuoi aggiornare la data del prossimo rinnovo in Modifica.`,
+      ()=>{
+        sub.status = 'Attivo';
+        // se data passata, proponi oggi come base
+        if(sub.nextRenewal && daysUntil(sub.nextRenewal) < 0){
+          const d = new Date(); d.setHours(12,0,0,0);
+          sub.nextRenewal = d.toISOString().slice(0,10);
+        }
+        saveData();
+        try{ logHistoryPoint(); }catch(e){}
+        showToast('Abbonamento riattivato.');
+        refreshAll();
+        openDetail(id);
+      });
+  }
+}
+document.getElementById('detailBack')?.addEventListener('click', closeDetail);
+document.getElementById('detailOverlay')?.addEventListener('click', (e)=>{
+  if(e.target.id === 'detailOverlay') closeDetail();
+});
+document.getElementById('detailEdit')?.addEventListener('click', ()=>{
+  const id = detailSubId;
+  closeDetail();
+  if(id) openForm(id);
+});
+document.getElementById('detailDelete')?.addEventListener('click', ()=>{
+  if(detailSubId) confirmDeleteSub(detailSubId);
+});
+document.getElementById('detailSuspend')?.addEventListener('click', ()=>{
+  if(detailSubId) toggleSuspendSub(detailSubId);
+});
+
 /* ================================================================
    CONFIRM MODAL (delete / reset / clear history)
    ================================================================ */
@@ -6394,7 +7204,20 @@ function openConfirm(title, text, callback){
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmText').textContent = text;
   confirmCallback = callback;
+  const modal = confirmOverlay.querySelector('.modal');
+  if(modal){
+    modal.style.opacity = '1';
+    modal.style.transform = 'none';
+    modal.classList.add('is-settled');
+  }
   confirmOverlay.classList.add('active');
+  if(typeof playModalEnter === 'function'){
+    try{ playModalEnter(confirmOverlay); }catch(e){}
+  }
+  // safety: sempre leggibile sopra gli altri modal
+  setTimeout(()=>{
+    if(modal){ modal.style.opacity = '1'; modal.style.transform = 'none'; }
+  }, 50);
 }
 document.getElementById('confirmCancel').addEventListener('click', ()=>{
   confirmOverlay.classList.remove('active'); confirmCallback = null;
@@ -6686,7 +7509,7 @@ document.getElementById('btnGoToCalendar').addEventListener('click', ()=>{
 });
 document.getElementById('upcomingList')?.addEventListener('click', (e)=>{
   const row = e.target.closest('.upcoming-item[data-id]');
-  if(row) openForm(row.dataset.id);
+  if(row) openDetail(row.dataset.id);
 });
 
 /* ================================================================
@@ -6772,6 +7595,9 @@ document.getElementById('importFile').addEventListener('change', (e)=>{
         saveHistory();
         showToast('Backup importato correttamente.');
         refreshAll();
+        try{ renderBackupStatus(); }catch(e){}
+        // chiudi backup se aperto (flusso completato)
+        try{ closeBackupModal(); }catch(e){}
       });
     }catch(err){
       showToast('Errore nella lettura del file JSON.');
@@ -7293,7 +8119,7 @@ window.addEventListener('resize', ()=>{
   });
 });
 
-const SEGMENT_SELECT_IDS = new Set(['f_frequency', 'f_status']);
+const SEGMENT_SELECT_IDS = new Set(['f_status']);
 
 function enhanceAllSelects(){
   document.querySelectorAll('select').forEach(sel=>{
@@ -7853,6 +8679,11 @@ window.addEventListener('offline', ()=>{ try{ renderAboutInfo(); }catch(e){} });
     const form = document.getElementById('formOverlay');
     if(form && form.classList.contains('active')){
       try{ closeForm(); }catch(err){}
+      return true;
+    }
+    const detail = document.getElementById('detailOverlay');
+    if(detail && detail.classList.contains('active')){
+      try{ closeDetail(); }catch(e){ detail.classList.remove('active'); }
       return true;
     }
     const about = document.getElementById('aboutOverlay');
